@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#5b9cf6"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="GroupFlow"/>
+<link rel="apple-touch-icon" href="image1.png"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>GroupFlow — Dashboard</title>
@@ -5234,5 +5240,12 @@ async function deleteAsset(id){
   allAssets=allAssets.filter(a=>a.id!==id);
   renderAssetsBody();
 }</script>
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js')
+      .then(()=>console.log('SW registered'))
+      .catch(e=>console.log('SW error',e));
+  }
+</script>
 </body>
 </html>
