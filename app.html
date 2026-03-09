@@ -562,35 +562,6 @@
   .chairmanship-transfer-title{font-family:'Syne',sans-serif;font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--accent3);margin-bottom:7px;}
   .chairmanship-transfer-sub{font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:18px;}
 
-  /* ── CONSECUTIVE DEFAULTER / AT-RISK SYSTEM ──────────────────── */
-  .at-risk-banner{background:linear-gradient(135deg,rgba(240,84,79,0.14),rgba(240,84,79,0.06));border:1px solid rgba(240,84,79,0.35);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;}
-  .at-risk-banner-title{font-family:'Syne',sans-serif;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--danger);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-  .at-risk-member-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-radius:var(--radius);background:rgba(0,0,0,0.2);margin-bottom:9px;gap:12px;flex-wrap:wrap;border-left:4px solid transparent;}
-  .at-risk-member-row.risk-1{border-left-color:var(--accent3);}
-  .at-risk-member-row.risk-2{border-left-color:#f97316;}
-  .at-risk-member-row.risk-3{border-left-color:var(--danger);}
-  .at-risk-member-row.risk-deactivate{border-left-color:#7f1d1d;background:rgba(127,29,29,0.18);}
-  .at-risk-left{display:flex;align-items:center;gap:12px;}
-  .at-risk-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--fs-base);font-weight:var(--fw-black);color:#fff;flex-shrink:0;}
-  .at-risk-name{font-size:var(--fs-sm);font-weight:var(--fw-semi);}
-  .at-risk-detail{font-size:var(--fs-xs);color:var(--text-muted);margin-top:2px;}
-  .risk-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:var(--fs-xs);font-weight:var(--fw-black);white-space:nowrap;}
-  .risk-pill-1{background:rgba(245,200,66,0.18);color:var(--accent3);}
-  .risk-pill-2{background:rgba(249,115,22,0.18);color:#fb923c;}
-  .risk-pill-3{background:rgba(240,84,79,0.22);color:var(--danger);}
-  .risk-pill-auto{background:rgba(127,29,29,0.35);color:#fca5a5;animation:livePulse 1.5s infinite;}
-  .countdown-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:var(--fs-xs);font-weight:var(--fw-black);background:rgba(240,84,79,0.15);color:var(--danger);}
-  .my-risk-alert{background:linear-gradient(135deg,rgba(240,84,79,0.16),rgba(240,84,79,0.06));border:2px solid rgba(240,84,79,0.5);border-radius:var(--radius-lg);padding:22px 26px;margin-bottom:28px;position:relative;overflow:hidden;}
-  .my-risk-alert::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(240,84,79,0.03) 10px,rgba(240,84,79,0.03) 20px);pointer-events:none;}
-  .my-risk-alert-title{font-family:'Syne',sans-serif;font-size:var(--fs-lg);font-weight:var(--fw-black);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
-  .my-risk-alert-body{font-size:var(--fs-base);color:var(--text-soft);line-height:1.7;margin-bottom:14px;}
-  .my-risk-missed-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-  .my-risk-missed-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);background:rgba(0,0,0,0.2);font-size:var(--fs-sm);}
-  .my-risk-missed-icon{font-size:18px;flex-shrink:0;}
-  .deactivation-timer{background:rgba(127,29,29,0.25);border:1px solid rgba(240,84,79,0.4);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  .deactivation-timer-icon{font-size:28px;flex-shrink:0;}
-  .deactivation-timer-label{font-size:var(--fs-xs);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
-  .deactivation-timer-value{font-family:'Syne',sans-serif;font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--danger);}
   /* ── MY STATEMENT ────────────────────────────────────────────── */
   .stmt-hero{background:linear-gradient(135deg,rgba(91,156,246,0.15),rgba(52,217,165,0.08));border:1px solid rgba(91,156,246,0.25);border-radius:var(--radius-lg);padding:30px;margin-bottom:26px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
   .stmt-avatar-lg{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:var(--fw-black);color:#fff;flex-shrink:0;box-shadow:var(--glow-accent);}
@@ -1067,37 +1038,89 @@
     </div>
     <span class="sidebar-close" onclick="closeSidebar()">✕</span>
   </div>
-  <div class="sidebar-nav">
-    <div class="section-label">Overview</div>
-    <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard"><span class="nav-icon">⊞</span> Dashboard</div>
-    <div class="nav-item" onclick="navigate('noticeboard')" data-page="noticeboard"><span class="nav-icon">📣</span> Noticeboard</div>
-    <div class="nav-item" onclick="navigate('members')" data-page="members"><span class="nav-icon">👤</span> Members</div>
-    <div class="section-label">Finances</div>
-    <div class="nav-item" onclick="navigate('events')" data-page="events"><span class="nav-icon">📅</span> Events</div>
-    <div class="nav-item" onclick="navigate('schemes')" data-page="schemes"><span class="nav-icon">🔄</span> Recurring Schemes</div>
-    <div class="nav-item" onclick="navigate('contributions')" data-page="contributions"><span class="nav-icon">💰</span> All Contributions</div>
-    <div class="nav-item" onclick="navigate('expenses')" data-page="expenses"><span class="nav-icon">🧾</span> Expenses</div>
-    <div class="nav-item" onclick="navigate('defaulters')" data-page="defaulters"><span class="nav-icon">⚠️</span> Defaulters</div>
-    <div class="nav-item" onclick="navigate('myStatement')" data-page="myStatement"><span class="nav-icon">👤</span> My Statement</div>
-    <div class="nav-item" onclick="navigate('reports')" data-page="reports"><span class="nav-icon">📊</span> Reports</div>
-    <div class="section-label admin-only" style="display:none;">Admin</div>
-    <div class="nav-item admin-only" onclick="navigate('elections')" data-page="elections" style="display:none;"><span class="nav-icon">🗳️</span> Elections</div>
-    <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;"><span class="nav-icon">⚙️</span> Manage Users</div>
-    <div class="nav-item admin-only" onclick="navigate('settings')" data-page="settings" style="display:none;"><span class="nav-icon">💳</span> M-Pesa Settings</div>
+
+<!-- REPLACE WITH -->
+<div class="sidebar-nav" style="overflow-y:auto;flex:1;">
+
+  <div class="section-label">Overview</div>
+  <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard">
+    <span class="nav-icon">⊞</span> Dashboard
   </div>
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="user-avatar" id="userAvatar">?</div>
-      <div>
-        <div class="user-name" id="userNameDisplay">...</div>
-        <div class="user-role" id="userRoleDisplay">...</div>
-      </div>
+
+  <div class="nav-item" onclick="navigate('noticeboard')" data-page="noticeboard">
+    <span class="nav-icon">📣</span> Noticeboard
+  </div>
+
+  <div class="nav-item" onclick="navigate('members')" data-page="members">
+    <span class="nav-icon">👤</span> Members
+  </div>
+
+  <div class="section-label">Finances</div>
+
+  <div class="nav-item" onclick="navigate('events')" data-page="events">
+    <span class="nav-icon">📅</span> Events
+  </div>
+
+  <div class="nav-item" onclick="navigate('schemes')" data-page="schemes">
+    <span class="nav-icon">🔄</span> Recurring Schemes
+  </div>
+
+  <div class="nav-item" onclick="navigate('contributions')" data-page="contributions">
+    <span class="nav-icon">💰</span> All Contributions
+  </div>
+
+  <div class="nav-item" onclick="navigate('expenses')" data-page="expenses">
+    <span class="nav-icon">🧾</span> Expenses
+  </div>
+
+  <div class="nav-item" onclick="navigate('defaulters')" data-page="defaulters">
+    <span class="nav-icon">⚠️</span> Defaulters
+  </div>
+
+  <div class="nav-item" onclick="navigate('myStatement')" data-page="myStatement">
+    <span class="nav-icon">👤</span> My Statement
+  </div>
+
+  <div class="nav-item" onclick="navigate('reports')" data-page="reports">
+    <span class="nav-icon">📊</span> Reports
+  </div>
+
+  <!-- Governance -->
+  <div class="section-label">Governance</div>
+
+  <div class="nav-item" onclick="navigate('elections')" data-page="elections">
+    <span class="nav-icon">🗳️</span> Elections
+  </div>
+
+  <!-- Admin Only -->
+  <div class="section-label admin-only" style="display:none;">Admin</div>
+
+  <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;">
+    <span class="nav-icon">⚙️</span> Manage Users
+  </div>
+
+  <div class="nav-item admin-only" onclick="navigate('settings')" data-page="settings" style="display:none;">
+    <span class="nav-icon">💳</span> M-Pesa Settings
+  </div>
+
+</div>
+
+<div class="sidebar-footer">
+  <div class="user-info">
+    <div class="user-avatar" id="userAvatar">?</div>
+    <div>
+      <div class="user-name" id="userNameDisplay">...</div>
+      <div class="user-role" id="userRoleDisplay">...</div>
     </div>
-    <div class="signout-btn" onclick="signout()"><span>↪</span> Sign Out</div>
   </div>
+
+  <div class="signout-btn" onclick="signout()">
+    <span>↪</span> Sign Out
+  </div>
+</div>
 </nav>
-<main class="main">
-  <!-- DASHBOARD -->
+
+<main class="main">  <!-- DASHBOARD -->
   <div class="page active" id="dashboardPage">
     <div class="topbar">
       <h2>Dashboard</h2>
@@ -1415,8 +1438,6 @@
     </div>
     <div class="content">
       <div class="defaulters-summary" id="defaultersSummary"></div>
-      <!-- AT-RISK / CONSECUTIVE DEFAULTER PANEL -->
-      <div id="atRiskPanel"></div>
       <div class="defaulters-filter-bar">
         <div class="filter-group">
           <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">Filter by Source</label>
@@ -1482,7 +1503,6 @@
 <div class="fab-stack" id="fabStack">
   <button class="fab-btn fab-assets" onclick="openAssetsPanel()" title="Group Assets">
     🏗️<span class="fab-label">Group Assets</span>
-    <span class="fab-badge" id="assetsBadge" style="display:none;background:#f5c842;color:#000;border-color:var(--navy);">0</span>
   </button>
   <button class="fab-btn fab-anonchat" onclick="openAnonChat()" title="Anonymous Chat">
     💬<span class="fab-label">Anonymous Chat</span>
@@ -2144,21 +2164,20 @@ const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 let currentProfile=null;
-let allMembers=[],allEvents=[],allContribs=[],allSchemes=[],allPeriods=[],allSchemePayments=[],allExpenses=[],allElections=[],allNotices=[],allMessages=[],allSuggestions=[],allAnonMessages=[],allAssets=[];
-let groupMpesaConfig=null; // M-Pesa config for the current group
+let allMembers=[],allEvents=[],allContribs=[],allSchemes=[],allPeriods=[],allSchemePayments=[],allExpenses=[],allElections=[],allNotices=[],allMessages=[],allSuggestions=[],allAnonMessages=[],allAssets=[],allPolls=[],allVotes=[];
+let groupMpesaConfig=null;
 let deleteTarget={};
 let stkContext={};
 let _lastRptRows=[];
+
 const PG=10;
 let cpages={},rpages={};
 
-// ── UTILITY HELPERS (defined early so all render fns can use them) ─
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmt(n){if(n===null||n===undefined)return'0';return Number(n).toLocaleString();}
 function fmtDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString([],{day:'numeric',month:'short'});}
 function fmtTime(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
 
-// ── SELECTED MPESA TYPE on settings page ─────────────────────────
 let selectedMpesaType='paybill';
 
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -2181,19 +2200,37 @@ async function initApp(){
   const role=currentProfile.group_role||currentProfile.role||'member';
   const isLeader=['admin','chairman','treasurer','secretary'].includes(role);
   const isAdminLevel=['admin','chairman'].includes(role);
+  const isOfficial=['admin','chairman','treasurer','secretary'].includes(role);
+  window._isOfficial=isOfficial;
+
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdminLevel?'flex':'none');
-  // Elections visible to all leaders
+
+  // Elections visible to ALL members
   const electionsNav=document.querySelector('[data-page="elections"]');
-  if(electionsNav)electionsNav.style.display=isLeader?'flex':'none';
-  if(isAdminLevel){['addEventBtn','addContribBtn','addSchemeBtn','addExpenseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});}
-  else if(role==='treasurer'){['addContribBtn','addExpenseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});}
-  else if(role==='secretary'){['addEventBtn','addSchemeBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});}
+  if(electionsNav)electionsNav.style.display='flex';
+
+  // Polls button visible to officials only
+  const addPollBtn=document.getElementById('addPollBtn');
+  if(addPollBtn)addPollBtn.style.display=isOfficial?'flex':'none';
+
+  if(isAdminLevel){
+    ['addEventBtn','addContribBtn','addSchemeBtn','addExpenseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
+  }else if(role==='treasurer'){
+    ['addContribBtn','addExpenseBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
+  }else if(role==='secretary'){
+    ['addEventBtn','addSchemeBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});
+  }
+
   const roleCfg=ROLES[role]||ROLES.member;
   document.getElementById('userNameDisplay').textContent=currentProfile.full_name;
   document.getElementById('userRoleDisplay').textContent=roleCfg.icon+' '+roleCfg.label;
   document.getElementById('userAvatar').textContent=currentProfile.full_name.charAt(0).toUpperCase();
-  if(currentProfile.group_id){try{const{data:grp}=await sb.from('groups').select('name').eq('id',currentProfile.group_id).single();document.getElementById('sidebarGroupName').textContent=grp?.name||'My Group';}catch(e){document.getElementById('sidebarGroupName').textContent='My Group';}}
-  await loadAllData();navigate('dashboard');
+  if(currentProfile.group_id){
+    try{const{data:grp}=await sb.from('groups').select('name').eq('id',currentProfile.group_id).single();document.getElementById('sidebarGroupName').textContent=grp?.name||'My Group';}
+    catch(e){document.getElementById('sidebarGroupName').textContent='My Group';}
+  }
+  await loadAllData();
+  navigate('dashboard');
 }
 
 async function sq(fn){
@@ -2201,22 +2238,15 @@ async function sq(fn){
   catch(e){console.warn('DB:',e.message);return[];}
 }
 
-// ── SAFETY NET: always ensure group has a chairman ─────────────
 async function ensureGroupHasChairman(gid){
   try{
     const chairman=allMembers.find(m=>m.group_role==='chairman'||(m.role==='admin'&&m.group_role==='chairman'));
-    if(chairman)return; // all good
-
-    // No chairman found — promote the earliest-joined non-suspended member
+    if(chairman)return;
     const candidate=allMembers.filter(m=>!m.is_suspended).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))[0];
     if(!candidate)return;
-
     await sb.from('profiles').update({group_role:'chairman',role:'admin'}).eq('id',candidate.id);
-    // Update local array
     const local=allMembers.find(m=>m.id===candidate.id);
     if(local){local.group_role='chairman';local.role='admin';}
-
-    // If it's the current user, update session
     if(candidate.id===currentProfile.id){
       const updated={...currentProfile,group_role:'chairman',role:'admin'};
       localStorage.setItem('gf_user',JSON.stringify(updated));
@@ -2228,7 +2258,7 @@ async function ensureGroupHasChairman(gid){
 
 async function loadAllData(){
   const gid=currentProfile.group_id;
-  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets]=await Promise.all([
+  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets,polls,votes]=await Promise.all([
     sq(()=>sb.from('profiles').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('events').select('*').eq('group_id',gid).order('event_date',{ascending:false})),
     sq(()=>sb.from('contributions').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
@@ -2243,14 +2273,18 @@ async function loadAllData(){
     sq(()=>sb.from('group_messages').select('*').or(`sender_id.eq.${currentProfile.id},recipient_id.eq.${currentProfile.id}`).eq('group_id',gid).order('sent_at',{ascending:true})),
     sq(()=>sb.from('group_suggestions').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('group_anon_chat').select('*').eq('group_id',gid).order('sent_at',{ascending:true}).limit(120)),
-    sq(()=>sb.from('group_assets').select('*').eq('group_id',gid).order('created_at',{ascending:false}))
+    sq(()=>sb.from('group_assets').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('polls').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('poll_votes').select('*').eq('group_id',gid))
   ]);
   allMembers=members;allEvents=events;allSchemes=schemes;allPeriods=periods;allExpenses=expenses;
   groupMpesaConfig=mpesaCfg&&mpesaCfg.length>0?mpesaCfg[0]:null;
   allElections=elections;allNotices=notices;allMessages=messages;
   allSuggestions=suggestions;allAnonMessages=anonMsgs;allAssets=assets;
-  // ── GLOBAL SAFETY NET: ensure group always has a chairman ──────
+  allPolls=polls;allVotes=votes;
+
   await ensureGroupHasChairman(gid);
+
   if(grpSettings&&grpSettings.length){
     grpSettings.forEach(s=>{
       if(s.setting_key==='default_suspension_fee')groupSettings.default_suspension_fee=parseFloat(s.setting_value||0);
@@ -2261,9 +2295,11 @@ async function loadAllData(){
   const em=Object.fromEntries(allEvents.map(e=>[e.id,e]));
   allContribs=contribs.map(c=>({...c,profiles:{full_name:mm[c.member_id]?.full_name||'Unknown'},events:c.event_id?{name:em[c.event_id]?.name||'—'}:null}));
   allSchemePayments=schPayments.map(p=>({...p,profiles:{full_name:mm[p.member_id]?.full_name||'Unknown'}}));
+
   renderDashboard();renderEventsPage();renderSchemesPage();populateCfSource();renderContributions();
   renderMembers(allMembers);renderUsers(allMembers);populateReportFilters();renderReports();
   renderSettingsPage();renderExpenses();renderDefaulters();renderMyStatement();
+  renderElections();
   updateNotifBadge();renderDashNotices();updateFabBadges();
 }
 
@@ -2283,11 +2319,13 @@ function navigate(page){
   if(page==='expenses')renderExpenses();
   if(page==='defaulters')renderDefaulters();
   if(page==='myStatement')renderMyStatement();
-  if(page==='elections'){renderElections();}
-  if(page==='noticeboard'){renderNoticeboard();}
+  if(page==='elections')renderElections();
+  if(page==='noticeboard')renderNoticeboard();
+  if(page==='voting')renderVoting();
   if(page==='rolePermissions')renderRolePermissions();
   if(page==='manageUsers')renderUsers(allMembers);
 }
+
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlayDim').style.display='block';}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlayDim').style.display='none';}
 
@@ -3704,296 +3742,109 @@ function downloadExpensesCSV(){
 // ═══════════════════════════════════════════════════════════════════
 // DEFAULTERS
 // ═══════════════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════════
-//  CONSECUTIVE DEFAULTER ENGINE
-// ═══════════════════════════════════════════════════════════════
-function buildChronologicalObligations(){
-  var obligations=[];
-  allEvents.filter(function(ev){return ev.requires_contribution&&ev.contribution_amount;}).forEach(function(ev){
-    obligations.push({id:'ev_'+ev.id,sourceId:ev.id,type:'event',name:ev.name,deadline:ev.contribution_deadline||ev.event_date||null,amountPer:parseFloat(ev.contribution_amount||0)});
-  });
-  allSchemes.forEach(function(sc){
-    allPeriods.filter(function(pd){return pd.scheme_id===sc.id;}).forEach(function(pd){
-      obligations.push({id:'pd_'+pd.id,sourceId:pd.id,type:'scheme',name:sc.name+' \u2014 '+pd.period_label,deadline:pd.due_date||null,amountPer:parseFloat(sc.amount_per_member||0),schemeId:sc.id});
-    });
-  });
-  obligations.sort(function(a,b){
-    if(!a.deadline&&!b.deadline)return 0;
-    if(!a.deadline)return 1;
-    if(!b.deadline)return -1;
-    return new Date(a.deadline)-new Date(b.deadline);
-  });
-  return obligations;
-}
-
-function getMemberConsecutiveMissed(memberId,obligations){
-  var paidEventIds=new Set(allContribs.filter(function(c){return c.member_id===memberId;}).map(function(c){return c.event_id;}));
-  var paidPeriodIds=new Set(allSchemePayments.filter(function(p){return p.member_id===memberId;}).map(function(p){return p.period_id;}));
-  var now=new Date();
-  var past=obligations.filter(function(o){return o.deadline&&new Date(o.deadline)<=now;});
-  var consecutive=0;
-  var missedItems=[];
-  for(var i=past.length-1;i>=0;i--){
-    var o=past[i];
-    var paid=o.type==='event'?paidEventIds.has(o.sourceId):paidPeriodIds.has(o.sourceId);
-    if(!paid){consecutive++;missedItems.unshift(o);}
-    else{break;}
-  }
-  return{consecutive:consecutive,missedItems:missedItems};
-}
-
-function getDeactivationDate(missedItems){
-  if(!missedItems||missedItems.length<3)return null;
-  var thirdMiss=missedItems[2];
-  if(!thirdMiss.deadline)return null;
-  var d=new Date(thirdMiss.deadline);
-  d.setDate(d.getDate()+10);
-  return d;
-}
-
-function getDaysUntilDeactivation(deactivationDate){
-  if(!deactivationDate)return null;
-  return Math.ceil((deactivationDate-new Date())/(1000*60*60*24));
-}
-
-function getRiskLevel(consecutive){
-  if(consecutive<=0)return 0;
-  if(consecutive===1)return 1;
-  if(consecutive===2)return 2;
-  return 3;
-}
-
-function computeAtRiskMembers(){
-  var obligations=buildChronologicalObligations();
-  var results=[];
-  allMembers.filter(function(m){return !m.is_suspended;}).forEach(function(m){
-    var res=getMemberConsecutiveMissed(m.id,obligations);
-    if(res.consecutive<1)return;
-    var riskLevel=getRiskLevel(res.consecutive);
-    var deactivationDate=res.consecutive>=3?getDeactivationDate(res.missedItems):null;
-    var daysLeft=getDaysUntilDeactivation(deactivationDate);
-    var shouldAutoDeactivate=!!(deactivationDate&&deactivationDate<=new Date());
-    results.push({member:m,consecutive:res.consecutive,missedItems:res.missedItems,riskLevel:riskLevel,deactivationDate:deactivationDate,daysLeft:daysLeft,shouldAutoDeactivate:shouldAutoDeactivate});
-  });
-  results.sort(function(a,b){return b.consecutive-a.consecutive||((a.daysLeft||999)-(b.daysLeft||999));});
-  return results;
-}
-
-async function runAutoDeactivation(){
-  var atRisk=computeAtRiskMembers();
-  var toDeactivate=atRisk.filter(function(r){return r.shouldAutoDeactivate&&!r.member.is_suspended;});
-  for(var i=0;i<toDeactivate.length;i++){
-    var r=toDeactivate[i];
-    var missedNames=r.missedItems.slice(0,3).map(function(o){return o.name;}).join(', ');
-    var reason='Auto-deactivated: missed '+r.consecutive+' consecutive contributions ('+missedNames+'). Clear your outstanding balance to request reinstatement.';
-    var fee=r.missedItems.reduce(function(s,o){return s+o.amountPer;},0);
-    try{await sb.from('profiles').update({is_suspended:true,suspension_reason:reason,suspension_fee:fee,suspended_at:new Date().toISOString()}).eq('id',r.member.id);}
-    catch(e){console.warn('Auto-deactivate failed',e);}
-  }
-  if(toDeactivate.length>0){
-    var res=await sb.from('profiles').select('*').eq('group_id',currentProfile.group_id).order('created_at',{ascending:false});
-    if(res.data)allMembers=res.data;
-  }
-}
-
-function renderAtRiskPanel(){
-  var panel=document.getElementById('atRiskPanel');
-  if(!panel)return;
-  var isLeader=['chairman','admin','treasurer','secretary'].includes(currentProfile.group_role);
-  var atRisk=computeAtRiskMembers();
-  if(!atRisk.length){panel.innerHTML='';return;}
-  var avatarColors=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899'];
-  var rows=atRisk.map(function(r){
-    var m=r.member;
-    var initials=m.full_name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
-    var avatarColor=avatarColors[m.full_name.charCodeAt(0)%avatarColors.length];
-    var isMe=m.id===currentProfile.id;
-    var autoClass=r.shouldAutoDeactivate?'risk-deactivate':'risk-'+r.riskLevel;
-    var pillLabels=['','👁 Watch','⚠️ Warning','🔴 At Risk'];
-    var pillClasses=['','risk-pill risk-pill-1','risk-pill risk-pill-2','risk-pill risk-pill-3'];
-    var pillLabel=r.shouldAutoDeactivate?'🚫 Deactivating...':pillLabels[r.riskLevel];
-    var pillClass=r.shouldAutoDeactivate?'risk-pill risk-pill-auto':pillClasses[r.riskLevel];
-    var countdownHtml='';
-    if(r.deactivationDate&&!r.shouldAutoDeactivate){
-      countdownHtml='<span class="countdown-chip">\u23f1 '+Math.max(0,r.daysLeft)+'d until deactivation</span>';
-    } else if(r.shouldAutoDeactivate){
-      countdownHtml='<span class="countdown-chip" style="background:rgba(127,29,29,0.4);color:#fca5a5;">\u23f1 Deactivation overdue</span>';
-    }
-    var missedSummary=r.missedItems.map(function(o){return o.name;}).join(' \u2192 ');
-    var adminBtns='';
-    if(isLeader&&!isMe){
-      adminBtns='<button class="btn btn-xs btn-danger" onclick="adminDeactivateNow(\''+m.id+'\',\''+m.full_name.replace(/'/g,"\\'")+'\')" >Deactivate Now</button> '
-        +'<button class="btn btn-xs btn-secondary" onclick="adminClearStreak(\''+m.id+'\',\''+m.full_name.replace(/'/g,"\\'")+'\')">Clear Strike</button>';
-    }
-    return '<div class="at-risk-member-row '+autoClass+'">'
-      +'<div class="at-risk-left">'
-      +'<div class="at-risk-avatar" style="background:'+avatarColor+';">'+initials+'</div>'
-      +'<div><div class="at-risk-name">'+esc(m.full_name)+(isMe?' <span style="color:var(--accent2);font-size:11px;">(You)</span>':'')+'</div>'
-      +'<div class="at-risk-detail">Streak: '+esc(missedSummary)+'</div></div>'
-      +'</div>'
-      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-      +'<span class="'+pillClass+'">'+pillLabel+'</span>'
-      +countdownHtml+adminBtns
-      +'</div></div>';
-  }).join('');
-  var deactivating=atRisk.filter(function(r){return r.riskLevel>=3;}).length;
-  panel.innerHTML='<div class="at-risk-banner">'
-    +'<div class="at-risk-banner-title">\ud83d\udea8 Consecutive Defaulter Watch &mdash; '+atRisk.length+' member'+(atRisk.length===1?'':'s')+' flagged'
-    +(deactivating?' <span style="font-size:var(--fs-xs);background:rgba(240,84,79,0.18);color:var(--danger);padding:3px 10px;border-radius:20px;">'+deactivating+' near deactivation</span>':'')
-    +'</div>'
-    +'<div style="font-size:var(--fs-xs);color:var(--text-muted);margin-bottom:14px;">Accounts are <strong style="color:var(--danger);">automatically deactivated</strong> 10 days after a 3rd consecutive missed contribution. '
-    +'<span style="color:var(--accent3);">Yellow</span> = 1 missed &nbsp;|&nbsp; <span style="color:#fb923c;">Orange</span> = 2 missed &nbsp;|&nbsp; <span style="color:var(--danger);">Red</span> = 3+ missed &mdash; countdown active.</div>'
-    +rows+'</div>';
-}
-
-async function adminDeactivateNow(memberId,memberName){
-  if(!confirm('Deactivate '+memberName+' immediately? They will be locked out until a leader reinstates them.'))return;
-  var r=computeAtRiskMembers().find(function(x){return x.member.id===memberId;});
-  var missedNames=(r&&r.missedItems||[]).map(function(o){return o.name;}).join(', ');
-  var fee=(r&&r.missedItems||[]).reduce(function(s,o){return s+o.amountPer;},0);
-  var reason='Deactivated by group leader for missing '+(r?r.consecutive:'multiple')+' consecutive contributions'+(missedNames?': '+missedNames:'')+'. Clear outstanding balance to request reinstatement.';
-  var res=await sb.from('profiles').update({is_suspended:true,suspension_reason:reason,suspension_fee:fee,suspended_at:new Date().toISOString()}).eq('id',memberId);
-  if(res.error){toast('Failed to deactivate','error');return;}
-  toast(memberName+' has been deactivated','success');
-  await loadAllData();
-}
-
-async function adminClearStreak(memberId,memberName){
-  if(!confirm('Clear the consecutive-miss streak for '+memberName+'?\n\nThis removes the deactivation countdown but does NOT waive any outstanding payments.'))return;
-  var key='streak_cleared_'+memberId;
-  var res=await sb.from('group_settings').upsert([{group_id:currentProfile.group_id,setting_key:key,setting_value:new Date().toISOString()}],{onConflict:'group_id,setting_key'});
-  if(res.error){toast('Failed to clear streak','error');return;}
-  toast('Streak cleared for '+memberName,'success');
-  renderDefaulters();
-}
-
 function renderDefaulters(){
-  runAutoDeactivation().then(function(){
-    renderAtRiskPanel();
-    _renderDefaulterSources();
-  });
-}
+  const srcFilter=document.getElementById('def-source-filter')?.value||'';
+  const showAll=document.getElementById('def-show-filter')?.value==='all';
 
-function _renderDefaulterSources(){
-  var srcFilter=document.getElementById('def-source-filter')?document.getElementById('def-source-filter').value:'';
-  var showAll=document.getElementById('def-show-filter')?document.getElementById('def-show-filter').value==='all':false;
-  var obligations=buildChronologicalObligations();
-  var sources=[];
+  // Build a comprehensive defaulter picture across all events + scheme periods
+  let sources=[];
 
+  // Events with required contributions
   if(srcFilter===''||srcFilter==='event'){
-    allEvents.filter(function(ev){return ev.requires_contribution&&ev.contribution_amount;}).forEach(function(ev){
-      var paidIds=new Set(allContribs.filter(function(c){return c.event_id===ev.id;}).map(function(c){return c.member_id;}));
-      var defaulters=allMembers.filter(function(m){return !paidIds.has(m.id)&&!m.is_suspended;});
-      var paidCount=paidIds.size;
-      var collected=allContribs.filter(function(c){return c.event_id===ev.id;}).reduce(function(s,c){return s+parseFloat(c.amount||0);},0);
-      var target=parseFloat(ev.contribution_amount)*allMembers.length;
-      var outstanding=parseFloat(ev.contribution_amount)*(allMembers.length-paidCount);
-      var isOverdue=ev.contribution_deadline&&new Date(ev.contribution_deadline)<new Date();
-      sources.push({type:'event',id:ev.id,name:ev.name,deadline:ev.contribution_deadline,amountPer:parseFloat(ev.contribution_amount),defaulters:defaulters,paidCount:paidCount,collected:collected,target:target,outstanding:outstanding,isOverdue:isOverdue});
+    allEvents.filter(ev=>ev.requires_contribution&&ev.contribution_amount).forEach(ev=>{
+      const paidIds=new Set(allContribs.filter(c=>c.event_id===ev.id).map(c=>c.member_id));
+      const defaulters=allMembers.filter(m=>!paidIds.has(m.id));
+      const paidCount=paidIds.size;
+      const collected=allContribs.filter(c=>c.event_id===ev.id).reduce((s,c)=>s+parseFloat(c.amount||0),0);
+      const target=parseFloat(ev.contribution_amount)*allMembers.length;
+      const outstanding=parseFloat(ev.contribution_amount)*(allMembers.length-paidCount);
+      const isOverdue=ev.contribution_deadline&&new Date(ev.contribution_deadline)<new Date();
+      sources.push({type:'event',id:ev.id,name:ev.name,deadline:ev.contribution_deadline,amountPer:parseFloat(ev.contribution_amount),defaulters,paidCount,collected,target,outstanding,isOverdue});
     });
   }
+
+  // Scheme periods
   if(srcFilter===''||srcFilter==='scheme'){
-    allSchemes.forEach(function(sc){
-      allPeriods.filter(function(pd){return pd.scheme_id===sc.id;}).forEach(function(pd){
-        var paidIds=new Set(allSchemePayments.filter(function(p){return p.period_id===pd.id;}).map(function(p){return p.member_id;}));
-        var defaulters=allMembers.filter(function(m){return !paidIds.has(m.id)&&!m.is_suspended;});
-        var paidCount=paidIds.size;
-        var collected=allSchemePayments.filter(function(p){return p.period_id===pd.id;}).reduce(function(s,p){return s+parseFloat(p.amount||0);},0);
-        var target=sc.amount_per_member*allMembers.length;
-        var outstanding=sc.amount_per_member*(allMembers.length-paidCount);
-        var isOverdue=pd.due_date&&new Date(pd.due_date)<new Date();
-        sources.push({type:'scheme',id:pd.id,name:sc.name+' \u2014 '+pd.period_label,deadline:pd.due_date,amountPer:sc.amount_per_member,defaulters:defaulters,paidCount:paidCount,collected:collected,target:target,outstanding:outstanding,isOverdue:isOverdue});
+    allSchemes.forEach(sc=>{
+      allPeriods.filter(pd=>pd.scheme_id===sc.id).forEach(pd=>{
+        const paidIds=new Set(allSchemePayments.filter(p=>p.period_id===pd.id).map(p=>p.member_id));
+        const defaulters=allMembers.filter(m=>!paidIds.has(m.id));
+        const paidCount=paidIds.size;
+        const collected=allSchemePayments.filter(p=>p.period_id===pd.id).reduce((s,p)=>s+parseFloat(p.amount||0),0);
+        const target=sc.amount_per_member*allMembers.length;
+        const outstanding=sc.amount_per_member*(allMembers.length-paidCount);
+        const isOverdue=pd.due_date&&new Date(pd.due_date)<new Date();
+        sources.push({type:'scheme',id:pd.id,name:`${sc.name} — ${pd.period_label}`,deadline:pd.due_date,amountPer:sc.amount_per_member,defaulters,paidCount,collected,target,outstanding,isOverdue});
       });
     });
   }
 
-  if(!showAll)sources=sources.filter(function(s){return s.defaulters.length>0;});
+  // Filter out fully paid sources unless showAll
+  if(!showAll) sources=sources.filter(s=>s.defaulters.length>0);
 
-  var totalDefaulters=new Set(sources.reduce(function(acc,s){return acc.concat(s.defaulters.map(function(m){return m.id;}));},[])).size;
-  var totalOutstanding=sources.reduce(function(s,x){return s+x.outstanding;},0);
-  var overdueCount=sources.filter(function(s){return s.isOverdue&&s.defaulters.length>0;}).length;
-  var fullyPaid=sources.filter(function(s){return s.defaulters.length===0;}).length;
-  var atRiskCount=computeAtRiskMembers().filter(function(r){return r.riskLevel>=3;}).length;
+  // Summary stats
+  const totalDefaulters=new Set(sources.flatMap(s=>s.defaulters.map(m=>m.id))).size;
+  const totalOutstanding=sources.reduce((s,x)=>s+x.outstanding,0);
+  const overdueCount=sources.filter(s=>s.isOverdue&&s.defaulters.length>0).length;
+  const fullyPaid=sources.filter(s=>s.defaulters.length===0).length;
 
-  document.getElementById('defaultersSummary').innerHTML=
-    '<div class="summary-card"><div class="summary-value" style="color:var(--danger);">'+totalDefaulters+'</div><div class="summary-label">Members with Pending</div></div>'
-    +'<div class="summary-card"><div class="summary-value" style="color:var(--danger);">KES '+totalOutstanding.toLocaleString()+'</div><div class="summary-label">Outstanding Amount</div></div>'
-    +'<div class="summary-card"><div class="summary-value" style="color:var(--accent3);">'+overdueCount+'</div><div class="summary-label">Overdue Sources</div></div>'
-    +'<div class="summary-card"><div class="summary-value" style="color:var(--accent2);">'+fullyPaid+'</div><div class="summary-label">Fully Settled</div></div>'
-    +(atRiskCount>0?'<div class="summary-card"><div class="summary-value" style="color:var(--danger);animation:livePulse 1.5s infinite;">'+atRiskCount+'</div><div class="summary-label">Near Deactivation</div></div>':'');
+  document.getElementById('defaultersSummary').innerHTML=`
+    <div class="summary-card"><div class="summary-value" style="color:var(--danger);">${totalDefaulters}</div><div class="summary-label">Members with Pending</div></div>
+    <div class="summary-card"><div class="summary-value" style="color:var(--danger);">KES ${totalOutstanding.toLocaleString()}</div><div class="summary-label">Outstanding Amount</div></div>
+    <div class="summary-card"><div class="summary-value" style="color:var(--accent3);">${overdueCount}</div><div class="summary-label">Overdue Sources</div></div>
+    <div class="summary-card"><div class="summary-value" style="color:var(--accent2);">${fullyPaid}</div><div class="summary-label">Fully Settled</div></div>`;
 
-  var container=document.getElementById('defaultersContent');
-  if(!sources.length){container.innerHTML='<div class="empty"><div class="empty-icon">\ud83c\udf89</div><p>No defaulters found! All members are up to date.</p></div>';return;}
+  const container=document.getElementById('defaultersContent');
+  if(!sources.length){
+    container.innerHTML=`<div class="empty"><div class="empty-icon">🎉</div><p>No defaulters found! All members are up to date.</p></div>`;
+    return;
+  }
 
-  var isLeader=['chairman','admin','treasurer','secretary'].includes(currentProfile.group_role);
-
-  container.innerHTML=sources.map(function(src){
-    var pct=src.target>0?Math.min(100,Math.round((src.collected/src.target)*100)):0;
-    var overdueHtml=src.isOverdue?'<span class="overdue-badge">\u26a0 Overdue</span>':'';
-    var typeIcon=src.type==='event'?'\ud83d\udcc5':'\ud83d\udd04';
-
-    var defaulterRows=src.defaulters.map(function(m){
-      var isMe=m.id===currentProfile.id;
-      var res=getMemberConsecutiveMissed(m.id,obligations);
-      var riskLevel=getRiskLevel(res.consecutive);
-      var deactivationDate=res.consecutive>=3?getDeactivationDate(res.missedItems):null;
-      var daysLeft=getDaysUntilDeactivation(deactivationDate);
-
-      var riskChip='';
-      if(res.consecutive>=3&&daysLeft!==null){
-        var dLabel=daysLeft<=0?'Overdue!':daysLeft+'d left';
-        var chipStyle=daysLeft<=0?'background:rgba(127,29,29,0.4);color:#fca5a5;':'';
-        riskChip='<span class="countdown-chip" style="'+chipStyle+'">\u23f1 '+dLabel+'</span>';
-      } else if(res.consecutive===2){
-        riskChip='<span class="risk-pill risk-pill-2">\u26a0\ufe0f 2 missed</span>';
-      } else if(res.consecutive===1){
-        riskChip='<span class="risk-pill risk-pill-1">\ud83d\udc41 1 missed</span>';
-      }
-
-      var schemeId='';
-      if(src.type==='scheme'){
-        var foundScheme=allSchemes.find(function(s){return allPeriods.find(function(p){return p.id===src.id&&p.scheme_id===s.id;});});
-        schemeId=foundScheme?foundScheme.id:'';
-      }
-      var mpesaBtn=isMe?getMpesaPayBtn(src.type==='event'?'event':'scheme',src.type==='event'?src.id:null,src.name,src.amountPer,src.type==='scheme'?src.id:null,schemeId,currentProfile.id):'';
-      var adminBtn='';
-      if(isLeader&&!isMe){
-        if(src.type==='event'){
-          adminBtn='<button class="btn btn-success btn-sm" onclick="adminMarkEventPaid(\''+m.id+'\',\''+m.full_name.replace(/'/g,"\\'")+'\',\''+src.id+'\',\''+src.name.replace(/'/g,"\\'")+'\','+src.amountPer+')">Mark Paid</button>';
-        } else {
-          adminBtn='<button class="btn btn-success btn-sm" onclick="adminMarkSchemePaid(\''+m.id+'\',\''+m.full_name.replace(/'/g,"\\'")+'\',\''+src.id+'\',null,'+src.amountPer+')">Mark Paid</button>';
-        }
-      }
-
-      return '<div class="defaulter-item">'
-        +'<div class="defaulter-item-info">'
-        +'<div class="defaulter-avatar">'+m.full_name.charAt(0)+'</div>'
-        +'<div><div class="defaulter-name">'+esc(m.full_name)+(isMe?' <span style="color:var(--accent2);font-size:11px;">(You)</span>':'')+'</div>'
-        +'<div class="defaulter-sub">Owes KES '+src.amountPer.toLocaleString()+(res.consecutive>0?' &nbsp;&bull;&nbsp; '+res.consecutive+' consecutive miss'+(res.consecutive===1?'':'es'):'')+'</div>'
-        +'</div></div>'
-        +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
-        +riskChip
-        +'<span class="overdue-badge" style="'+(src.isOverdue?'':'background:rgba(247,201,72,0.12);color:var(--accent3);')+'">'+(src.isOverdue?'\u26a0 Overdue':'\u23f3 Pending')+'</span>'
-        +mpesaBtn+adminBtn
-        +'</div></div>';
+  container.innerHTML=sources.map(src=>{
+    const pct=src.target>0?Math.min(100,Math.round((src.collected/src.target)*100)):0;
+    const overdueHtml=src.isOverdue?`<span class="overdue-badge">⚠ Overdue</span>`:'';
+    const typeIcon=src.type==='event'?'📅':'🔄';
+    const defaulterRows=src.defaulters.map(m=>{
+      const isMe=m.id===currentProfile.id;
+      const mpesaBtn=isMe?getMpesaPayBtn(src.type==='event'?'event':'scheme',src.type==='event'?src.id:null,src.name,src.amountPer,src.type==='scheme'?src.id:null,src.type==='scheme'?allSchemes.find(s=>allPeriods.find(p=>p.id===src.id&&p.scheme_id===s.id))?.id:null,currentProfile.id):'';
+      const adminBtn=currentProfile.role==='admin'&&!isMe?`<button class="btn btn-success btn-sm" onclick="${src.type==='event'?`adminMarkEventPaid('${m.id}','${m.full_name.replace(/'/g,"\\'")}','${src.id}','${src.name.replace(/'/g,"\\'")}',${src.amountPer})`:`adminMarkSchemePaid('${m.id}','${m.full_name.replace(/'/g,"\\'")}','${src.id}',null,${src.amountPer})`}">Mark Paid</button>`:'';
+      return`<div class="defaulter-item">
+        <div class="defaulter-item-info">
+          <div class="defaulter-avatar">${m.full_name.charAt(0)}</div>
+          <div>
+            <div class="defaulter-name">${m.full_name}${isMe?' <span style="color:var(--accent2);font-size:11px;">(You)</span>':''}</div>
+            <div class="defaulter-sub">Owes KES ${src.amountPer.toLocaleString()}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="overdue-badge" style="${src.isOverdue?'':'background:rgba(247,201,72,0.12);color:var(--accent3);'}">
+            ${src.isOverdue?'⚠ Overdue':'⏳ Pending'}
+          </span>
+          ${mpesaBtn}${adminBtn}
+        </div>
+      </div>`;
     }).join('');
 
-    return '<div class="defaulter-card">'
-      +'<div class="defaulter-header"><div>'
-      +'<div class="defaulter-source-name">'+typeIcon+' '+esc(src.name)+'</div>'
-      +'<div class="defaulter-meta">'+(src.deadline?'Deadline: '+formatDate(src.deadline)+' &middot; ':'')+src.paidCount+'/'+allMembers.length+' paid</div>'
-      +'</div><div style="display:flex;gap:8px;align-items:center;">'+overdueHtml+'</div></div>'
-      +'<div class="defaulter-stats">'
-      +'<div class="defaulter-stat"><strong>'+src.defaulters.length+'</strong><span>Defaulters</span></div>'
-      +'<div class="defaulter-stat"><strong style="color:var(--danger);">KES '+src.outstanding.toLocaleString()+'</strong><span>Outstanding</span></div>'
-      +'<div class="defaulter-stat"><strong style="color:var(--accent2);">KES '+src.collected.toLocaleString()+'</strong><span>Collected</span></div>'
-      +'<div class="defaulter-stat"><strong>'+pct+'%</strong><span>Completion</span></div>'
-      +'</div>'
-      +'<div style="padding:10px 20px;"><div class="progress-wrap"><div class="progress-bar" style="width:'+pct+'%"></div></div></div>'
-      +'<div class="defaulter-list">'+(defaulterRows||'<div style="padding:16px 20px;color:var(--accent2);font-size:13px;">\u2713 All members have paid for this period.</div>')+'</div>'
-      +'</div>';
+    return`<div class="defaulter-card">
+      <div class="defaulter-header">
+        <div>
+          <div class="defaulter-source-name">${typeIcon} ${src.name}</div>
+          <div class="defaulter-meta">${src.deadline?`Deadline: ${formatDate(src.deadline)} · `:''}${src.paidCount}/${allMembers.length} paid</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">${overdueHtml}</div>
+      </div>
+      <div class="defaulter-stats">
+        <div class="defaulter-stat"><strong>${src.defaulters.length}</strong><span>Defaulters</span></div>
+        <div class="defaulter-stat"><strong style="color:var(--danger);">KES ${src.outstanding.toLocaleString()}</strong><span>Outstanding</span></div>
+        <div class="defaulter-stat"><strong style="color:var(--accent2);">KES ${src.collected.toLocaleString()}</strong><span>Collected</span></div>
+        <div class="defaulter-stat"><strong>${pct}%</strong><span>Completion</span></div>
+      </div>
+      <div style="padding:10px 20px;"><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div></div>
+      <div class="defaulter-list">${defaulterRows||'<div style="padding:16px 20px;color:var(--accent2);font-size:13px;">✓ All members have paid for this period.</div>'}</div>
+    </div>`;
   }).join('');
 }
+
 function downloadDefaultersCSV(){
   const rows=[['Source','Member','Amount Owed','Deadline','Status']];
   const srcFilter=document.getElementById('def-source-filter')?.value||'';
@@ -4090,44 +3941,7 @@ function renderMyStatement(){
       </div>`).join('')
     :`<div class="stmt-kpi" style="text-align:center;padding:20px;"><span style="font-size:32px;">🎉</span><div style="margin-top:8px;color:var(--accent2);font-weight:600;">All clear! Nothing pending.</div></div>`;
 
-  // ── CONSECUTIVE DEFAULTER ALERT for this member ──────────────
-  var myRiskHtml='';
-  (function(){
-    var obligations=buildChronologicalObligations();
-    var res=getMemberConsecutiveMissed(me.id,obligations);
-    if(res.consecutive<1)return;
-    var riskLevel=getRiskLevel(res.consecutive);
-    var deactivationDate=res.consecutive>=3?getDeactivationDate(res.missedItems):null;
-    var daysLeft=getDaysUntilDeactivation(deactivationDate);
-    var riskTitles=['','👁 Watch: 1 Missed Contribution','⚠️ Warning: 2 Consecutive Misses','🔴 Critical: 3+ Consecutive Misses — Deactivation Pending'];
-    var riskColors=['','var(--accent3)','#fb923c','var(--danger)'];
-    var riskColor=riskColors[riskLevel]||'var(--danger)';
-    var title=riskTitles[riskLevel]||'🔴 At Risk';
-    var body=res.consecutive===1
-      ?'You missed your last contribution. Pay now to avoid being flagged. If you miss 2 more in a row, your account will enter the deactivation countdown.'
-      :res.consecutive===2
-      ?'You have missed 2 consecutive contributions. <strong>One more miss will trigger a 10-day deactivation countdown.</strong> Settle your outstanding balance now to protect your account.'
-      :'<strong>Your account is now in the deactivation countdown.</strong> You have missed '+res.consecutive+' consecutive contributions. Pay all outstanding amounts immediately to stop this process.';
-
-    var missedListHtml=res.missedItems.map(function(o){
-      return '<div class="my-risk-missed-item"><div class="my-risk-missed-icon">'+(o.type==='event'?'📅':'🔄')+'</div><div><div style="font-weight:600;">'+esc(o.name)+'</div><div style="color:var(--text-muted);font-size:var(--fs-xs);">Deadline: '+(o.deadline?formatDate(o.deadline):'—')+' &nbsp;&bull;&nbsp; KES '+o.amountPer.toLocaleString()+'</div></div></div>';
-    }).join('');
-
-    var timerHtml='';
-    if(deactivationDate){
-      var dLabel=daysLeft<=0?'<span style="color:#fca5a5;">OVERDUE — account deactivation is being processed</span>':daysLeft+' day'+(daysLeft===1?'':'s')+' remaining';
-      timerHtml='<div class="deactivation-timer"><div class="deactivation-timer-icon">⏱</div><div><div class="deactivation-timer-label">Time until account deactivation</div><div class="deactivation-timer-value">'+dLabel+'</div></div></div>';
-    }
-
-    myRiskHtml='<div class="my-risk-alert">'
-      +'<div class="my-risk-alert-title" style="color:'+riskColor+';">'+title+'</div>'
-      +'<div class="my-risk-alert-body">'+body+'</div>'
-      +'<div class="my-risk-missed-list">'+missedListHtml+'</div>'
-      +timerHtml
-      +'</div>';
-  })();
-
-  container.innerHTML=myRiskHtml+`
+  container.innerHTML=`
     <div class="print-btn-area">
       <button class="btn btn-secondary btn-sm" onclick="printStatement()">🖨 Print / Save PDF</button>
     </div>
@@ -4216,13 +4030,6 @@ function printStatement(){
 // ELECTIONS ENGINE
 // ═══════════════════════════════════════════════════════════════════
 
-// election data structure stored in group_elections:
-// { id, group_id, title, description, status: draft|open|closed|finalized,
-//   starts_at, ends_at, positions: [{id, title, role_key, candidates:[{member_id}]}],
-//   created_by, created_at }
-// votes stored in group_election_votes:
-// { id, election_id, position_id, voter_id, candidate_id, group_id, voted_at }
-
 const POSITION_ROLE_MAP={
   'Chairman':'chairman','Chairlady':'chairman','Chairperson':'chairman',
   'Vice Chairman':'admin','Vice Chairlady':'admin',
@@ -4252,12 +4059,11 @@ function statusBadge(status){
 
 async function renderElections(){
   const role=currentProfile.group_role||currentProfile.role||'member';
-  const isLeader=['admin','chairman','treasurer','secretary'].includes(role);
+  const isLeader=['admin','chairman','treasurer','secretary','member'].includes(role);
   const isAdminLevel=['admin','chairman'].includes(role);
 
-  // Topbar actions
   const topbar=document.getElementById('electionsTopbarActions');
-  topbar.innerHTML=isLeader?`<button class="btn btn-primary btn-sm" onclick="openCreateElectionModal()">+ Create Election</button>`:'';
+  topbar.innerHTML=isAdminLevel?`<button class="btn btn-primary btn-sm" onclick="openCreateElectionModal()">+ Create Election</button>`:'';
 
   const container=document.getElementById('electionsContent');
   if(!allElections.length){
@@ -4265,7 +4071,6 @@ async function renderElections(){
     return;
   }
 
-  // Fetch all votes for this group's elections
   const electionIds=allElections.map(e=>e.id);
   let allVotes=[];
   try{
@@ -4281,9 +4086,8 @@ async function renderElections(){
     const uniqueVoters=new Set(elVotes.map(v=>v.voter_id)).size;
     const myVotedPositions=new Set(elVotes.filter(v=>v.voter_id===currentProfile.id).map(v=>v.position_id));
     const canVote=status==='open';
-    const canManage=isLeader;
+    const canManage=isAdminLevel;
 
-    // Results preview for finalized
     let resultBannerHtml='';
     if(status==='finalized'||status==='closed'){
       const winners=positions.map(pos=>{
@@ -4369,7 +4173,6 @@ async function renderElections(){
 
 async function castVote(electionId,positionId,candidateId){
   try{
-    // Check not already voted for this position
     const{data:existing}=await sb.from('group_election_votes').select('id').eq('election_id',electionId).eq('position_id',positionId).eq('voter_id',currentProfile.id).maybeSingle();
     if(existing){toast('You have already voted for this position','error');return;}
     const{error}=await sb.from('group_election_votes').insert([{election_id:electionId,position_id:positionId,voter_id:currentProfile.id,candidate_id:candidateId,group_id:currentProfile.group_id,voted_at:new Date().toISOString()}]);
@@ -4430,7 +4233,6 @@ async function doFinalizeElection(){
     const{data:votes}=await sb.from('group_election_votes').select('*').eq('election_id',electionId);
     const allVotes=votes||[];
 
-    // Determine winners per position
     const assignments=[];
     for(const pos of positions){
       const posVotes=allVotes.filter(v=>v.position_id===pos.id);
@@ -4444,22 +4246,18 @@ async function doFinalizeElection(){
       }
     }
 
-    // Step 1: Demote ALL current leaders to member (clean slate)
     const currentLeaderIds=allMembers.filter(m=>['chairman','admin','secretary','treasurer'].includes(m.group_role||m.role)).map(m=>m.id);
     if(currentLeaderIds.length>0){
       await sb.from('profiles').update({group_role:'member',role:'member'}).in('id',currentLeaderIds);
     }
 
-    // Step 2: Assign winners their roles
     for(const a of assignments){
       const sysRole=a.role==='chairman'?'admin':'member';
       await sb.from('profiles').update({group_role:a.role,role:sysRole}).eq('id',a.winnerId);
     }
 
-    // ── SAFETY NET: if no chairman was elected, promote the earliest-joined member ──
     const chairmanAssigned=assignments.find(a=>a.role==='chairman');
     if(!chairmanAssigned){
-      // Get all members fresh (after demotions)
       const{data:freshMembers}=await sb.from('profiles').select('id,full_name,created_at').eq('group_id',currentProfile.group_id).order('created_at',{ascending:true}).limit(1);
       if(freshMembers&&freshMembers.length){
         const fallback=freshMembers[0];
@@ -4469,10 +4267,8 @@ async function doFinalizeElection(){
       }
     }
 
-    // Step 3: Mark election as finalized
     await sb.from('group_elections').update({status:'finalized'}).eq('id',electionId);
 
-    // Step 4: If current user's role changed, update localStorage
     const myAssignment=assignments.find(a=>a.winnerId===currentProfile.id);
     if(myAssignment){
       const newRole=myAssignment.role;
@@ -4481,7 +4277,6 @@ async function doFinalizeElection(){
       localStorage.setItem('gf_user',JSON.stringify(updated));
       currentProfile=updated;
     }else if(currentLeaderIds.includes(currentProfile.id)){
-      // Current user was demoted
       const updated={...currentProfile,group_role:'member',role:'member'};
       localStorage.setItem('gf_user',JSON.stringify(updated));
       currentProfile=updated;
@@ -4490,7 +4285,6 @@ async function doFinalizeElection(){
     toast('🏆 Election finalized! Roles have been automatically assigned.','success');
     closeModal('finalizeElectionModal');
     await loadAllData();
-    // Reload the page to reflect permission changes
     setTimeout(()=>window.location.reload(),1500);
   }catch(err){toast(err.message,'error');}
   finally{btn.disabled=false;btn.innerHTML='🏆 Apply Results & Assign Roles';}
@@ -4509,7 +4303,6 @@ function openCreateElectionModal(){
   document.getElementById('el-start').value='';
   document.getElementById('el-end').value='';
   electionPositions=[];electionPosCounter=0;
-  // Add default positions
   ['Chairman','Secretary','Treasurer'].forEach(t=>addElectionPosition(t));
   renderElectionPositionEditor();
   openModal('createElectionModal');
@@ -4599,7 +4392,6 @@ async function saveElection(){
   if(!title)return toast('Election title is required','error');
   if(!electionPositions.length)return toast('Add at least one position','error');
 
-  // Save current title values from inputs
   electionPositions.forEach(pos=>{
     const input=document.querySelector(`input[oninput*="${pos.id}"]`);
     if(input)pos.title=input.value.trim()||pos.title;
@@ -4622,7 +4414,6 @@ async function saveElection(){
   finally{btn.disabled=false;btn.textContent=document.getElementById('electionEditId').value?'Save Changes':'Create Election';}
 }
 
-// Add election to delete handler
 const _origAskDelete=askDelete;
 function askDelete(type,id){
   if(type==='election'){
@@ -4681,7 +4472,6 @@ function renderDashNotices(){
 function renderNoticeboard(){
   const role=currentProfile.group_role||currentProfile.role||'member';
   const isLeader=['admin','chairman','treasurer','secretary'].includes(role);
-  // Topbar actions
   const topbar=document.getElementById('noticeboardTopActions');
   if(topbar)topbar.innerHTML=isLeader?`<button class="btn btn-primary btn-sm" onclick="openCreateNoticeModal()">+ Post Announcement</button>`:'';
 
@@ -4853,15 +4643,12 @@ function renderInbox(){
     }).join('');
     return;
   }
-  // Messages tab
   compose.style.display='block';
   if(activeDMPartner){renderDMConversation(activeDMPartner);return;}
-  // Thread list
   const myMsgs=allMessages;
   const partnerIds=new Set([...myMsgs.map(m=>m.sender_id),...myMsgs.map(m=>m.recipient_id)].filter(id=>id!==currentProfile.id));
   const role=currentProfile.group_role||currentProfile.role||'member';
   const isLeader=['admin','chairman','treasurer','secretary'].includes(role);
-  // Leaders see all members as potential threads
   const allPartners=isLeader?allMembers.filter(m=>m.id!==currentProfile.id):allMembers.filter(m=>m.id!==currentProfile.id&&(partnerIds.has(m.id)||['admin','chairman','treasurer','secretary'].includes(m.group_role||m.role||'member')));
   if(!allPartners.length){body.innerHTML=`<div style="padding:32px;text-align:center;color:var(--text-muted);">No conversations yet.</div>`;return;}
   body.innerHTML=allPartners.map(partner=>{
@@ -4885,7 +4672,6 @@ function renderInbox(){
 
 async function openDMWith(partnerId){
   activeDMPartner=partnerId;
-  // Mark as read
   const unread=allMessages.filter(m=>m.sender_id===partnerId&&m.recipient_id===currentProfile.id&&!m.is_read);
   if(unread.length){
     const ids=unread.map(m=>m.id);
@@ -4907,7 +4693,6 @@ function renderDMConversation(partnerId){
   const compose=document.getElementById('inboxCompose');
   compose.style.display='none';
 
-  // Check for M-Pesa codes in latest messages (for admin action prompts)
   const mpesaMsgs=thread.filter(m=>m.sender_id===partnerId&&(m.tag==='mpesa'||/[A-Z0-9]{10}/.test(m.body||''))).slice(-3);
 
   body.innerHTML=`
@@ -4937,7 +4722,7 @@ function renderDMConversation(partnerId){
           <div class="dm-mpesa-confirm-code">${mpesaMsgs[mpesaMsgs.length-1]?.body?.substring(0,50)||''}</div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="btn btn-success btn-sm" onclick="quickConfirmPayment('${partnerId}','${partner.full_name.replace(/'/g,"\\'")}')">✓ Confirm Payment</button>
+          <button class="btn btn-success btn-sm" onclick="quickConfirmPayment('${partnerId}','${partner.full_name.replace(/'/g,"\\'")}')" >✓ Confirm Payment</button>
         </div>
       </div>`:''}
       <div class="dm-tag-row" id="dmTagRow">
@@ -4951,7 +4736,6 @@ function renderDMConversation(partnerId){
         <button class="dm-send-btn" onclick="sendDMMessage('${partnerId}')">➤</button>
       </div>
     </div>`;
-  // Scroll to bottom
   setTimeout(()=>{const msgs=document.getElementById('dmMessages');if(msgs)msgs.scrollTop=msgs.scrollHeight;},50);
 }
 
@@ -5000,7 +4784,6 @@ async function sendFirstDM(){
 function quickConfirmPayment(memberId,memberName){
   toast(`Opening contribution form for ${memberName}...`,'info');
   toggleInbox();
-  // Pre-fill contribution modal
   setTimeout(()=>{
     openContribModal();
     const sel=document.getElementById('ct-member');
@@ -5008,39 +4791,30 @@ function quickConfirmPayment(memberId,memberName){
   },300);
 }
 
-// Poll for new data every 15 seconds
+// Poll for new messages every 15 seconds
 setInterval(async()=>{
   if(!currentProfile?.group_id)return;
   const gid=currentProfile.group_id;
   try{
-    // DMs + notices
     const{data:msgs}=await sb.from('group_messages').select('*').or(`sender_id.eq.${currentProfile.id},recipient_id.eq.${currentProfile.id}`).eq('group_id',gid).order('sent_at',{ascending:true});
     if(msgs){allMessages=msgs;updateNotifBadge();if(activeDMPartner&&document.getElementById('inboxDrawer')?.classList.contains('open'))renderDMConversation(activeDMPartner);}
     const{data:notices}=await sb.from('group_notices').select('*').eq('group_id',gid).order('created_at',{ascending:false});
     if(notices){allNotices=notices;updateNotifBadge();renderDashNotices();}
-
-    // Anon chat — poll for everyone
     const{data:anonMsgs}=await sb.from('group_anon_chat').select('*').eq('group_id',gid).order('sent_at',{ascending:true}).limit(120);
     if(anonMsgs){
+      const prevCount=allAnonMessages.length;
       allAnonMessages=anonMsgs;
+      updateFabBadges();
       if(document.getElementById('anonChatPanel')?.classList.contains('open'))renderAnonMessages();
-      updateFabBadges();
+      else if(anonMsgs.length>prevCount){
+        const badge=document.getElementById('anonChatBadge');
+        const newCount=(parseInt(badge?.dataset.unseen||'0'))+(anonMsgs.length-prevCount);
+        if(badge){badge.dataset.unseen=newCount;badge.textContent=newCount>99?'99+':newCount;badge.style.display='flex';}
+      }
     }
-
-    // Suggestions — poll for everyone
-    const{data:suggs}=await sb.from('group_suggestions').select('*').eq('group_id',gid).order('created_at',{ascending:false});
-    if(suggs){
-      allSuggestions=suggs;
-      if(document.getElementById('suggestionPanel')?.classList.contains('open'))renderSuggestions();
-      updateFabBadges();
-    }
-
-    // Assets — poll for everyone
-    const{data:assets}=await sb.from('group_assets').select('*').eq('group_id',gid).order('created_at',{ascending:false});
-    if(assets){
-      allAssets=assets;
-      if(document.getElementById('assetsPanel')?.classList.contains('open'))renderAssetsBody();
-      updateFabBadges();
+    if(['chairman','admin','treasurer','secretary'].includes(currentProfile.group_role)){
+      const{data:suggs}=await sb.from('group_suggestions').select('*').eq('group_id',gid).order('created_at',{ascending:false});
+      if(suggs){allSuggestions=suggs;updateFabBadges();if(document.getElementById('suggestionPanel')?.classList.contains('open'))renderSuggestions();}
     }
   }catch(e){}
 },15000);
@@ -5085,48 +4859,12 @@ function getColorForToken(token){return ANON_COLORS[tokenToColorIndex(token)];}
 // ══════════════════════════════════════════════════════════════════
 //  FAB UTILITIES
 // ══════════════════════════════════════════════════════════════════
-// ── FAB BADGE STORAGE KEYS ────────────────────────────────────────
-function fabSeenKey(type){return 'gf_fab_seen_'+type+'_'+currentProfile.group_id;}
-
-// Call this when user OPENS a panel — marks everything as seen
-function markFabSeen(type){
-  if(type==='anon'){
-    localStorage.setItem(fabSeenKey('anon'),allAnonMessages.length);
-    const b=document.getElementById('anonChatBadge');
-    if(b){b.textContent='0';b.style.display='none';}
-  } else if(type==='sugg'){
-    localStorage.setItem(fabSeenKey('sugg'),allSuggestions.length);
-    const b=document.getElementById('suggestionBadge');
-    if(b){b.textContent='0';b.style.display='none';}
-  } else if(type==='assets'){
-    localStorage.setItem(fabSeenKey('assets'),allAssets.length);
-    const b=document.getElementById('assetsBadge');
-    if(b){b.textContent='0';b.style.display='none';}
-  }
-}
-
 function updateFabBadges(){
-  if(!currentProfile)return;
-
-  // ── ANON CHAT badge: unseen = total msgs - last seen count (everyone)
-  const seenAnon=parseInt(localStorage.getItem(fabSeenKey('anon'))||'0');
-  const newAnon=Math.max(0,allAnonMessages.length-seenAnon);
-  const ab=document.getElementById('anonChatBadge');
-  if(ab){ab.textContent=newAnon>99?'99+':newAnon;ab.style.display=newAnon>0?'flex':'none';}
-
-  // ── SUGGESTION badge: unseen = total suggestions - last seen count (everyone)
-  const seenSugg=parseInt(localStorage.getItem(fabSeenKey('sugg'))||'0');
-  const newSugg=Math.max(0,allSuggestions.length-seenSugg);
-  const sb2=document.getElementById('suggestionBadge');
-  if(sb2){sb2.textContent=newSugg>99?'99+':newSugg;sb2.style.display=newSugg>0?'flex':'none';}
-
-  // ── ASSETS badge: show total asset count as a soft info badge
-  const assetBadge=document.getElementById('assetsBadge');
-  if(assetBadge){
-    const seenAssets=parseInt(localStorage.getItem(fabSeenKey('assets'))||'0');
-    const newAssets=Math.max(0,allAssets.length-seenAssets);
-    assetBadge.textContent=newAssets>99?'99+':newAssets;
-    assetBadge.style.display=newAssets>0?'flex':'none';
+  // Suggestion badge — unread new suggestions (leaders only)
+  if(['chairman','admin','treasurer','secretary'].includes(currentProfile?.group_role)){
+    const newSuggs=allSuggestions.filter(s=>s.status==='new').length;
+    const b=document.getElementById('suggestionBadge');
+    if(b){b.textContent=newSuggs>99?'99+':newSuggs;b.style.display=newSuggs>0?'flex':'none';}
   }
 }
 function openPanel(id){
@@ -5147,7 +4885,6 @@ document.querySelectorAll('.panel-overlay').forEach(ov=>{
 // ══════════════════════════════════════════════════════════════════
 function openSuggestionBox(){
   openPanel('suggestionPanel');
-  markFabSeen('sugg');
   renderSuggestions();
 }
 
@@ -5208,13 +4945,7 @@ async function submitSuggestion(){
     inp.value='';
     toast('Suggestion submitted anonymously!','success');
     const{data}=await sb.from('group_suggestions').select('*').eq('group_id',currentProfile.group_id).order('created_at',{ascending:false});
-    if(data){
-      allSuggestions=data;
-      // submitter already knows about this — advance their seen count so they don't badge themselves
-      localStorage.setItem(fabSeenKey('sugg'),data.length);
-      updateFabBadges();
-      renderSuggestions();
-    }
+    if(data){allSuggestions=data;updateFabBadges();renderSuggestions();}
   }catch(e){toast('Failed to submit suggestion','error');}
   inp.disabled=false;
 }
@@ -5244,7 +4975,9 @@ async function markSuggestion(id,status){
 //  ANONYMOUS GROUP CHAT
 // ══════════════════════════════════════════════════════════════════
 function openAnonChat(){
-  markFabSeen('anon');
+  // Clear unseen badge
+  const badge=document.getElementById('anonChatBadge');
+  if(badge){badge.dataset.unseen='0';badge.style.display='none';}
   openPanel('anonChatPanel');
   // Render my identity banner
   const myColor=getMyAnonColor();
@@ -5253,6 +4986,7 @@ function openAnonChat(){
   if(dot)dot.style.background=myColor.text;
   if(handle){handle.textContent=myColor.name;handle.style.color=myColor.text;}
   renderAnonMessages();
+  // Scroll to bottom
   setTimeout(()=>{const m=document.getElementById('anonMessages');if(m)m.scrollTop=m.scrollHeight;},80);
 }
 
@@ -5293,9 +5027,6 @@ async function sendAnonMessage(){
     if(error)throw error;
     // Optimistic render
     allAnonMessages=[...allAnonMessages,{group_id:currentProfile.group_id,body,anon_token:getAnonToken(),sent_at:new Date().toISOString()}];
-    // sender already sees it — advance their seen count
-    localStorage.setItem(fabSeenKey('anon'),allAnonMessages.length);
-    updateFabBadges();
     renderAnonMessages();
   }catch(e){toast('Failed to send message','error');}
 }
@@ -5318,7 +5049,6 @@ function switchAssetTab(filter,btn){
 }
 
 function openAssetsPanel(){
-  markFabSeen('assets');
   openPanel('assetsPanel');
   // Show add button only for leaders
   const addBtn=document.getElementById('addAssetBtnPanel');
@@ -5448,13 +5178,7 @@ async function saveAsset(){
     }
     closeModal('addAssetModal');
     const{data}=await sb.from('group_assets').select('*').eq('group_id',currentProfile.group_id).order('created_at',{ascending:false});
-    if(data){
-      allAssets=data;
-      // saver already knows — advance their seen count
-      localStorage.setItem(fabSeenKey('assets'),data.length);
-      updateFabBadges();
-      renderAssetsBody();
-    }
+    if(data){allAssets=data;renderAssetsBody();}
   }catch(e){toast('Failed to save asset','error');}
   btn.disabled=false;btn.textContent='Save Asset';
 }
