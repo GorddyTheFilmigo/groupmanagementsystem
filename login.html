@@ -1,42 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Family Welfare - Login</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js" defer></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GordyTheFilmigo — Sign In</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --navy: #0f1b35;
+    --navy-mid: #162340;
+    --accent: #4f8ef7;
+    --accent2: #38d9a9;
+    --danger: #f25c54;
+    --text: #e8edf8;
+    --text-muted: #8494b4;
+    --border: rgba(79,142,247,0.18);
+    --card: rgba(22,35,64,0.85);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  .icon .logo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255,215,0,0.6);
+}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .bg-mesh {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(56,217,169,0.08) 0%, transparent 60%);
+  }
+  .auth-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 440px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    position: relative; z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  .brand { text-align: center; margin-bottom: 36px; }
+  .brand-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 28px; margin-bottom: 16px;
+    box-shadow: 0 8px 32px rgba(79,142,247,0.35);
+  }
+  .brand h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+  .brand p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+  .auth-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .auth-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 7px; }
+  .field input {
+    width: 100%;
+    background: rgba(15,27,53,0.8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+  }
+  .field input::placeholder { color: var(--text-muted); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.2s;
+    padding: 11px 20px; width: 100%;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #3a72d8);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(79,142,247,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(79,142,247,0.45); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .auth-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+  .auth-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .auth-link a:hover { text-decoration: underline; }
+  .msg {
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    font-size: 13px; margin-bottom: 16px; display: none;
+  }
+  .msg.error { background: rgba(242,92,84,0.12); border: 1px solid rgba(242,92,84,0.3); color: var(--danger); }
+  .msg.success { background: rgba(56,217,169,0.12); border: 1px solid rgba(56,217,169,0.3); color: var(--accent2); }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 480px) { .auth-card { padding: 32px 24px; } }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Family Welfare App</h1>
-    <h2>Login</h2>
-    
-    <input id="email"    type="email"    placeholder="Email" />
-    <input id="password" type="password" placeholder="Password" />
-    
-    <button onclick="login()">Login</button>
-    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-    
-    <p id="message"></p>
+<div class="bg-mesh"></div>
+<div class="auth-card">
+  <div class="brand">
+    <div class="brand-icon"><div class="icon">
+    <img src="image2.jpg" alt="Logo" class="logo">
+  </div></div>
+    <h1>Gordy<b style="color: gold;">TheFilmigo</b></h1>
+    <p>Professional group management</p>
   </div>
+  <div class="auth-title">Welcome back</div>
+  <div class="auth-sub">Sign in to manage your group</div>
 
-  <script>
-    async function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const message = document.getElementById('message');
+  <div class="msg" id="msg"></div>
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  <div class="field"><label>Username</label><input id="li-username" type="text" placeholder="your_username" autofocus oninput="this.value=this.value.toLowerCase().replace(/^@/,'')"/></div>
+  <div class="field"><label>Password</label><input id="li-pass" type="password" placeholder="••••••••"/></div>
 
-      if (error) {
-        message.textContent = error.message;
-        message.style.color = 'red';
-      } else {
-        message.textContent = 'Logged in! Redirecting...';
-        setTimeout(() => { window.location.href = 'family.html'; }, 1000);
-      }
-    }
-  </script>
+  <button class="btn btn-primary" onclick="login()" id="loginBtn">Sign In</button>
+  <div class="auth-link"><a href="signup.html">Need an account? Create a group</a></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://amohpaikszdwlbokcyri.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtb2hwYWlrc3pkd2xib2tjeXJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyODMxMjAsImV4cCI6MjA4Nzg1OTEyMH0.VBAGFnr3fw_soYxU5DLldCdGOhnO7nQQDYwMd4is9P4';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+  el.style.display = 'block';
+}
+
+async function login() {
+  const username = document.getElementById('li-username').value.trim().toLowerCase();
+  const pass = document.getElementById('li-pass').value;
+
+  if (!username || !pass) return showMsg('Enter username and password', 'error');
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Signing in...';
+
+  try {
+    const passwordHash = await hashPassword(pass);
+
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*, groups(name)')
+      .eq('username', username)
+      .eq('password_hash', passwordHash)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!profile) { showMsg('Invalid username or password', 'error'); return; }
+
+    // Store session
+    localStorage.setItem('gf_user', JSON.stringify(profile));
+
+    showMsg('✅ Welcome back, ' + profile.full_name + '!', 'success');
+    setTimeout(() => { window.location.href = 'app.html'; }, 1000);
+
+  } catch (err) {
+    showMsg(err.message || 'Login failed', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In';
+  }
+}
+
+// Allow Enter key
+document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+</script>
 </body>
 </html>
