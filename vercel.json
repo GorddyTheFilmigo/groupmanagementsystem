@@ -1,19 +1,14 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+  "version": 2,
+  "routes": [
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/app", "dest": "/app.html" },
+    { "src": "/signup", "dest": "/signup.html" }
   ],
   "headers": [
     {
-      "source": "/manifest.json",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json" },
-        { "key": "Cache-Control", "value": "public, max-age=0" }
-      ]
-    },
-    {
-      "source": "/sw.js",
-      "headers": [
-        { "key": "Service-Worker-Allowed", "value": "/" },
         { "key": "Cache-Control", "value": "no-cache" }
       ]
     }
