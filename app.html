@@ -2201,7 +2201,7 @@ let selectedMpesaType='paybill';
 
 window.addEventListener('DOMContentLoaded',async()=>{
   const stored=localStorage.getItem('gf_user');
-  if(!stored){window.location.href='login.html';return;}
+  if(!stored){window.location.href='index.html';return;}
   currentProfile=JSON.parse(stored);
   await initApp();
 });
@@ -2213,7 +2213,7 @@ async function initApp(){
   }
   // Block suspended members
   if(currentProfile.is_suspended){
-    document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0f1b35;font-family:'DM Sans',sans-serif;"><div style="background:#162340;border:1px solid rgba(242,92,84,0.3);border-radius:12px;padding:40px;max-width:420px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🔒</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f25c54;margin-bottom:12px;">Account Suspended</div><div style="color:#8494b4;font-size:14px;margin-bottom:20px;">${currentProfile.suspension_reason||'Your account has been suspended.'}</div>${currentProfile.suspension_fee>0?`<div style="background:rgba(242,92,84,0.1);border:1px solid rgba(242,92,84,0.2);border-radius:8px;padding:14px;margin-bottom:20px;"><div style="font-size:12px;color:#8494b4;margin-bottom:4px;">Reinstatement Fee</div><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#f25c54;">KES ${parseFloat(currentProfile.suspension_fee).toLocaleString()}</div></div>`:''}<button onclick="localStorage.removeItem('gf_user');window.location.href='login.html'" style="background:linear-gradient(135deg,#4f8ef7,#3a72d8);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;cursor:pointer;">Sign Out</button></div></div>`;
+    document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0f1b35;font-family:'DM Sans',sans-serif;"><div style="background:#162340;border:1px solid rgba(242,92,84,0.3);border-radius:12px;padding:40px;max-width:420px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🔒</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f25c54;margin-bottom:12px;">Account Suspended</div><div style="color:#8494b4;font-size:14px;margin-bottom:20px;">${currentProfile.suspension_reason||'Your account has been suspended.'}</div>${currentProfile.suspension_fee>0?`<div style="background:rgba(242,92,84,0.1);border:1px solid rgba(242,92,84,0.2);border-radius:8px;padding:14px;margin-bottom:20px;"><div style="font-size:12px;color:#8494b4;margin-bottom:4px;">Reinstatement Fee</div><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#f25c54;">KES ${parseFloat(currentProfile.suspension_fee).toLocaleString()}</div></div>`:''}<button onclick="localStorage.removeItem('gf_user');window.location.href='index.html'" style="background:linear-gradient(135deg,#4f8ef7,#3a72d8);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;cursor:pointer;">Sign Out</button></div></div>`;
     return;
   }
   const role=currentProfile.group_role||currentProfile.role||'member';
@@ -2322,7 +2322,7 @@ async function loadAllData(){
   updateNotifBadge();renderDashNotices();updateFabBadges();
 }
 
-function signout(){localStorage.removeItem('gf_user');window.location.href='login.html';}
+function signout(){localStorage.removeItem('gf_user');window.location.href='index.html';}
 
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));

@@ -169,7 +169,7 @@
   <div class="field"><label>Password</label><input id="su-pass" type="password" placeholder="Enter strong Password"/></div>
 
   <button class="btn btn-primary" onclick="signup()" id="signupBtn">Create Group & Sign Up</button>
-  <div class="auth-link"><a href="login.html">Already have an account? Sign in</a></div>
+  <div class="auth-link"><a href="index.html">Already have an account? Sign in</a></div>
 </div>
 
 <script>
@@ -230,7 +230,7 @@ async function signup() {
     if (profileErr) throw profileErr;
 
     showMsg('✅ Group created! Redirecting to login...', 'success');
-    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
 
   } catch (err) {
     showMsg(err.message || 'Failed to create account', 'error');
