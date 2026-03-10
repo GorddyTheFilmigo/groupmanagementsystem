@@ -28,6 +28,37 @@
     --radius: 12px;
     --radius-sm: 8px;
   }
+  .site-footer {
+  background: #1f2937;
+  color: #ffffff;
+  padding: 20px 5px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.footer-content p {
+  margin: 6px 0;
+  font-size: 8px;
+}
+
+.footer-content a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-content a:hover {
+  text-decoration: underline;
+}
+
+.creator strong {
+  color: #fbbf24;
+}
+
+copyright {
+  font-size: 13px;
+  opacity: 0.8;
+}
   .icon .logo {
   width: 100px;
   height: 100px;
@@ -170,7 +201,31 @@
 
   <button class="btn btn-primary" onclick="signup()" id="signupBtn">Create Group & Sign Up</button>
   <div class="auth-link"><a href="index.html">Already have an account? Sign in</a></div>
+
+  <footer class="site-footer">
+  <div class="footer-content">
+    <p class="creator">
+      Created by: <strong>Gordon Onyango</strong>
+    </p>
+
+    <p class="social">
+      Facebook:
+      <a href="https://www.facebook.com/profile.php?id=100064373151861" target="_blank" rel="noopener noreferrer">
+  Gordon KE
+</a>
+    </p>
+
+    <p class="copyright">
+      &copy; <span id="year"></span> GordyTheFilmigo. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </div>
+
 
 <script>
 const SUPABASE_URL = 'https://amohpaikszdwlbokcyri.supabase.co';
