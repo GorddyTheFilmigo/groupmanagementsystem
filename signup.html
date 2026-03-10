@@ -3,192 +3,226 @@
 <head>
   <link rel="icon" type="image/png" href="image1.png"/>
   <link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#5b9cf6"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="GroupFlow"/>
-<link rel="apple-touch-icon" href="image1.png"/>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>GordyTheFilmigo — Create Your Group</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-  :root {
-    --navy: #0f1b35;
-    --navy-mid: #162340;
-    --accent: #4f8ef7;
-    --accent2: #38d9a9;
-    --danger: #f25c54;
-    --text: #e8edf8;
-    --text-muted: #8494b4;
-    --border: rgba(79,142,247,0.18);
-    --card: rgba(22,35,64,0.85);
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-  .site-footer {
-  background: #1f2937;
-  color: #ffffff;
-  padding: 20px 5px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
+  <meta name="theme-color" content="#5b9cf6"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="GordyTheFilmigo"/>
+  <link rel="apple-touch-icon" href="image1.png"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GordyTheFilmigo — Create Your Group</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #0f1b35;
+      --navy-mid: #162340;
+      --accent: #4f8ef7;
+      --accent2: #38d9a9;
+      --danger: #f25c54;
+      --text: #e8edf8;
+      --text-muted: #8494b4;
+      --border: rgba(79,142,247,0.18);
+      --card: rgba(22,35,64,0.85);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(56,217,169,0.08) 0%, transparent 60%);
+    }
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    .brand { text-align: center; margin-bottom: 24px; }
+    .brand-logo-wrap {
+      width: 80px; height: 80px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 3px rgba(79,142,247,0.3), 0 8px 32px rgba(79,142,247,0.2);
+    }
+    .brand-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 900;
+      font-size: clamp(16px, 4vw, 24px);
+      line-height: 1.2;
+      text-align: center;
+      word-break: break-word;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span.white { color: #fff; }
+    .brand-title span.gold { color: #f5c518; }
+    .brand p { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
 
-.footer-content p {
-  margin: 6px 0;
-  font-size: 8px;
-}
+    /* Demo video banner */
+    .demo-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(79,142,247,0.08);
+      border: 1px solid rgba(79,142,247,0.22);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+    .demo-banner:hover { background: rgba(79,142,247,0.15); }
+    .demo-play {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg,#f25c54,#e03a2f);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .demo-text { flex: 1; min-width: 0; }
+    .demo-text strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #e8edf8;
+    }
+    .demo-text span { font-size: 11px; color: #8494b4; }
+    .demo-arrow { color: #8494b4; font-size: 13px; flex-shrink: 0; }
 
-.footer-content a {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: 500;
-}
+    .auth-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .auth-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 7px; }
+    .field input {
+      width: 100%;
+      background: rgba(15,27,53,0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+    }
+    .field input::placeholder { color: var(--text-muted); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      border: none; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.2s;
+      padding: 11px 20px; width: 100%;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #3a72d8);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(79,142,247,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(79,142,247,0.45); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .auth-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+    .auth-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .auth-link a:hover { text-decoration: underline; }
+    .msg {
+      padding: 12px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; margin-bottom: 16px; display: none;
+    }
+    .msg.error { background: rgba(242,92,84,0.12); border: 1px solid rgba(242,92,84,0.3); color: var(--danger); }
+    .msg.success { background: rgba(56,217,169,0.12); border: 1px solid rgba(56,217,169,0.3); color: var(--accent2); }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-.footer-content a:hover {
-  text-decoration: underline;
-}
+    .site-footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(79,142,247,0.1);
+      text-align: center;
+    }
+    .site-footer p { font-size: 11px; color: var(--text-muted); margin: 4px 0; }
+    .site-footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .site-footer a:hover { text-decoration: underline; }
+    .site-footer strong { color: #f5c518; }
 
-.creator strong {
-  color: #fbbf24;
-}
-
-copyright {
-  font-size: 13px;
-  opacity: 0.8;
-}
-  .icon .logo {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255,215,0,0.6);
-}
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--navy);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-  .bg-mesh {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(56,217,169,0.08) 0%, transparent 60%);
-  }
-  .auth-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 48px 40px;
-    width: 100%;
-    max-width: 440px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
-    position: relative; z-index: 1;
-    animation: fadeUp 0.5s ease;
-  }
-  @keyframes fadeUp {
-    from { opacity:0; transform: translateY(24px); }
-    to { opacity:1; transform: translateY(0); }
-  }
-  .brand { text-align: center; margin-bottom: 36px; }
-  .brand-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 18px;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 28px; margin-bottom: 16px;
-    box-shadow: 0 8px 32px rgba(79,142,247,0.35);
-  }
-  .brand h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
-  .brand p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
-  .auth-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-  .auth-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
-  .field { margin-bottom: 18px; }
-  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 7px; }
-  .field input {
-    width: 100%;
-    background: rgba(15,27,53,0.8);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    padding: 11px 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .field input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
-  }
-  .field input::placeholder { color: var(--text-muted); }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500;
-    border: none; border-radius: var(--radius-sm);
-    cursor: pointer; transition: all 0.2s;
-    padding: 11px 20px; width: 100%;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), #3a72d8);
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(79,142,247,0.35);
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(79,142,247,0.45); }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .auth-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
-  .auth-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
-  .auth-link a:hover { text-decoration: underline; }
-  .msg {
-    padding: 12px 14px; border-radius: var(--radius-sm);
-    font-size: 13px; margin-bottom: 16px; display: none;
-  }
-  .msg.error { background: rgba(242,92,84,0.12); border: 1px solid rgba(242,92,84,0.3); color: var(--danger); }
-  .msg.success { background: rgba(56,217,169,0.12); border: 1px solid rgba(56,217,169,0.3); color: var(--accent2); }
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: inline-block;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 480px) { .auth-card { padding: 32px 24px; } }
-</style>
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px; }
+      .brand-title { font-size: clamp(15px, 7vw, 20px); }
+    }
+  </style>
 </head>
 <body>
-  <!-- PWA Install Banner -->
+
 <!-- PWA Install Banner -->
-<div id="installBanner" style="display:none;position:fixed;top:12px;right:16px;z-index:9999;background:linear-gradient(135deg,rgba(17,31,58,0.97),rgba(10,22,40,0.99));border:1px solid rgba(91,156,246,0.35);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.45),0 0 0 1px rgba(91,156,246,0.1);backdrop-filter:blur(12px);max-width:300px;">
+<div id="installBanner" style="display:none;position:fixed;top:12px;right:16px;z-index:9999;background:linear-gradient(135deg,rgba(17,31,58,0.97),rgba(10,22,40,0.99));border:1px solid rgba(91,156,246,0.35);border-radius:14px;padding:10px 14px;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.45);backdrop-filter:blur(12px);max-width:300px;">
   <div style="width:32px;height:32px;background:linear-gradient(135deg,#5b9cf6,#34d9a5);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👥</div>
   <div style="flex:1;min-width:0;">
     <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#eef1fa;white-space:nowrap;">Install GroupFlow</div>
     <div style="font-size:10px;color:#7a8fb0;margin-top:1px;">Add to home screen</div>
   </div>
   <button onclick="installApp()" style="background:linear-gradient(135deg,#5b9cf6,#3a72d8);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(91,156,246,0.4);">⬇ Install</button>
-  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(91,156,246,0.1);color:#7a8fb0;border:1px solid rgba(91,156,246,0.15);border-radius:7px;padding:5px 8px;font-size:12px;cursor:pointer;flex-shrink:0;line-height:1;transition:all 0.15s;" onmouseover="this.style.color='#eef1fa'" onmouseout="this.style.color='#7a8fb0'">✕</button>
+  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(91,156,246,0.1);color:#7a8fb0;border:1px solid rgba(91,156,246,0.15);border-radius:7px;padding:5px 8px;font-size:12px;cursor:pointer;flex-shrink:0;line-height:1;" onmouseover="this.style.color='#eef1fa'" onmouseout="this.style.color='#7a8fb0'">✕</button>
 </div>
+
 <div class="bg-mesh"></div>
+
 <div class="auth-card">
   <div class="brand">
-    <div class="brand-icon"><div class="icon">
-    <img src="image2.jpg" alt="Logo" class="logo">
-  </div></div>
-    <h1>Gordy<b style="color: gold;">TheFilmigo</b></h1>
+    <div class="brand-logo-wrap">
+      <img src="image2.jpg" alt="Logo"/>
+    </div>
+    <div class="brand-title">
+      <span class="white">Gordy</span><span class="gold">TheFilmigo</span>
+    </div>
     <p>Professional group management</p>
   </div>
+
+  <!-- Demo Video Banner -->
+  <a href="https://youtu.be/kQ1eHWZ8O00" target="_blank" class="demo-banner">
+    <div class="demo-play">▶</div>
+    <div class="demo-text">
+      <strong>Watch Demo Video</strong>
+      <span>See how GordyTheFilmigo works</span>
+    </div>
+    <div class="demo-arrow">↗</div>
+  </a>
+
   <div class="auth-title">Create your group</div>
   <div class="auth-sub">Sign up and create your group to get started</div>
 
@@ -197,149 +231,118 @@ copyright {
   <div class="field"><label>Full Name</label><input id="su-name" type="text" placeholder="Gordon Onyango" autofocus/></div>
   <div class="field"><label>Group Name</label><input id="su-group" type="text" placeholder="My Organization"/></div>
   <div class="field"><label>Username</label><input id="su-username" type="text" placeholder="gordon_onyango" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"/></div>
-  <div class="field"><label>Password</label><input id="su-pass" type="password" placeholder="Enter strong Password"/></div>
+  <div class="field"><label>Password</label><input id="su-pass" type="password" placeholder="Enter strong password"/></div>
 
   <button class="btn btn-primary" onclick="signup()" id="signupBtn">Create Group & Sign Up</button>
   <div class="auth-link"><a href="index.html">Already have an account? Sign in</a></div>
 
-  <footer class="site-footer">
-  <div class="footer-content">
-    <p class="creator">
-      Created by: <strong>Gordon Onyango</strong>
-    </p>
-
-    <p class="social">
-      Facebook:
-      <a href="https://www.facebook.com/profile.php?id=100064373151861" target="_blank" rel="noopener noreferrer">
-  Gordon KE
-</a>
-    </p>
-
-    <p class="copyright">
-      &copy; <span id="year"></span> GordyTheFilmigo. All rights reserved.
-    </p>
+  <div class="site-footer">
+    <p>Created by <strong>Gordon Onyango</strong></p>
+    <p>Facebook: <a href="https://www.facebook.com/profile.php?id=100064373151861" target="_blank" rel="noopener">Gordon KE</a></p>
+    <p>&copy; <span id="year"></span> GordyTheFilmigo. All rights reserved.</p>
   </div>
-</footer>
-
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
 </div>
 
-
 <script>
-const SUPABASE_URL = 'https://amohpaikszdwlbokcyri.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtb2hwYWlrc3pkd2xib2tjeXJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyODMxMjAsImV4cCI6MjA4Nzg1OTEyMH0.VBAGFnr3fw_soYxU5DLldCdGOhnO7nQQDYwMd4is9P4';
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+document.getElementById('year').textContent=new Date().getFullYear();
 
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+const SUPABASE_URL='https://amohpaikszdwlbokcyri.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtb2hwYWlrc3pkd2xib2tjeXJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyODMxMjAsImV4cCI6MjA4Nzg1OTEyMH0.VBAGFnr3fw_soYxU5DLldCdGOhnO7nQQDYwMd4is9P4';
+const{createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+async function hashPassword(password){
+  const encoder=new TextEncoder();
+  const data=encoder.encode(password);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-function showMsg(text, type) {
-  const el = document.getElementById('msg');
-  el.textContent = text;
-  el.className = 'msg ' + type;
-  el.style.display = 'block';
+function showMsg(text,type){
+  const el=document.getElementById('msg');
+  el.textContent=text;
+  el.className='msg '+type;
+  el.style.display='block';
 }
 
-async function signup() {
-  const name = document.getElementById('su-name').value.trim();
-  const groupName = document.getElementById('su-group').value.trim();
-  const username = document.getElementById('su-username').value.trim();
-  const pass = document.getElementById('su-pass').value;
-
-  if (!name || !groupName || !username || !pass) return showMsg('All fields are required', 'error');
-  if (pass.length < 6) return showMsg('Password must be at least 6 characters', 'error');
-  if (username.length < 3) return showMsg('Username must be at least 3 characters', 'error');
-
-  const btn = document.getElementById('signupBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Creating...';
-
-  try {
-    // Check username not taken
-    const { data: existing } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
-    if (existing) { showMsg('Username already taken. Choose another.', 'error'); return; }
-
-    // Create group
-    const { data: newGroup, error: groupErr } = await sb.from('groups').insert([{ name: groupName }]).select().single();
-    if (groupErr) throw groupErr;
-
-    // Hash password
-    const passwordHash = await hashPassword(pass);
-
-    // Create profile
-    const { error: profileErr } = await sb.from('profiles').insert([{
-      full_name: name,
-      username: username,
-      email: username + '@groupflow.app',
-      password_hash: passwordHash,
-      role: 'admin',
-      group_id: newGroup.id
+async function signup(){
+  const name=document.getElementById('su-name').value.trim();
+  const groupName=document.getElementById('su-group').value.trim();
+  const username=document.getElementById('su-username').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  if(!name||!groupName||!username||!pass)return showMsg('All fields are required','error');
+  if(pass.length<6)return showMsg('Password must be at least 6 characters','error');
+  if(username.length<3)return showMsg('Username must be at least 3 characters','error');
+  const btn=document.getElementById('signupBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Creating...';
+  try{
+    const{data:existing}=await sb.from('profiles').select('id').eq('username',username).maybeSingle();
+    if(existing){showMsg('Username already taken. Choose another.','error');return;}
+    const{data:newGroup,error:groupErr}=await sb.from('groups').insert([{name:groupName}]).select().single();
+    if(groupErr)throw groupErr;
+    const passwordHash=await hashPassword(pass);
+    const{error:profileErr}=await sb.from('profiles').insert([{
+      full_name:name,
+      username:username,
+      email:username+'@groupflow.app',
+      password_hash:passwordHash,
+      role:'admin',
+      group_id:newGroup.id
     }]);
-    if (profileErr) throw profileErr;
-
-    showMsg('✅ Group created! Redirecting to login...', 'success');
-    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-
-  } catch (err) {
-    showMsg(err.message || 'Failed to create account', 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Create Group & Sign Up';
+    if(profileErr)throw profileErr;
+    showMsg('✅ Group created! Redirecting to login...','success');
+    setTimeout(()=>{window.location.href='index.html';},1500);
+  }catch(err){
+    showMsg(err.message||'Failed to create account','error');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='Create Group & Sign Up';
   }
 }
 
-// Allow Enter key
-document.addEventListener('keydown', e => { if (e.key === 'Enter') signup(); });
+document.addEventListener('keydown',e=>{if(e.key==='Enter')signup();});
 </script>
+
 <script>
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js')
-      .then(()=>console.log('SW registered'))
-      .catch(e=>console.log('SW error',e));
-  }
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js')
+    .then(()=>console.log('SW registered'))
+    .catch(e=>console.log('SW error',e));
+}
 </script>
+
 <script>
-  let deferredPrompt=null;
+let deferredPrompt=null;
 
-  // Catch the install prompt
-  window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();
-    deferredPrompt=e;
-    // Show the banner
-    const banner=document.getElementById('installBanner');
-    if(banner)banner.style.display='flex';
-  });
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  const banner=document.getElementById('installBanner');
+  if(banner)banner.style.display='flex';
+});
 
-  // Install button clicked
-  function installApp(){
-    if(!deferredPrompt)return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(result=>{
-      if(result.outcome==='accepted'){
-        document.getElementById('installBanner').style.display='none';
-      }
-      deferredPrompt=null;
-    });
-  }
-
-  // Hide banner if already installed
-  window.addEventListener('appinstalled',()=>{
-    document.getElementById('installBanner').style.display='none';
+function installApp(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(result=>{
+    if(result.outcome==='accepted'){
+      document.getElementById('installBanner').style.display='none';
+    }
     deferredPrompt=null;
   });
+}
 
-  // Hide banner if running as installed PWA
-  if(window.matchMedia('(display-mode: standalone)').matches){
-    const banner=document.getElementById('installBanner');
-    if(banner)banner.style.display='none';
-  }
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').style.display='none';
+  deferredPrompt=null;
+});
+
+if(window.matchMedia('(display-mode: standalone)').matches){
+  const banner=document.getElementById('installBanner');
+  if(banner)banner.style.display='none';
+}
 </script>
+
 </body>
 </html>
