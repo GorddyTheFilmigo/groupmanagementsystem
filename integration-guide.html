@@ -1,0 +1,299 @@
+<!--
+╔══════════════════════════════════════════════════════════════════╗
+║   GORDYTHEFILMIGO — FEATURES INTEGRATION GUIDE                  ║
+║   Copy each section into app.html exactly where indicated        ║
+╚══════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — ADD TO <head> (alongside your existing font/style links)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+
+<!-- jsPDF for receipts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!--
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — ADD TO <style> (paste inside your existing <style> tag)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+
+<style>
+/* ── PROGRESS BAR ── */
+.progress-wrap{height:8px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:99px;transition:width 0.5s ease;}
+
+/* ── INFO BOX ── */
+.info-box{background:rgba(91,156,246,0.08);border:1px solid rgba(91,156,246,0.2);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;}
+
+/* ── BADGE EXTRAS ── */
+.badge-inactive{background:rgba(139,148,180,0.12);color:var(--text-muted);}
+.badge-monthly{background:rgba(91,156,246,0.12);color:var(--accent);}
+
+/* ── MODAL WIDE ── */
+.modal-wide{max-width:680px !important;}
+
+/* ── FIELDS ROW ── */
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.fields-row{grid-template-columns:1fr;}}
+
+/* ── TABLE CARD ── */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.table-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.table-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;}
+
+/* ── RECEIPT MODAL ── */
+#receiptModalOverlay .modal{max-width:520px;}
+
+/* ── LIGHT THEME ── */
+body.theme-light{
+  --navy:#f0f4ff;
+  --navy-mid:#ffffff;
+  --navy-light:#e8eef8;
+  --text:#1a2340;
+  --text-muted:#5a6a8a;
+  --border:rgba(91,156,246,0.2);
+  --card:rgba(255,255,255,0.98);
+  background:#f0f4ff;color:#1a2340;
+}
+body.theme-light .sidebar{background:linear-gradient(180deg,#ffffff,#f5f8ff);}
+body.theme-light .mobile-bar{background:rgba(240,244,255,0.97);}
+body.theme-light .topbar{background:rgba(240,244,255,0.9);}
+body.theme-light .modal{background:linear-gradient(160deg,#ffffff,#f8faff);}
+body.theme-light table thead tr{background:rgba(91,156,246,0.06);}
+body.theme-light .nav-item{color:#3a4a6a;}
+body.theme-light .nav-item:hover,.body.theme-light .nav-item.active{background:rgba(91,156,246,0.1);}
+body.theme-light input,body.theme-light textarea,body.theme-light select{background:#f5f8ff;color:#1a2340;border-color:rgba(91,156,246,0.25);}
+body.theme-light .event-card{background:#fff;border-color:rgba(91,156,246,0.15);}
+body.theme-light .cat-section{background:#fff;border-color:rgba(91,156,246,0.15);}
+body.theme-light .summary-card{background:#fff;border-color:rgba(91,156,246,0.15);}
+</style>
+
+<!--
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — ADD NAV ITEMS TO SIDEBAR
+Find your sidebar nav section and add these items.
+Put Minutes, Agendas, Budgets under a "Governance" group.
+Put Documents and Amendments under same group.
+Put theme/lang toggles at the very bottom of the sidebar.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+
+<!-- Paste inside your sidebar, after elections nav item -->
+<div class="nav-group-label">Governance</div>
+
+<div class="nav-item" data-page="minutes" onclick="navigate('minutes')">
+  <span class="nav-icon">📝</span>
+  <span class="nav-label">Meeting Minutes</span>
+</div>
+
+<div class="nav-item" data-page="agendas" onclick="navigate('agendas')">
+  <span class="nav-icon">📋</span>
+  <span class="nav-label">Agendas</span>
+</div>
+
+<div class="nav-item" data-page="budgets" onclick="navigate('budgets')">
+  <span class="nav-icon">📊</span>
+  <span class="nav-label">Budget Planning</span>
+</div>
+
+<div class="nav-item" data-page="documents" onclick="navigate('documents')">
+  <span class="nav-icon">🗄️</span>
+  <span class="nav-label">Document Vault</span>
+</div>
+
+<div class="nav-item admin-only" data-page="amendments" onclick="navigate('amendments')">
+  <span class="nav-icon">📜</span>
+  <span class="nav-label">Amendment Log</span>
+</div>
+
+<!-- Theme + Language toggles — paste at very bottom of sidebar before closing </div> -->
+<div style="border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;">
+  <button id="themeToggleBtn" onclick="toggleTheme()"
+    style="flex:1;background:rgba(91,156,246,0.08);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);cursor:pointer;font-size:16px;">
+    ☀️
+  </button>
+  <button id="langToggleBtn" onclick="toggleLanguage()"
+    style="flex:1;background:rgba(91,156,246,0.08);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);cursor:pointer;font-size:12px;font-weight:700;">
+    🇰🇪 SW
+  </button>
+</div>
+
+<!--
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — ADD PAGE DIVS
+Find where your other pages are (e.g. contributionsPage, eventsPage)
+and paste all these pages right after the last one.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+
+<!-- ── MEETING MINUTES PAGE ── -->
+<div class="page" id="minutesPage">
+  <div class="topbar">
+    <h2>📝 Meeting Minutes</h2>
+  </div>
+  <div class="content">
+    <div id="minutesContent"></div>
+  </div>
+</div>
+
+<!-- ── AGENDAS PAGE ── -->
+<div class="page" id="agendasPage">
+  <div class="topbar">
+    <h2>📋 Meeting Agendas</h2>
+  </div>
+  <div class="content">
+    <div id="agendasContent"></div>
+  </div>
+</div>
+
+<!-- ── BUDGET PLANNING PAGE ── -->
+<div class="page" id="budgetsPage">
+  <div class="topbar">
+    <h2>📊 Budget Planning</h2>
+  </div>
+  <div class="content">
+    <div id="budgetsContent"></div>
+  </div>
+</div>
+
+<!-- ── DOCUMENT VAULT PAGE ── -->
+<div class="page" id="documentsPage">
+  <div class="topbar">
+    <h2>🗄️ Document Vault</h2>
+  </div>
+  <div class="content">
+    <div id="documentsContent"></div>
+  </div>
+</div>
+
+<!-- ── AMENDMENT LOG PAGE ── -->
+<div class="page" id="amendmentsPage">
+  <div class="topbar">
+    <h2>📜 Amendment Log</h2>
+  </div>
+  <div class="content">
+    <div id="amendmentsContent"></div>
+  </div>
+</div>
+
+<!-- ── RECEIPT MODAL ── -->
+<div class="modal-overlay" id="receiptModalOverlay">
+  <div class="modal modal-wide">
+    <div class="modal-title">🧾 Payment Receipt</div>
+    <div class="modal-sub">Official payment receipt</div>
+    <div id="receiptPreview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+      <button class="btn btn-primary" onclick="downloadReceipt()">⬇ Download PDF</button>
+      <button class="btn btn-secondary" onclick="printReceiptDirect()">🖨 Print</button>
+    </div>
+  </div>
+</div>
+
+<!--
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — UPDATE navigate() FUNCTION
+Find your navigate(page) function in app.html and add these cases
+inside the switch or if/else block.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ADD these lines inside navigate() after the existing page cases:
+
+  if(page==='minutes')    renderMinutes();
+  if(page==='agendas')    renderAgendas();
+  if(page==='budgets')    renderBudgets();
+  if(page==='documents')  renderDocumentVault();
+  if(page==='amendments') renderAmendments();
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 6 — UPDATE loadAllData() FUNCTION
+Find your loadAllData() function and add these inside Promise.all([...])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ADD to the Promise.all array (after the last existing sq() call, before the closing ]):
+  sq(()=>sb.from('group_minutes').select('*').eq('group_id',gid).order('meeting_date',{ascending:false})),
+  sq(()=>sb.from('group_agendas').select('*').eq('group_id',gid).order('meeting_date',{ascending:false})),
+  sq(()=>sb.from('group_budgets').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+  sq(()=>sb.from('group_budget_items').select('*').eq('group_id',gid)),
+  sq(()=>sb.from('group_documents').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+  sq(()=>sb.from('group_amendments').select('*').eq('group_id',gid).order('created_at',{ascending:false}))
+
+Then destructure the results at the top of loadAllData() by adding to the array:
+  minutes, agendas, budgets, budgetItems, documents, amendments
+
+Then assign them:
+  allMinutes=minutes||[];
+  allAgendas=agendas||[];
+  allBudgets=budgets||[];
+  allBudgetItems=budgetItems||[];
+  allDocuments=documents||[];
+  allAmendments=amendments||[];
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 7 — ADD GLOBAL VARIABLES
+Find your global variables block at the top of your script and add:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let allMinutes=[], allAgendas=[], allBudgets=[], allBudgetItems=[];
+let allDocuments=[], allAmendments=[];
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 8 — CALL initFeaturesModule() inside initApp()
+Find your initApp() function and add this line just before navigate('dashboard'):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  await initFeaturesModule();
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 9 — ADD SCRIPT TAGS before </body>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+
+<script src="receipt-generator.js"></script>
+<script src="features-module.js"></script>
+
+<!--
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 10 — ADD helper function fmtDate() if it doesn't exist
+Find formatDate() in your app — if it's called formatDate not fmtDate,
+add this alias anywhere in your script:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function fmtDate(d){
+  if(!d)return '—';
+  return new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function esc(str){
+  if(!str)return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 11 — UPDATE navigate() to show correct page div
+Your navigate() function likely does something like:
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById(page+'Page').style.display='block';
+
+This already works for the new pages since they all follow the
+same naming convention: minutesPage, agendasPage, etc.
+No extra changes needed here if your navigate() is generic.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SUMMARY OF ALL FILES:
+  app.html         ← your main file (add steps above)
+  receipt-generator.js  ← receipt PDF logic
+  features-module.js    ← all 7 features logic
+
+SUMMARY OF ALL NEW PAGES:
+  minutes    → Meeting Minutes (draft/publish, view, print)
+  agendas    → Agenda Builder (items, duration, owner, print)
+  budgets    → Budget Planning (items, progress tracking)
+  documents  → Document Vault (link-based, categories)
+  amendments → Amendment Log (change history)
+
+THEME TOGGLE:   ☀️ button in sidebar footer
+LANGUAGE TOGGLE: 🇰🇪 SW button in sidebar footer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->

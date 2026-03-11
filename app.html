@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="icon" type="image/png" href="image1.png"/>
   <link rel="manifest" href="/manifest.json"/>
 <meta name="theme-color" content="#5b9cf6"/>
@@ -1037,6 +1039,7 @@
 }
 </style>
 </head>
+
 <body>
   <!-- PWA Install Banner -->
 <!-- PWA Install Banner -->
@@ -1049,97 +1052,105 @@
   <button onclick="installApp()" style="background:linear-gradient(135deg,#5b9cf6,#3a72d8);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(91,156,246,0.4);">⬇ Install</button>
   <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(91,156,246,0.1);color:#7a8fb0;border:1px solid rgba(91,156,246,0.15);border-radius:7px;padding:5px 8px;font-size:12px;cursor:pointer;flex-shrink:0;line-height:1;transition:all 0.15s;" onmouseover="this.style.color='#eef1fa'" onmouseout="this.style.color='#7a8fb0'">✕</button>
 </div>
-<div class="bg-mesh"></div>
-<div class="toast-container" id="toastContainer"></div>
-<div class="mobile-bar">
-  <div class="hamburger" onclick="toggleSidebar()">☰</div>
-  <div class="mobile-bar-brand">
-    <img src="image1.png" style="width:30px;height:30px;border-radius:8px;object-fit:cover;box-shadow:0 0 8px rgba(91,156,246,0.3);flex-shrink:0;"/>
-    <div id="mobileGroupName" style="font-family:'Syne',sans-serif;font-size:clamp(11px,3.5vw,15px);font-weight:900;color:#fff;white-space:nowrap;overflow:visible;text-overflow:unset;max-width:unset;">My Group</div>
-  </div>
-  <div class="notif-bell-wrap" onclick="toggleInbox()" style="width:36px;height:36px;">
-    <div class="notif-bell" style="font-size:17px;">🔔</div>
-    <span class="notif-badge" id="notifBadgeMobile" style="display:none;">0</span>
-  </div>
-</div>
-<div class="overlay-dim" id="overlayDim" onclick="closeSidebar()"></div>
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-brand">
     <div class="name">
-  <img src="image1.png" alt="GroupFlow Logo" class="logo">
-</div>
-      
-      <div class="group-name" id="sidebarGroupName">Loading...</div>
+      <img src="image1.png" alt="GroupFlow Logo" class="logo">
     </div>
-    <span class="sidebar-close" onclick="closeSidebar()">✕</span>
+    <div class="group-name" id="sidebarGroupName">Loading...</div>
+  </div>
+  <span class="sidebar-close" onclick="closeSidebar()">✕</span>
+
+  <div class="sidebar-nav" style="overflow-y:auto;flex:1;">
+
+    <div class="section-label">Overview</div>
+    <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard">
+      <span class="nav-icon">⊞</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="navigate('noticeboard')" data-page="noticeboard">
+      <span class="nav-icon">📣</span> Noticeboard
+    </div>
+    <div class="nav-item" onclick="navigate('members')" data-page="members">
+      <span class="nav-icon">👤</span> Members
+    </div>
+
+    <div class="section-label">Finances</div>
+    <div class="nav-item" onclick="navigate('events')" data-page="events">
+      <span class="nav-icon">📅</span> Events
+    </div>
+    <div class="nav-item" onclick="navigate('schemes')" data-page="schemes">
+      <span class="nav-icon">🔄</span> Recurring Schemes
+    </div>
+    <div class="nav-item" onclick="navigate('contributions')" data-page="contributions">
+      <span class="nav-icon">💰</span> All Contributions
+    </div>
+    <div class="nav-item" onclick="navigate('expenses')" data-page="expenses">
+      <span class="nav-icon">🧾</span> Expenses
+    </div>
+    <div class="nav-item" onclick="navigate('defaulters')" data-page="defaulters">
+      <span class="nav-icon">⚠️</span> Defaulters
+    </div>
+    <div class="nav-item" onclick="navigate('myStatement')" data-page="myStatement">
+      <span class="nav-icon">👤</span> My Statement
+    </div>
+    <div class="nav-item" onclick="navigate('budgets')" data-page="budgets">
+      <span class="nav-icon">📊</span> Budget Planning
+    </div>
+
+    <div class="section-label">Reports & Analytics</div>
+    <div class="nav-item" onclick="navigate('reports')" data-page="reports">
+      <span class="nav-icon">📈</span> Reports
+    </div>
+
+    <div class="section-label">Governance</div>
+    <div class="nav-item" onclick="navigate('elections')" data-page="elections">
+      <span class="nav-icon">🗳️</span> Elections
+    </div>
+    <div class="nav-item" onclick="navigate('minutes')" data-page="minutes">
+      <span class="nav-icon">📝</span> Meeting Minutes
+    </div>
+    <div class="nav-item" onclick="navigate('agendas')" data-page="agendas">
+      <span class="nav-icon">📋</span> Agendas
+    </div>
+    <div class="nav-item" onclick="navigate('documents')" data-page="documents">
+      <span class="nav-icon">🗄️</span> Document Vault
+    </div>
+    <div class="nav-item admin-only" onclick="navigate('amendments')" data-page="amendments" style="display:none;">
+      <span class="nav-icon">📜</span> Amendment Log
+    </div>
+
+    <div class="section-label admin-only" style="display:none;">Admin</div>
+    <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;">
+      <span class="nav-icon">⚙️</span> Manage Users
+    </div>
+    <div class="nav-item admin-only" onclick="navigate('settings')" data-page="settings" style="display:none;">
+      <span class="nav-icon">💳</span> M-Pesa Settings
+    </div>
+
+    <div class="nav-item" onclick="window.open('features.html','_blank')">
+      <span class="nav-icon">🚀</span> Feature Roadmap
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;margin-top:8px;">
+      <button id="themeToggleBtn" onclick="toggleTheme()" style="flex:1;background:rgba(91,156,246,0.08);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);cursor:pointer;font-size:16px;">☀️</button>
+      <button id="langToggleBtn" onclick="toggleLanguage()" style="flex:1;background:rgba(91,156,246,0.08);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);cursor:pointer;font-size:12px;font-weight:700;">🇰🇪 SW</button>
+    </div>
+
   </div>
 
-<!-- REPLACE WITH -->
-<div class="sidebar-nav" style="overflow-y:auto;flex:1;">
-
-  <div class="section-label">Overview</div>
-  <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard">
-    <span class="nav-icon">⊞</span> Dashboard
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar" id="userAvatar">G</div>
+      <div class="user-info">
+        <div class="user-name" id="userNameDisplay">User</div>
+        <div class="user-role" id="userRoleDisplay">Member</div>
+      </div>
+    </div>
+    <div class="nav-item" onclick="signOut()" style="color:#f25c54;margin-top:8px;">
+      <span class="nav-icon">→</span> Sign Out
+    </div>
   </div>
-
-  <div class="nav-item" onclick="navigate('noticeboard')" data-page="noticeboard">
-    <span class="nav-icon">📣</span> Noticeboard
-  </div>
-
-  <div class="nav-item" onclick="navigate('members')" data-page="members">
-    <span class="nav-icon">👤</span> Members
-  </div>
-
-  <div class="section-label">Finances</div>
-
-  <div class="nav-item" onclick="navigate('events')" data-page="events">
-    <span class="nav-icon">📅</span> Events
-  </div>
-
-  <div class="nav-item" onclick="navigate('schemes')" data-page="schemes">
-    <span class="nav-icon">🔄</span> Recurring Schemes
-  </div>
-
-  <div class="nav-item" onclick="navigate('contributions')" data-page="contributions">
-    <span class="nav-icon">💰</span> All Contributions
-  </div>
-
-  <div class="nav-item" onclick="navigate('expenses')" data-page="expenses">
-    <span class="nav-icon">🧾</span> Expenses
-  </div>
-
-  <div class="nav-item" onclick="navigate('defaulters')" data-page="defaulters">
-    <span class="nav-icon">⚠️</span> Defaulters
-  </div>
-
-  <div class="nav-item" onclick="navigate('myStatement')" data-page="myStatement">
-    <span class="nav-icon">👤</span> My Statement
-  </div>
-
-  <div class="nav-item" onclick="navigate('reports')" data-page="reports">
-    <span class="nav-icon">📊</span> Reports
-  </div>
-
-  <!-- Governance -->
-  <div class="section-label">Governance</div>
-
-  <div class="nav-item" onclick="navigate('elections')" data-page="elections">
-    <span class="nav-icon">🗳️</span> Elections
-  </div>
-
-  <!-- Admin Only -->
-  <div class="section-label admin-only" style="display:none;">Admin</div>
-
-  <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;">
-    <span class="nav-icon">⚙️</span> Manage Users
-  </div>
-
-  <div class="nav-item admin-only" onclick="navigate('settings')" data-page="settings" style="display:none;">
-    <span class="nav-icon">💳</span> M-Pesa Settings
-  </div>
-
-</div>
-
+</nav>
 <div class="sidebar-footer">
   <div class="user-info">
     <div class="user-avatar" id="userAvatar">?</div>
@@ -1530,6 +1541,12 @@
     </div>
     <div class="content" id="electionsContent"></div>
   </div>
+  <div class="page" id="minutesPage"><div class="topbar"><h2>📝 Meeting Minutes</h2></div><div class="content"><div id="minutesContent"></div></div></div>
+<div class="page" id="agendasPage"><div class="topbar"><h2>📋 Meeting Agendas</h2></div><div class="content"><div id="agendasContent"></div></div></div>
+<div class="page" id="budgetsPage"><div class="topbar"><h2>📊 Budget Planning</h2></div><div class="content"><div id="budgetsContent"></div></div></div>
+<div class="page" id="documentsPage"><div class="topbar"><h2>🗄️ Document Vault</h2></div><div class="content"><div id="documentsContent"></div></div></div>
+<div class="page" id="amendmentsPage"><div class="topbar"><h2>📜 Amendment Log</h2></div><div class="content"><div id="amendmentsContent"></div></div></div>
+<div class="modal-overlay" id="receiptModalOverlay"><div class="modal modal-wide"><div class="modal-title">🧾 Payment Receipt</div><div class="modal-sub">Official payment receipt</div><div id="receiptPreview"></div><div class="modal-actions"><button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button><button class="btn btn-primary" onclick="downloadReceipt()">⬇ Download PDF</button><button class="btn btn-secondary" onclick="printReceiptDirect()">🖨 Print</button></div></div></div>
 </main>
 
 <!-- ═══════════ MODALS ═══════════ -->
@@ -1620,6 +1637,18 @@
         <button class="asset-tab" onclick="switchAssetTab('replaced',this)">📦 Replaced</button>
       </div>
       <div id="assetsBody"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="receiptModalOverlay">
+  <div class="modal modal-wide" id="receiptModal">
+    <div class="modal-title">🧾 Payment Receipt</div>
+    <div class="modal-sub">Official payment receipt for this contribution</div>
+    <div id="receiptPreview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+      <button class="btn btn-primary" onclick="downloadReceipt()">⬇ Download PDF</button>
+      <button class="btn btn-secondary" onclick="printReceiptDirect()">🖨 Print</button>
     </div>
   </div>
 </div>
@@ -2200,14 +2229,13 @@ const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 let currentProfile=null;
 let allMembers=[],allEvents=[],allContribs=[],allSchemes=[],allPeriods=[],allSchemePayments=[],allExpenses=[],allElections=[],allNotices=[],allMessages=[],allSuggestions=[],allAnonMessages=[],allAssets=[],allPolls=[],allVotes=[];
+let allMinutes=[],allAgendas=[],allBudgets=[],allBudgetItems=[],allDocuments=[],allAmendments=[];
 let groupMpesaConfig=null;
 let deleteTarget={};
 let stkContext={};
 let _lastRptRows=[];
-
 const PG=10;
 let cpages={},rpages={};
-
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmt(n){if(n===null||n===undefined)return'0';return Number(n).toLocaleString();}
 function fmtDate(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleDateString([],{day:'numeric',month:'short'});}
@@ -2265,6 +2293,8 @@ async function initApp(){
     }
   }
   await loadAllData();
+  initTheme();
+  applyLanguage();
   navigate('dashboard');
 }
 async function sq(fn){
@@ -2292,7 +2322,7 @@ async function ensureGroupHasChairman(gid){
 
 async function loadAllData(){
   const gid=currentProfile.group_id;
-  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets,polls,votes]=await Promise.all([
+  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets,polls,votes,minutes,agendas,budgets,budgetItems,documents,amendments]=await Promise.all([
     sq(()=>sb.from('profiles').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('events').select('*').eq('group_id',gid).order('event_date',{ascending:false})),
     sq(()=>sb.from('contributions').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
@@ -2309,16 +2339,22 @@ async function loadAllData(){
     sq(()=>sb.from('group_anon_chat').select('*').eq('group_id',gid).order('sent_at',{ascending:true}).limit(120)),
     sq(()=>sb.from('group_assets').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('polls').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
-    sq(()=>sb.from('poll_votes').select('*').eq('group_id',gid))
+    sq(()=>sb.from('poll_votes').select('*').eq('group_id',gid)),
+    sq(()=>sb.from('group_minutes').select('*').eq('group_id',gid).order('meeting_date',{ascending:false})),
+    sq(()=>sb.from('group_agendas').select('*').eq('group_id',gid).order('meeting_date',{ascending:false})),
+    sq(()=>sb.from('group_budgets').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('group_budget_items').select('*').eq('group_id',gid)),
+    sq(()=>sb.from('group_documents').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('group_amendments').select('*').eq('group_id',gid).order('created_at',{ascending:false}))
   ]);
   allMembers=members;allEvents=events;allSchemes=schemes;allPeriods=periods;allExpenses=expenses;
   groupMpesaConfig=mpesaCfg&&mpesaCfg.length>0?mpesaCfg[0]:null;
   allElections=elections;allNotices=notices;allMessages=messages;
   allSuggestions=suggestions;allAnonMessages=anonMsgs;allAssets=assets;
   allPolls=polls;allVotes=votes;
-
+  allMinutes=minutes||[];allAgendas=agendas||[];allBudgets=budgets||[];
+  allBudgetItems=budgetItems||[];allDocuments=documents||[];allAmendments=amendments||[];
   await ensureGroupHasChairman(gid);
-
   if(grpSettings&&grpSettings.length){
     grpSettings.forEach(s=>{
       if(s.setting_key==='default_suspension_fee')groupSettings.default_suspension_fee=parseFloat(s.setting_value||0);
@@ -2329,15 +2365,18 @@ async function loadAllData(){
   const em=Object.fromEntries(allEvents.map(e=>[e.id,e]));
   allContribs=contribs.map(c=>({...c,profiles:{full_name:mm[c.member_id]?.full_name||'Unknown'},events:c.event_id?{name:em[c.event_id]?.name||'—'}:null}));
   allSchemePayments=schPayments.map(p=>({...p,profiles:{full_name:mm[p.member_id]?.full_name||'Unknown'}}));
-
   renderDashboard();renderEventsPage();renderSchemesPage();populateCfSource();renderContributions();
-  renderMembers(allMembers);renderUsers(allMembers);populateReportFilters();renderReports();
-  renderSettingsPage();renderExpenses();renderDefaulters();renderMyStatement();
-  renderElections();
-  updateNotifBadge();renderDashNotices();updateFabBadges();
+renderMembers(allMembers);renderUsers(allMembers);populateReportFilters();renderReports();
+renderSettingsPage();renderExpenses();renderDefaulters();renderMyStatement();
+renderElections();
+updateNotifBadge();renderDashNotices();updateFabBadges();
+renderMinutes();renderAgendas();renderBudgets();renderDocumentVault();renderAmendments();
 }
 
-function signout(){localStorage.removeItem('gf_user');window.location.href='index.html';}
+function signOut(){
+  localStorage.removeItem('gf_user');
+  window.location.href='index.html';
+}
 
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -2358,6 +2397,11 @@ function navigate(page){
   if(page==='voting')renderVoting();
   if(page==='rolePermissions')renderRolePermissions();
   if(page==='manageUsers')renderUsers(allMembers);
+  if(page==='minutes')renderMinutes();
+  if(page==='agendas')renderAgendas();
+  if(page==='budgets')renderBudgets();
+  if(page==='documents')renderDocumentVault();
+  if(page==='amendments')renderAmendments();
 }
 
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlayDim').style.display='block';}
@@ -3006,9 +3050,53 @@ function renderContributions(){
     const cid='cc'+gi;if(!cpages[cid])cpages[cid]=1;
     const page=cpages[cid],tp=Math.ceil(grp.items.length/PG);
     const items=grp.items.slice((page-1)*PG,page*PG);
-    const rows=items.map(c=>`<tr><td><strong>${c.profiles?.full_name||'—'}</strong></td><td><span class="amount">KES ${parseFloat(c.amount).toLocaleString()}</span></td><td style="color:var(--text-muted);font-size:12px;">${c.note||'—'}</td><td style="color:var(--text-muted);font-size:12px;">${formatDate(c.created_at)}</td>${isAdmin?`<td><button class="btn btn-danger btn-sm" onclick="askDelete('contrib','${c.id}')">✕</button></td>`:''}</tr>`).join('');
+    const rows=items.map(c=>`<tr>
+      <td><strong>${c.profiles?.full_name||'—'}</strong></td>
+      <td><span class="amount">KES ${parseFloat(c.amount).toLocaleString()}</span></td>
+      <td style="color:var(--text-muted);font-size:12px;">${c.note||'—'}</td>
+      <td style="color:var(--text-muted);font-size:12px;">${formatDate(c.created_at)}</td>
+      <td><button class="btn btn-xs btn-secondary" onclick="openReceiptModal(allContribs.find(x=>x.id==='${c.id}'),'event')">🧾 Receipt</button></td>
+      ${isAdmin?`<td><button class="btn btn-danger btn-sm" onclick="askDelete('contrib','${c.id}')">✕</button></td>`:''}
+    </tr>`).join('');
     const div=document.createElement('div');div.className='cat-section';div.id=cid;
-    div.innerHTML=`<div class="cat-header" onclick="toggleCat('${cid}')"><div style="display:flex;align-items:center;"><span class="cat-chevron">▶</span><div><div class="cat-title">${grp.label}</div><div class="cat-meta">${grp.items.length} records · KES ${grp.total.toLocaleString()}</div></div></div><div class="cat-pills"><span class="cat-pill" style="background:rgba(56,217,169,0.12);color:var(--accent2);">KES ${grp.total.toLocaleString()}</span><span class="cat-pill" style="background:rgba(79,142,247,0.12);color:var(--accent);">${grp.items.length}</span></div></div><div class="cat-body"><div style="overflow-x:auto;"><table><thead><tr><th>Member</th><th>Amount</th><th>Note</th><th>Date</th>${isAdmin?'<th></th>':''}</tr></thead><tbody>${rows}</tbody></table></div><div class="cat-footer"><span style="font-size:12px;color:var(--text-muted);">Showing ${(page-1)*PG+1}–${Math.min(page*PG,grp.items.length)} of ${grp.items.length}</span><div style="display:flex;align-items:center;gap:8px;">${buildPg(cid,page,tp,'cpg')}<span class="dl-btn" onclick='dlCSV(${JSON.stringify(grp.items.map(c=>[c.profiles?.full_name||"",c.amount,c.note||"",c.created_at]))},${JSON.stringify(grp.label)})'>⬇ CSV</span></div></div></div>`;
+    div.innerHTML=`
+      <div class="cat-header" onclick="toggleCat('${cid}')">
+        <div style="display:flex;align-items:center;">
+          <span class="cat-chevron">▶</span>
+          <div>
+            <div class="cat-title">${grp.label}</div>
+            <div class="cat-meta">${grp.items.length} records · KES ${grp.total.toLocaleString()}</div>
+          </div>
+        </div>
+        <div class="cat-pills">
+          <span class="cat-pill" style="background:rgba(56,217,169,0.12);color:var(--accent2);">KES ${grp.total.toLocaleString()}</span>
+          <span class="cat-pill" style="background:rgba(79,142,247,0.12);color:var(--accent);">${grp.items.length}</span>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th>Date</th>
+                <th>Receipt</th>
+                ${isAdmin?'<th></th>':''}
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="cat-footer">
+          <span style="font-size:12px;color:var(--text-muted);">Showing ${(page-1)*PG+1}–${Math.min(page*PG,grp.items.length)} of ${grp.items.length}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${buildPg(cid,page,tp,'cpg')}
+            <span class="dl-btn" onclick='dlCSV(${JSON.stringify(grp.items.map(c=>[c.profiles?.full_name||"",c.amount,c.note||"",c.created_at]))},${JSON.stringify(grp.label)})'>⬇ CSV</span>
+          </div>
+        </div>
+      </div>`;
     container.appendChild(div);
   });
 }
@@ -5311,5 +5399,8 @@ async function deleteAsset(id){
     if(banner)banner.style.display='none';
   }
 </script>
+<script src="receipt-generator.js"></script>
+<script src="receipt-generator.js"></script>
+<script src="features-module.js"></script>
 </body>
 </html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GordyTheFilmigo — Features Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0a1628;--navy-mid:#111f3a;--navy-light:#1a2f55;
+  --accent:#5b9cf6;--accent-dark:#3a72d8;--accent2:#34d9a5;--accent3:#f5c842;
+  --danger:#f0544f;--mpesa:#00a651;
+  --text:#eef1fa;--text-muted:#7a8fb0;
+  --border:rgba(91,156,246,0.16);--border-strong:rgba(91,156,246,0.28);
+  --card:rgba(17,31,58,0.92);
+  --radius:14px;--radius-lg:20px;--radius-sm:10px;--radius-xs:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.35);--shadow-lg:0 12px 48px rgba(0,0,0,0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 8% 15%,rgba(91,156,246,0.13) 0%,transparent 65%),
+    radial-gradient(ellipse 55% 45% at 92% 85%,rgba(52,217,165,0.09) 0%,transparent 60%);}
+
+/* ── HEADER ── */
+.header{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.header-brand{display:flex;align-items:center;gap:12px;}
+.header-logo{width:36px;height:36px;border-radius:10px;overflow:hidden;}
+.header-logo img{width:100%;height:100%;object-fit:cover;}
+.header-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;}
+.header-title span{color:#f5c518;}
+.header-back{display:flex;align-items:center;gap:8px;color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--radius-sm);border:1px solid rgba(91,156,246,0.25);background:rgba(91,156,246,0.08);transition:all 0.2s;}
+.header-back:hover{background:rgba(91,156,246,0.18);}
+
+/* ── HERO ── */
+.hero{padding:64px 32px 48px;text-align:center;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:rgba(91,156,246,0.1);border:1px solid rgba(91,156,246,0.25);font-size:12px;font-weight:700;color:var(--accent);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:20px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:900;line-height:1.1;margin-bottom:16px;letter-spacing:-1px;}
+.hero h1 span{color:var(--accent2);}
+.hero p{font-size:16px;color:var(--text-muted);max-width:560px;margin:0 auto 32px;line-height:1.7;}
+.hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;}
+.hero-stat{text-align:center;}
+.hero-stat-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:900;color:var(--accent3);}
+.hero-stat-label{font-size:12px;color:var(--text-muted);margin-top:2px;}
+
+/* ── SEARCH ── */
+.search-wrap{padding:0 32px 32px;max-width:600px;margin:0 auto;position:relative;z-index:1;}
+.search-box{width:100%;background:rgba(17,31,58,0.9);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 20px 14px 48px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:all 0.2s;}
+.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,156,246,0.12);}
+.search-box::placeholder{color:var(--text-muted);}
+.search-icon{position:absolute;left:52px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
+
+/* ── FILTER TABS ── */
+.filter-tabs{display:flex;gap:8px;padding:0 32px 32px;flex-wrap:wrap;position:relative;z-index:1;justify-content:center;}
+.filter-tab{padding:8px 20px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);color:var(--text-muted);background:transparent;transition:all 0.15s;letter-spacing:0.3px;}
+.filter-tab.active{background:rgba(91,156,246,0.15);color:var(--accent);border-color:rgba(91,156,246,0.35);}
+.filter-tab:hover:not(.active){border-color:rgba(91,156,246,0.3);color:var(--text);}
+
+/* ── FEATURES GRID ── */
+.features-wrap{padding:0 32px 80px;position:relative;z-index:1;max-width:1200px;margin:0 auto;}
+.section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:40px;}
+
+/* ── FEATURE CARD ── */
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all 0.22s;cursor:pointer;position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.03),transparent);pointer-events:none;}
+.feature-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--border-strong);}
+.feature-card.priority-high{border-left:3px solid var(--accent2);}
+.feature-card.priority-medium{border-left:3px solid var(--accent3);}
+.feature-card.priority-low{border-left:3px solid var(--text-muted);}
+.feature-card.status-done{opacity:0.6;}
+.feature-card.status-done::after{content:'✓ Built';position:absolute;top:14px;right:14px;background:rgba(52,217,165,0.15);color:var(--accent2);font-size:10px;font-weight:800;padding:3px 10px;border-radius:10px;border:1px solid rgba(52,217,165,0.25);}
+.feature-card-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+.feature-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.feature-info{flex:1;}
+.feature-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:4px;line-height:1.2;}
+.feature-category{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.feature-desc{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:14px;}
+.feature-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.feature-tag{font-size:10px;padding:3px 9px;border-radius:10px;font-weight:700;}
+.feature-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);}
+.feature-effort{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
+.feature-effort-dots{display:flex;gap:3px;}
+.effort-dot{width:6px;height:6px;border-radius:50%;}
+.effort-dot.filled{background:var(--accent);}
+.effort-dot.empty{background:rgba(91,156,246,0.2);}
+.feature-priority{font-size:10px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:0.3px;}
+.priority-high-badge{background:rgba(52,217,165,0.12);color:var(--accent2);}
+.priority-medium-badge{background:rgba(245,200,66,0.12);color:var(--accent3);}
+.priority-low-badge{background:rgba(139,148,180,0.12);color:var(--text-muted);}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{background:linear-gradient(160deg,var(--navy-mid),rgba(10,22,40,0.99));border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:36px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);box-shadow:var(--shadow-lg);}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modal-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px;}
+.modal-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;margin-bottom:8px;}
+.modal-desc{color:var(--text-muted);font-size:14px;line-height:1.7;margin-bottom:24px;}
+.modal-section{margin-bottom:20px;}
+.modal-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:10px;}
+.modal-steps{display:flex;flex-direction:column;gap:10px;}
+.modal-step{display:flex;gap:12px;align-items:flex-start;}
+.modal-step-num{width:24px;height:24px;border-radius:50%;background:rgba(91,156,246,0.15);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.modal-step-text{font-size:13px;color:var(--text-muted);line-height:1.6;}
+.modal-files{display:flex;flex-direction:column;gap:8px;}
+.modal-file{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(91,156,246,0.06);border:1px solid rgba(91,156,246,0.15);border-radius:var(--radius-sm);font-size:13px;}
+.modal-file-icon{font-size:16px;}
+.modal-file-name{font-weight:600;color:var(--accent);}
+.modal-file-desc{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.modal-close{display:flex;gap:10px;margin-top:24px;justify-content:flex-end;}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;padding:10px 20px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 18px rgba(91,156,246,0.4);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-secondary{background:rgba(91,156,246,0.1);color:var(--accent);border:1px solid rgba(91,156,246,0.25);}
+.btn-secondary:hover{background:rgba(91,156,246,0.2);}
+
+/* ── COMING SOON BANNER ── */
+.coming-soon-banner{background:linear-gradient(135deg,rgba(91,156,246,0.08),rgba(52,217,165,0.05));border:1px solid rgba(91,156,246,0.2);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.coming-soon-icon{font-size:36px;flex-shrink:0;}
+.coming-soon-text h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:5px;}
+.coming-soon-text p{font-size:13px;color:var(--text-muted);line-height:1.6;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.empty-state-icon{font-size:48px;margin-bottom:14px;opacity:0.4;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .header{padding:0 16px;}
+  .hero{padding:40px 16px 32px;}
+  .search-wrap{padding:0 16px 24px;}
+  .filter-tabs{padding:0 16px 24px;}
+  .features-wrap{padding:0 16px 60px;}
+  .features-grid{grid-template-columns:1fr;}
+  .modal{padding:24px 18px 32px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;max-width:100%;}
+  .modal-overlay{padding:0;align-items:flex-end;}
+}
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo"><img src="image1.png" alt="Logo"/></div>
+    <div class="header-title">Gordy<span>TheFilmigo</span></div>
+  </div>
+  <a href="app.html" class="header-back">← Back to App</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🚀 Feature Roadmap</div>
+  <h1>Everything Your Group<br/><span>Could Ever Need</span></h1>
+  <p>A complete plan of features to make GordyTheFilmigo the most powerful group management system in Kenya. Click any feature to see how to build it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">22</div><div class="hero-stat-label">Planned Features</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">Categories</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">High Priority</div></div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input class="search-box" id="searchBox" placeholder="Search features..." oninput="filterFeatures()"/>
+</div>
+
+<!-- FILTER TABS -->
+<div class="filter-tabs">
+  <button class="filter-tab active" onclick="setFilter('all',this)">All Features</button>
+  <button class="filter-tab" onclick="setFilter('financial',this)">💰 Financial</button>
+  <button class="filter-tab" onclick="setFilter('communication',this)">📣 Communication</button>
+  <button class="filter-tab" onclick="setFilter('governance',this)">🏛️ Governance</button>
+  <button class="filter-tab" onclick="setFilter('member',this)">👤 Member</button>
+  <button class="filter-tab" onclick="setFilter('admin',this)">⚙️ Admin</button>
+</div>
+
+<!-- FEATURES -->
+<div class="features-wrap" id="featuresWrap"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-icon" id="modalIcon"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div id="modalBody"></div>
+    <div class="modal-close">
+      <button class="btn btn-secondary" onclick="closeModalDirect()">Close</button>
+      <button class="btn btn-primary" onclick="closeModalDirect()">Got It 👍</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FEATURES=[
+  // ── FINANCIAL ──
+  {id:1,name:'Contribution Receipts',category:'financial',icon:'🧾',color:'rgba(52,217,165,0.15)',priority:'high',effort:2,
+   desc:'Auto-generate a professional PDF receipt every time a payment is recorded. Members can download or print it as proof of payment.',
+   tags:['PDF','Payments','Members'],
+   steps:['Install jsPDF library via CDN in app.html','Create a generateReceipt(contrib) function','Design receipt layout: group logo, member name, amount, date, receipt number','Add a "🧾 Receipt" button next to each contribution row','On click, generate PDF and trigger download'],
+   files:[{name:'receipt-generator.js',desc:'PDF generation logic using jsPDF'},{name:'receipt-template.js',desc:'Receipt HTML/CSS template'}]},
+
+  {id:2,name:'Loan & Welfare Fund',category:'financial',icon:'🏦',color:'rgba(91,156,246,0.15)',priority:'high',effort:4,
+   desc:'Members can request loans or welfare support. Officials approve or reject requests. Repayments are tracked automatically against the member\'s contribution history.',
+   tags:['Loans','Welfare','Approvals'],
+   steps:['Create group_loans table: id, member_id, group_id, amount, purpose, status, approved_by, repayment_schedule','Create loan_repayments table: id, loan_id, amount, paid_at','Add Loans page to sidebar (officials only for management, all members for requests)','Build request form for members','Build approval queue for officials with approve/reject buttons','Show repayment progress bar per loan'],
+   files:[{name:'loans-page.js',desc:'Full loans management page'},{name:'loan-modal.js',desc:'Request and approval modals'}]},
+
+  {id:3,name:'Budget Planning',category:'financial',icon:'📊',color:'rgba(245,200,66,0.15)',priority:'medium',effort:3,
+   desc:'Set a budget for each event or scheme. Track actual spending vs budget in real time with visual progress bars and alerts when overspending.',
+   tags:['Budget','Events','Expenses'],
+   steps:['Add budget_amount column to events and contribution_schemes tables','Show budget vs actual spent on event/scheme cards','Add color-coded progress bar: green < 80%, yellow 80-100%, red > 100%','Alert officials when spending exceeds 90% of budget'],
+   files:[{name:'budget-tracker.js',desc:'Budget vs actual comparison component'}]},
+
+  {id:4,name:'Dividend Distribution',category:'financial',icon:'💸',color:'rgba(52,217,165,0.15)',priority:'medium',effort:3,
+   desc:'Calculate end-of-year or end-of-period payouts to members based on their contribution history. Generate distribution report and record payments.',
+   tags:['Dividends','Year-end','Reports'],
+   steps:['Create group_dividends table: id, group_id, period, total_pool, distributed_at','Calculate each member\'s share based on contributions made','Generate distribution report showing each member\'s payout','Record distribution as expense in the ledger','Allow chairman to mark distribution as complete'],
+   files:[{name:'dividends.js',desc:'Dividend calculation and distribution page'}]},
+
+  {id:5,name:'M-Pesa Statement Import',category:'financial',icon:'📱',color:'rgba(0,166,81,0.15)',priority:'medium',effort:3,
+   desc:'Paste or upload an M-Pesa statement CSV to automatically match transactions to member contributions. Saves hours of manual data entry.',
+   tags:['M-Pesa','Import','Automation'],
+   steps:['Build CSV upload/paste interface','Parse M-Pesa statement format (name, phone, amount, date, code)','Fuzzy-match transactions to group members by phone number','Show match confidence score for each transaction','Allow admin to confirm or skip each matched transaction','Bulk-insert confirmed matches as contributions'],
+   files:[{name:'mpesa-import.js',desc:'Statement parser and matching engine'}]},
+
+  // ── COMMUNICATION ──
+  {id:6,name:'SMS Notifications',category:'communication',icon:'📲',color:'rgba(0,166,81,0.15)',priority:'high',effort:3,
+   desc:'Send automatic SMS to members via Africa\'s Talking API when payments are recorded, events are created, or accounts are suspended.',
+   tags:['SMS','Africa\'s Talking','Automation'],
+   steps:['Sign up at africastalking.com and get API key','Create a sendSMS(phone, message) helper function','Add SMS trigger after recordContribution() — "Dear {name}, KES {amount} received for {event}. Balance: KES {total}"','Add SMS trigger after createEvent() — event reminder 24hrs before','Add SMS trigger after suspendMember() — suspension notice with fee','Store SMS log in group_sms_log table'],
+   files:[{name:'sms-service.js',desc:'Africa\'s Talking SMS integration'},{name:'sms-templates.js',desc:'Message templates for each trigger'}]},
+
+  {id:7,name:'Email Notifications',category:'communication',icon:'📧',color:'rgba(91,156,246,0.15)',priority:'high',effort:3,
+   desc:'Send professional emails for payment confirmations, event reminders, meeting notices and monthly statements using EmailJS or Resend.',
+   tags:['Email','Notifications','Resend'],
+   steps:['Sign up at resend.com (free tier available)','Create email templates for: payment receipt, event reminder, monthly statement, suspension notice','Add email field to member profiles if not already present','Trigger emails after key actions: record contribution, create event, post notice','Build email preferences page so members can opt-out of specific types'],
+   files:[{name:'email-service.js',desc:'Email sending integration'},{name:'email-templates.js',desc:'HTML email templates'}]},
+
+  {id:8,name:'Push Notifications',category:'communication',icon:'🔔',color:'rgba(245,200,66,0.15)',priority:'medium',effort:2,
+   desc:'Browser push notifications so members get alerted even when the app is closed. Uses the Web Push API already available in your PWA setup.',
+   tags:['PWA','Push','Real-time'],
+   steps:['Generate VAPID keys using web-push npm package','Store push subscriptions in group_push_subscriptions table','Update sw.js to handle push events and show notifications','Request notification permission on first login','Send pushes for: new notices, payment confirmations, upcoming events','Add notification settings in user profile'],
+   files:[{name:'push-service.js',desc:'Web Push subscription and sending logic'},{name:'sw-push.js',desc:'Service worker push handler'}]},
+
+  // ── GOVERNANCE ──
+  {id:9,name:'Attendance Tracking',category:'governance',icon:'✅',color:'rgba(52,217,165,0.15)',priority:'high',effort:2,
+   desc:'Mark attendance at meetings and events. See attendance percentage per member. Flag chronic absentees automatically.',
+   tags:['Meetings','Attendance','Reports'],
+   steps:['Create group_attendance table: id, group_id, event_id, member_id, status (present/absent/excused), marked_by, marked_at','Add "Mark Attendance" button on event cards (officials only)','Build attendance sheet modal: list all members with toggle buttons','Show attendance % badge on each member\'s profile','Add attendance filter in defaulters page','Include attendance stats in monthly reports'],
+   files:[{name:'attendance.js',desc:'Attendance marking and reporting page'}]},
+
+  {id:10,name:'Meeting Minutes',category:'governance',icon:'📝',color:'rgba(91,156,246,0.15)',priority:'high',effort:2,
+   desc:'Record, store and share meeting minutes. Members can view past minutes. Secretary can draft and officials can approve before publishing.',
+   tags:['Minutes','Secretary','Documents'],
+   steps:['Create group_minutes table: id, group_id, meeting_date, title, content, status (draft/published), author_id','Add Minutes page to sidebar under Governance','Rich text editor for secretary to write minutes (use simple textarea with formatting buttons)','Draft → Review → Publish workflow','Members can view published minutes','PDF export of minutes'],
+   files:[{name:'minutes.js',desc:'Meeting minutes editor and viewer'}]},
+
+  {id:11,name:'Document Vault',category:'governance',icon:'🗄️',color:'rgba(245,200,66,0.15)',priority:'medium',effort:3,
+   desc:'Store important group documents: constitution, registration certificate, bank details, agreements. Upload to Supabase Storage and access anytime.',
+   tags:['Documents','Storage','Supabase'],
+   steps:['Enable Supabase Storage in your project dashboard','Create group_documents table: id, group_id, name, file_url, category, uploaded_by, created_at','Build document upload UI with category tags','Show documents in a clean file browser','Officials can upload, all members can view','Add download button for each document'],
+   files:[{name:'document-vault.js',desc:'Document upload and browser component'}]},
+
+  {id:12,name:'Agenda Builder',category:'governance',icon:'📋',color:'rgba(52,217,165,0.15)',priority:'medium',effort:2,
+   desc:'Create meeting agendas with agenda items, time allocations and responsible persons. Share with members before the meeting via noticeboard.',
+   tags:['Meetings','Agenda','Planning'],
+   steps:['Create group_agendas table: id, group_id, meeting_date, title, items (JSONB), status','Build agenda builder with drag-to-reorder items','Each item has: title, duration (minutes), owner','Post agenda to noticeboard automatically when finalized','Print/PDF export of agenda','Link agenda to meeting minutes afterwards'],
+   files:[{name:'agenda-builder.js',desc:'Meeting agenda creation and management'}]},
+
+  {id:13,name:'Amendment Log',category:'governance',icon:'📜',color:'rgba(91,156,246,0.15)',priority:'low',effort:2,
+   desc:'Track every change made to group rules, contribution amounts, or settings over time. Creates an auditable history for transparency.',
+   tags:['Audit','History','Transparency'],
+   steps:['Create group_amendments table: id, group_id, change_type, old_value, new_value, changed_by, reason, created_at','Auto-log changes when: contribution amount changes, scheme is modified, member role changes, suspension fee changes','Build Amendment Log page showing timeline of all changes','Officials can add manual amendment entries with reason','Export amendment log as PDF'],
+   files:[{name:'amendment-log.js',desc:'Change tracking and audit log page'}]},
+
+  // ── MEMBER ──
+  {id:14,name:'Profile Photos',category:'member',icon:'🖼️',color:'rgba(91,156,246,0.15)',priority:'high',effort:2,
+   desc:'Let members upload a profile photo. Replaces the letter avatar throughout the app — in members list, contributions, elections, DMs.',
+   tags:['Profiles','Photos','Supabase Storage'],
+   steps:['Enable Supabase Storage bucket called "avatars"','Add avatar_url column to profiles table','Build photo upload UI in member profile settings','Resize image client-side before upload using canvas API','Update all avatar components to show photo if avatar_url exists','Fallback to letter avatar if no photo uploaded'],
+   files:[{name:'avatar-upload.js',desc:'Profile photo upload and display component'}]},
+
+  {id:15,name:'Group Logo Upload',category:'member',icon:'🎨',color:'rgba(245,200,66,0.15)',priority:'medium',effort:1,
+   desc:'Let the chairman upload a custom group logo that replaces image1.png throughout the app — in the sidebar, mobile bar and PWA icon.',
+   tags:['Branding','Logo','Storage'],
+   steps:['Add logo_url column to groups table','Build logo upload in Group Settings page (chairman only)','Store logo in Supabase Storage bucket "logos"','Load logo_url on app init and replace image1.png src dynamically','Update manifest.json icon dynamically or use a default fallback'],
+   files:[{name:'logo-upload.js',desc:'Group logo upload and dynamic replacement'}]},
+
+  {id:16,name:'Member Self-Service',category:'member',icon:'👤',color:'rgba(52,217,165,0.15)',priority:'high',effort:2,
+   desc:'Members can update their own phone number, email, and password without needing admin help. Reduces support burden on officials.',
+   tags:['Self-service','Profile','Settings'],
+   steps:['Add "My Profile" page accessible to all members','Allow editing: full_name, phone, email, password (with current password confirmation)','Validate phone format (07XXXXXXXX or +2547XXXXXXXX)','Show member\'s own contribution history and payment score','Add profile completeness indicator to encourage members to fill details'],
+   files:[{name:'my-profile.js',desc:'Member self-service profile editor'}]},
+
+  {id:17,name:'Dark / Light Mode',category:'member',icon:'🌓',color:'rgba(139,148,180,0.15)',priority:'low',effort:1,
+   desc:'Let users switch between dark and light themes. Preference is saved to localStorage and remembered on next login.',
+   tags:['Theme','UX','Accessibility'],
+   steps:['Define light theme CSS variables as alternate :root values','Add a theme toggle button in the sidebar footer','On toggle, add/remove "light-mode" class on body','Save preference to localStorage','Load saved preference on app init'],
+   files:[{name:'theme-toggle.js',desc:'Dark/light mode toggle with CSS variables'}]},
+
+  // ── ADMIN ──
+  {id:18,name:'Bulk Member Import',category:'admin',icon:'📥',color:'rgba(91,156,246,0.15)',priority:'medium',effort:3,
+   desc:'Upload a CSV file with member details to add many members at once. Validates data, shows preview, and creates all accounts in one click.',
+   tags:['CSV','Import','Bulk'],
+   steps:['Build CSV upload UI in Manage Users page','Parse CSV: full_name, username, phone, email, role columns','Validate each row: check for duplicate usernames, required fields','Show preview table with pass/fail status per row','Generate random passwords for new members','Bulk insert valid rows','Download "member credentials" CSV with usernames and passwords'],
+   files:[{name:'bulk-import.js',desc:'CSV parser and bulk member creation'}]},
+
+  {id:19,name:'Audit Log',category:'admin',icon:'🔍',color:'rgba(245,200,66,0.15)',priority:'high',effort:2,
+   desc:'Track every important action in the system: who recorded a payment, who suspended a member, who changed a scheme. Full accountability.',
+   tags:['Security','Audit','Accountability'],
+   steps:['Create group_audit_log table: id, group_id, actor_id, action, target_type, target_id, details (JSONB), created_at','Create logAction(action, targetType, targetId, details) helper function','Add logAction() calls after: record contribution, create/edit event, suspend/reactivate member, change settings, delete anything','Build Audit Log page (chairman only) with timeline view','Filter by actor, action type, date range','Export audit log as CSV'],
+   files:[{name:'audit-log.js',desc:'Audit logging helper and viewer page'}]},
+
+  {id:20,name:'Group Analytics',category:'admin',icon:'📈',color:'rgba(52,217,165,0.15)',priority:'high',effort:3,
+   desc:'Charts and graphs showing contribution trends, member growth, payment rates, scheme performance and financial health over time.',
+   tags:['Charts','Analytics','Dashboard'],
+   steps:['Add Chart.js via CDN','Build Analytics page with 5 charts: monthly contributions bar chart, payment rate pie chart, member growth line chart, top contributors leaderboard, scheme performance comparison','Add date range selector (last 3 months, 6 months, 1 year)','Show trend arrows: is collection up or down vs last period?','Export charts as images for reports'],
+   files:[{name:'analytics.js',desc:'Analytics dashboard with Chart.js visualizations'}]},
+
+  {id:21,name:'Backup & Export',category:'admin',icon:'💾',color:'rgba(91,156,246,0.15)',priority:'medium',effort:2,
+   desc:'Export all group data as a comprehensive Excel or PDF report. Useful for annual general meetings, audits, or migrating to a new system.',
+   tags:['Export','Excel','Backup'],
+   steps:['Add SheetJS (xlsx) library via CDN','Build Export page with options: full data export, financial report, member list, contributions by period','Generate multi-sheet Excel: Sheet1=Members, Sheet2=Contributions, Sheet3=Expenses, Sheet4=Schemes','Add PDF export using jsPDF for printable annual report','Schedule monthly auto-export reminder notice on noticeboard'],
+   files:[{name:'export-manager.js',desc:'Data export to Excel and PDF'}]},
+
+  {id:22,name:'Multi-Language (Swahili)',category:'admin',icon:'🌍',color:'rgba(245,200,66,0.15)',priority:'low',effort:3,
+   desc:'Add Swahili language support so members who prefer Swahili can use the app fully in their language. Toggle between English and Swahili.',
+   tags:['i18n','Swahili','Accessibility'],
+   steps:['Create translations object: {en:{...}, sw:{...}} with all UI text','Add language toggle button in sidebar footer','On toggle, replace all text nodes using the translations object','Save language preference to localStorage','Translate: nav items, buttons, modal titles, error messages, toast notifications','Keep dates and amounts format-neutral'],
+   files:[{name:'i18n.js',desc:'Translation system and Swahili translations'},{name:'translations.js',desc:'Full EN/SW translation dictionary'}]}
+];
+
+let currentFilter='all';
+let currentSearch='';
+
+function setFilter(filter, btn){
+  currentFilter=filter;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderFeatures();
+}
+
+function filterFeatures(){
+  currentSearch=document.getElementById('searchBox').value.toLowerCase();
+  renderFeatures();
+}
+
+function getFiltered(){
+  return FEATURES.filter(f=>{
+    const matchCat=currentFilter==='all'||f.category===currentFilter;
+    const matchSearch=!currentSearch||
+      f.name.toLowerCase().includes(currentSearch)||
+      f.desc.toLowerCase().includes(currentSearch)||
+      f.tags.some(t=>t.toLowerCase().includes(currentSearch));
+    return matchCat&&matchSearch;
+  });
+}
+
+const CATEGORY_COLORS={
+  financial:'rgba(52,217,165,0.12)',
+  communication:'rgba(91,156,246,0.12)',
+  governance:'rgba(245,200,66,0.12)',
+  member:'rgba(168,85,247,0.12)',
+  admin:'rgba(240,84,79,0.12)'
+};
+const CATEGORY_LABELS={
+  financial:'💰 Financial',
+  communication:'📣 Communication',
+  governance:'🏛️ Governance',
+  member:'👤 Member Experience',
+  admin:'⚙️ Admin Tools'
+};
+const CATEGORY_ORDER=['financial','communication','governance','member','admin'];
+
+function effortDots(n){
+  let html='<div class="feature-effort-dots">';
+  for(let i=1;i<=4;i++) html+=`<div class="effort-dot ${i<=n?'filled':'empty'}"></div>`;
+  return html+'</div>';
+}
+
+function renderFeatures(){
+  const wrap=document.getElementById('featuresWrap');
+  const filtered=getFiltered();
+  if(!filtered.length){
+    wrap.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔍</div><p>No features match your search.</p></div>`;
+    return;
+  }
+
+  // Group by category
+  const byCategory={};
+  filtered.forEach(f=>{
+    if(!byCategory[f.category])byCategory[f.category]=[];
+    byCategory[f.category].push(f);
+  });
+
+  let html='';
+  const cats=currentFilter==='all'?CATEGORY_ORDER:Object.keys(byCategory);
+  cats.forEach(cat=>{
+    if(!byCategory[cat])return;
+    html+=`<div class="section-title">${CATEGORY_LABELS[cat]||cat}</div>`;
+    html+='<div class="features-grid">';
+    byCategory[cat].forEach(f=>{
+      const tagHtml=f.tags.map(t=>`<span class="feature-tag" style="background:${CATEGORY_COLORS[f.category]};color:var(--text-soft);">${t}</span>`).join('');
+      const priorityClass=`priority-${f.priority}`;
+      const priorityBadge=`priority-${f.priority}-badge`;
+      html+=`
+        <div class="feature-card ${priorityClass}" onclick="openModal(${f.id})">
+          <div class="feature-card-top">
+            <div class="feature-icon" style="background:${f.color}">${f.icon}</div>
+            <div class="feature-info">
+              <div class="feature-name">${f.name}</div>
+              <div class="feature-category" style="color:var(--text-muted)">${CATEGORY_LABELS[f.category]}</div>
+            </div>
+          </div>
+          <div class="feature-desc">${f.desc}</div>
+          <div class="feature-tags">${tagHtml}</div>
+          <div class="feature-footer">
+            <div class="feature-effort">
+              ${effortDots(f.effort)}
+              <span>${['','Easy','Moderate','Involved','Complex'][f.effort]}</span>
+            </div>
+            <span class="feature-priority ${priorityBadge}">${f.priority} priority</span>
+          </div>
+        </div>`;
+    });
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+function openModal(id){
+  const f=FEATURES.find(x=>x.id===id);
+  if(!f)return;
+  document.getElementById('modalIcon').innerHTML=`<div style="width:64px;height:64px;border-radius:18px;background:${f.color};display:flex;align-items:center;justify-content:center;font-size:28px;">${f.icon}</div>`;
+  document.getElementById('modalTitle').textContent=f.name;
+  document.getElementById('modalDesc').textContent=f.desc;
+
+  let body=`
+    <div class="modal-section">
+      <div class="modal-section-title">How to Build It</div>
+      <div class="modal-steps">
+        ${f.steps.map((s,i)=>`<div class="modal-step"><div class="modal-step-num">${i+1}</div><div class="modal-step-text">${s}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Files to Create</div>
+      <div class="modal-files">
+        ${f.files.map(file=>`
+          <div class="modal-file">
+            <div class="modal-file-icon">📄</div>
+            <div>
+              <div class="modal-file-name">${file.name}</div>
+              <div class="modal-file-desc">${file.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('modalOverlay'))closeModalDirect();
+}
+function closeModalDirect(){
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
+
+renderFeatures();
+</script>
+</body>
+</html>
