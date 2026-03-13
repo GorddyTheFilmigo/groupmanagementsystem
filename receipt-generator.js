@@ -1,45 +1,35 @@
 // ═══════════════════════════════════════════════════════════════
 //  GORDYTHEFILMIGO — CONTRIBUTION RECEIPT GENERATOR
-//  Uses jsPDF (loaded via CDN in app.html)
-//  Handles both event contributions and scheme payments
+//  Security features: watermark + void pattern + hash checksum
 // ═══════════════════════════════════════════════════════════════
-
-// ── ADD THIS TO app.html <head> if not already present ──────────
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-// ── RECEIPT MODAL HTML — paste inside app.html <body> ──────────
-/*
-<div class="modal-overlay" id="receiptModalOverlay">
-  <div class="modal modal-wide" id="receiptModal">
-    <div class="modal-title">🧾 Payment Receipt</div>
-    <div class="modal-sub">Official payment receipt for this contribution</div>
-    <div id="receiptPreview"></div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
-      <button class="btn btn-primary" onclick="downloadReceipt()">⬇ Download PDF</button>
-      <button class="btn btn-secondary" onclick="printReceiptDirect()">🖨 Print</button>
-    </div>
-  </div>
-</div>
-*/
 
 // ── GLOBAL RECEIPT STATE ────────────────────────────────────────
 let _currentReceiptData = null;
 
+// ── SECURITY: Hash generator ────────────────────────────────────
+// Produces a tamper-evident code from receipt data.
+// If anyone edits amount, name, date — the hash won't match.
+function generateReceiptHash(d) {
+  const str = `${d.receiptNo}|${d.memberName}|${d.amount}|${d.date}|${d.sourceName}|GF-SECURE-2024`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  const hex = Math.abs(hash).toString(16).toUpperCase().padStart(12, '0');
+  return `${hex.slice(0,4)}-${hex.slice(4,8)}-${hex.slice(8,12)}`;
+}
+
 // ── MAIN ENTRY POINT ────────────────────────────────────────────
-// Call this from contribution rows: openReceiptModal(contrib, 'event')
-// Or for scheme payments: openReceiptModal(payment, 'scheme')
 async function openReceiptModal(record, type = 'event') {
   try {
-    // Fetch group info
     const { data: grp } = await sb.from('groups').select('name').eq('id', currentProfile.group_id).single();
     const groupName = grp?.name || 'My Group';
 
-    // Fetch member info
     const memberId = record.member_id;
     const member = allMembers.find(m => m.id === memberId) || {};
 
-    // Fetch event or scheme name
     let sourceName = '—';
     let sourceType = '';
     if (type === 'event' && record.event_id) {
@@ -59,10 +49,8 @@ async function openReceiptModal(record, type = 'event') {
       sourceType = 'Contribution';
     }
 
-    // Build receipt number — use stored one or generate display one
     const receiptNo = record.receipt_number || `RCP-${new Date().getFullYear()}-${String(record.id || '').slice(-4).toUpperCase() || '0000'}`;
 
-    // Build receipt data object
     _currentReceiptData = {
       receiptNo,
       groupName,
@@ -82,10 +70,8 @@ async function openReceiptModal(record, type = 'event') {
       type
     };
 
-    // Render preview
     renderReceiptPreview(_currentReceiptData);
 
-    // Open modal
     const overlay = document.getElementById('receiptModalOverlay');
     if (overlay) overlay.classList.add('open');
 
@@ -104,63 +90,122 @@ function closeReceiptModal() {
 function renderReceiptPreview(d) {
   const dateStr = new Date(d.date).toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' });
   const timeStr = new Date(d.date).toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit' });
+  const hash = generateReceiptHash(d);
 
   const html = `
     <div id="receiptDoc" style="
-      background:#fff;color:#1a1a2e;border-radius:12px;
-      padding:32px;font-family:'DM Sans',sans-serif;
+      background:#fff;
+      color:#1a1a2e;
+      border-radius:12px;
+      padding:32px;
+      font-family:'DM Sans',sans-serif;
       border:1px solid rgba(91,156,246,0.2);
-      max-width:480px;margin:0 auto;
+      max-width:480px;
+      margin:0 auto;
+      position:relative;
+      overflow:hidden;
     ">
-      <!-- HEADER -->
-      <div style="text-align:center;border-bottom:2px solid #f0f0f0;padding-bottom:20px;margin-bottom:20px;">
-        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#0a1628;margin-bottom:4px;">
-          ${esc(d.groupName)}
-        </div>
-        <div style="font-size:12px;color:#7a8fb0;letter-spacing:1px;text-transform:uppercase;font-weight:600;">
-          Official Payment Receipt
-        </div>
-        <div style="display:inline-block;margin-top:10px;background:#f0f7ff;border:1px solid #c3d9ff;border-radius:8px;padding:5px 16px;">
-          <span style="font-size:11px;color:#3a72d8;font-weight:800;letter-spacing:0.5px;">Receipt No: ${esc(d.receiptNo)}</span>
-        </div>
+
+      <!-- ░░ SECURITY LAYER 1: Void crosshatch pattern ░░ -->
+      <div style="
+        position:absolute;inset:0;pointer-events:none;z-index:0;
+        background-image:
+          repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(91,156,246,0.03) 18px, rgba(91,156,246,0.03) 20px),
+          repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(91,156,246,0.03) 18px, rgba(91,156,246,0.03) 20px);
+      "></div>
+
+      <!-- ░░ SECURITY LAYER 2: Diagonal watermark ░░ -->
+      <div style="
+        position:absolute;inset:0;pointer-events:none;z-index:0;
+        display:flex;flex-direction:column;justify-content:space-around;
+        overflow:hidden;
+      ">
+        ${[...Array(5)].map(() => `
+          <div style="
+            white-space:nowrap;
+            transform:rotate(-35deg) translateX(-10%);
+            font-size:18px;font-weight:900;
+            color:rgba(10,22,40,0.04);
+            letter-spacing:8px;
+            font-family:'Syne',sans-serif;
+            text-transform:uppercase;
+          ">OFFICIAL RECEIPT • ${esc(d.groupName)} • OFFICIAL RECEIPT • ${esc(d.groupName)} •</div>
+        `).join('')}
       </div>
 
-      <!-- AMOUNT HERO -->
-      <div style="text-align:center;background:linear-gradient(135deg,#0a1628,#1a2f55);border-radius:12px;padding:24px;margin-bottom:20px;">
-        <div style="font-size:12px;color:#7a8fb0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Amount Paid</div>
-        <div style="font-family:'Syne',sans-serif;font-size:38px;font-weight:900;color:#34d9a5;letter-spacing:-1px;">
-          KES ${Number(d.amount).toLocaleString()}
-        </div>
-        <div style="font-size:12px;color:#7a8fb0;margin-top:4px;">${dateStr} at ${timeStr}</div>
-      </div>
+      <!-- ░░ ALL RECEIPT CONTENT — sits above security layers ░░ -->
+      <div style="position:relative;z-index:1;">
 
-      <!-- DETAILS GRID -->
-      <div style="display:grid;gap:0;border:1px solid #f0f0f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
-        ${receiptRow('👤 Member', d.memberName)}
-        ${receiptRow('🔑 Username', '@' + d.memberUsername)}
-        ${receiptRow('📱 Phone', d.memberPhone)}
-        ${receiptRow('📂 ' + d.sourceType, d.sourceName)}
-        ${receiptRow('💳 Payment Method', d.paymentMethod)}
-        ${receiptRow('📝 Recorded By', d.recordedBy)}
-        ${d.note ? receiptRow('💬 Note', d.note) : ''}
-      </div>
-
-      <!-- STATUS STAMP -->
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="display:inline-flex;align-items:center;gap:8px;background:#f0fff8;border:2px solid #34d9a5;border-radius:8px;padding:8px 20px;">
-          <span style="font-size:18px;">✅</span>
-          <span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#00a651;">PAYMENT CONFIRMED</span>
+        <!-- HEADER -->
+        <div style="text-align:center;border-bottom:2px solid #f0f0f0;padding-bottom:20px;margin-bottom:20px;">
+          <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#0a1628;margin-bottom:4px;">
+            ${esc(d.groupName)}
+          </div>
+          <div style="font-size:12px;color:#7a8fb0;letter-spacing:1px;text-transform:uppercase;font-weight:600;">
+            Official Payment Receipt
+          </div>
+          <div style="display:inline-block;margin-top:10px;background:#f0f7ff;border:1px solid #c3d9ff;border-radius:8px;padding:5px 16px;">
+            <span style="font-size:11px;color:#3a72d8;font-weight:800;letter-spacing:0.5px;">Receipt No: ${esc(d.receiptNo)}</span>
+          </div>
         </div>
-      </div>
 
-      <!-- FOOTER -->
-      <div style="text-align:center;padding-top:16px;border-top:1px dashed #e0e0e0;">
-        <div style="font-size:11px;color:#aaa;line-height:1.6;">
-          This is an official receipt generated by GordyTheFilmigo<br/>
-          Group Management System. Keep this for your records.
+        <!-- AMOUNT HERO -->
+        <div style="text-align:center;background:linear-gradient(135deg,#0a1628,#1a2f55);border-radius:12px;padding:24px;margin-bottom:20px;">
+          <div style="font-size:12px;color:#7a8fb0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Amount Paid</div>
+          <div style="font-family:'Syne',sans-serif;font-size:38px;font-weight:900;color:#34d9a5;letter-spacing:-1px;">
+            KES ${Number(d.amount).toLocaleString()}
+          </div>
+          <div style="font-size:12px;color:#7a8fb0;margin-top:4px;">${dateStr} at ${timeStr}</div>
         </div>
-        <div style="font-size:10px;color:#ccc;margin-top:6px;">Generated on ${new Date().toLocaleString('en-KE')}</div>
-      </div>
+
+        <!-- DETAILS GRID -->
+        <div style="display:grid;gap:0;border:1px solid #f0f0f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+          ${receiptRow('👤 Member', d.memberName)}
+          ${receiptRow('🔑 Username', '@' + d.memberUsername)}
+          ${receiptRow('📱 Phone', d.memberPhone)}
+          ${receiptRow('📂 ' + d.sourceType, d.sourceName)}
+          ${receiptRow('💳 Payment Method', d.paymentMethod)}
+          ${receiptRow('📝 Recorded By', d.recordedBy)}
+          ${d.note ? receiptRow('💬 Note', d.note) : ''}
+        </div>
+
+        <!-- STATUS STAMP -->
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="display:inline-flex;align-items:center;gap:8px;background:#f0fff8;border:2px solid #34d9a5;border-radius:8px;padding:8px 20px;">
+            <span style="font-size:18px;">✅</span>
+            <span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#00a651;">PAYMENT CONFIRMED</span>
+          </div>
+        </div>
+
+        <!-- ░░ SECURITY LAYER 3: Hash verification bar ░░ -->
+        <div style="
+          background:#f8faff;
+          border:1px dashed rgba(91,156,246,0.4);
+          border-radius:8px;
+          padding:12px 14px;
+          margin-bottom:20px;
+        ">
+          <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:rgba(58,114,216,0.8);margin-bottom:6px;">
+            🔐 Security Verification Code
+          </div>
+          <div style="font-family:monospace;font-size:15px;font-weight:700;letter-spacing:3px;color:#0a1628;margin-bottom:6px;">
+            ${hash}
+          </div>
+          <div style="font-size:10px;color:#aaa;line-height:1.5;">
+            This code is mathematically derived from the receipt data. Any alteration to the amount, member, or date will invalidate this code. Verify against receipt #${esc(d.receiptNo)} in group records.
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div style="text-align:center;padding-top:16px;border-top:1px dashed #e0e0e0;">
+          <div style="font-size:11px;color:#aaa;line-height:1.6;">
+            This is an official receipt generated by GordyTheFilmigo<br/>
+            Group Management System. Keep this for your records.
+          </div>
+          <div style="font-size:10px;color:#ccc;margin-top:6px;">Generated on ${new Date().toLocaleString('en-KE')}</div>
+        </div>
+
+      </div><!-- end content z-index wrapper -->
     </div>`;
 
   const preview = document.getElementById('receiptPreview');
@@ -179,13 +224,36 @@ function receiptRow(label, value) {
 async function downloadReceipt() {
   if (!_currentReceiptData) return;
   const d = _currentReceiptData;
+  const hash = generateReceiptHash(d);
 
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a5' });
 
     const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
     let y = 15;
+
+    // ── SECURITY: Void crosshatch pattern across entire page
+    doc.setDrawColor(91, 156, 246, 0.08);
+    doc.setLineWidth(0.1);
+    for (let i = -H; i < W + H; i += 8) {
+      doc.line(i, 0, i + H, H);
+      doc.line(i + H, 0, i, H);
+    }
+
+    // ── SECURITY: Diagonal watermark text
+    doc.saveGraphicsState();
+    doc.setGState(new doc.GState({ opacity: 0.04 }));
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(10, 22, 40);
+    for (let wy = 20; wy < H; wy += 35) {
+      doc.text(`OFFICIAL RECEIPT • ${d.groupName.toUpperCase()}`, W / 2, wy, {
+        align: 'center', angle: 35
+      });
+    }
+    doc.restoreGraphicsState();
 
     // ── Header band
     doc.setFillColor(10, 22, 40);
@@ -254,7 +322,28 @@ async function downloadReceipt() {
     doc.setFontSize(9);
     doc.setTextColor(0, 166, 81);
     doc.text('✓ PAYMENT CONFIRMED', W / 2, y + 6.5, { align: 'center' });
-    y += 18;
+    y += 16;
+
+    // ── SECURITY: Hash verification bar
+    doc.setFillColor(248, 250, 255);
+    doc.setDrawColor(91, 156, 246);
+    doc.setLineWidth(0.3);
+    doc.setLineDash([2, 2]);
+    doc.roundedRect(10, y, W - 20, 22, 2, 2, 'FD');
+    doc.setLineDash([]);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(58, 114, 216);
+    doc.text('SECURITY VERIFICATION CODE', 14, y + 6);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(10, 22, 40);
+    doc.text(hash, W / 2, y + 13, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(160, 160, 160);
+    doc.text('Any alteration to this receipt invalidates the above code.', W / 2, y + 19, { align: 'center' });
+    y += 28;
 
     // ── Footer
     doc.setDrawColor(220, 220, 220);
@@ -267,11 +356,9 @@ async function downloadReceipt() {
     doc.text('This is an official receipt generated by GordyTheFilmigo Group Management System.', W / 2, y, { align: 'center' });
     doc.text('Generated: ' + new Date().toLocaleString('en-KE'), W / 2, y + 4, { align: 'center' });
 
-    // Save
     doc.save(`Receipt-${d.receiptNo}-${d.memberName.replace(/\s+/g, '-')}.pdf`);
     showToast('Receipt downloaded successfully', 'success');
 
-    // Update receipt_generated_at in database
     const table = d.type === 'scheme' ? 'scheme_payments' : 'contributions';
     await sb.from(table).update({ receipt_generated_at: new Date().toISOString() }).eq('id', _currentReceiptData.id).eq('group_id', currentProfile.group_id);
 
@@ -288,28 +375,17 @@ function printReceiptDirect() {
   win.document.write(`
     <html><head><title>Receipt</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <style>body{margin:0;padding:20px;background:#fff;} @media print{body{padding:0;}}</style>
+    <style>
+      body { margin:0; padding:20px; background:#fff; }
+      @media print {
+        body { padding:0; }
+        /* Make watermark stronger on print */
+        [data-watermark] { opacity: 0.08 !important; }
+      }
+    </style>
     </head><body>
     ${doc.outerHTML}
     <script>window.onload=()=>{window.print();window.close();}<\/script>
     </body></html>`);
   win.document.close();
 }
-
-// ═══════════════════════════════════════════════════════════════
-//  HOW TO ADD RECEIPT BUTTONS TO YOUR EXISTING CONTRIBUTION ROWS
-//
-//  In your renderContributions() function, wherever you build
-//  each contribution row, add this button:
-//
-//  <button class="btn btn-xs btn-secondary"
-//    onclick="openReceiptModal(allContribs.find(c=>c.id==='${c.id}'),'event')">
-//    🧾 Receipt
-//  </button>
-//
-//  For scheme payments:
-//  <button class="btn btn-xs btn-secondary"
-//    onclick="openReceiptModal(allSchemePayments.find(p=>p.id==='${p.id}'),'scheme')">
-//    🧾 Receipt
-//  </button>
-// ═══════════════════════════════════════════════════════════════
