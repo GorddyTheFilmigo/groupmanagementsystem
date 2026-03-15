@@ -46,7 +46,27 @@ function toggleLanguage(){
 function applyLanguage(){
   const btn=document.getElementById('langToggleBtn');
   if(btn)btn.textContent=currentLang==='en'?'🇰🇪 SW':'🇬🇧 EN';
-  const navMap={dashboard:'dashboard',noticeboard:'noticeboard',members:'members',events:'events',schemes:'schemes',contributions:'contributions',expenses:'expenses',defaulters:'defaulters',myStatement:'myStatement',reports:'reports',elections:'elections',voting:'voting',manageUsers:'manageUsers',settings:'settings',minutes:'minutes',agendas:'agendas',budgets:'budgets',documents:'documents',amendments:'amendments'};
+  const navMap={
+    dashboard:'dashboard',
+    noticeboard:'noticeboard',
+    members:'members',
+    events:'events',
+    schemes:'schemes',
+    contributions:'contributions',
+    myReceipts:'myReceipts',
+    expenses:'expenses',
+    defaulters:'defaulters',
+    myStatement:'myStatement',
+    budgets:'budgets',
+    reports:'reports',
+    elections:'elections',
+    minutes:'minutes',
+    agendas:'agendas',
+    documents:'documents',
+    amendments:'amendments',
+    manageUsers:'manageUsers',
+    settings:'settings'
+  };
   Object.entries(navMap).forEach(([page,key])=>{
     const el=document.querySelector(`[data-page="${page}"] .nav-label`);
     if(el)el.textContent=t(key);

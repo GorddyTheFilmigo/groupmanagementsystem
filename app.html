@@ -39,6 +39,96 @@
       --fs-xl:20px;--fs-2xl:24px;--fs-3xl:30px;--fs-4xl:38px;
       --fw-normal:400;--fw-medium:500;--fw-semi:600;--fw-bold:700;--fw-black:800;
     }
+    /* ── LIGHT THEME ─────────────────────────────────────────────── */
+body.theme-light {
+  --navy:#f0f4ff;
+  --navy-mid:#e8eef8;
+  --navy-light:#dce6f5;
+  --navy-card:#eaf0fb;
+  --text:#0a1628;
+  --text-muted:#5a6a8a;
+  --text-soft:#3a4a6a;
+  --border:rgba(91,156,246,0.2);
+  --border-strong:rgba(91,156,246,0.38);
+  --card:rgba(255,255,255,0.92);
+  --card-hover:rgba(245,249,255,0.98);
+  --glass:rgba(0,0,0,0.03);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+  --shadow:0 4px 24px rgba(0,0,0,0.12);
+  --shadow-lg:0 12px 48px rgba(0,0,0,0.18);
+}
+
+body.theme-light { background:var(--navy); }
+
+body.theme-light .bg-mesh {
+  background:
+    radial-gradient(ellipse 70% 55% at 8% 15%,rgba(91,156,246,0.08) 0%,transparent 65%),
+    radial-gradient(ellipse 55% 45% at 92% 85%,rgba(52,217,165,0.06) 0%,transparent 60%);
+}
+
+body.theme-light .sidebar {
+  background:linear-gradient(180deg,#e8eef8 0%,#dce6f5 100%);
+  box-shadow:4px 0 32px rgba(0,0,0,0.1);
+}
+
+body.theme-light .mobile-bar {
+  background:rgba(240,244,255,0.96);
+}
+
+body.theme-light .topbar {
+  background:rgba(240,244,255,0.85);
+}
+
+body.theme-light .modal {
+  background:linear-gradient(160deg,#e8eef8 0%,#f0f4ff 100%);
+}
+
+body.theme-light .field input,
+body.theme-light .field select,
+body.theme-light .field textarea {
+  background:rgba(255,255,255,0.9);
+  color:var(--text);
+}
+
+body.theme-light .field select option {
+  background:#e8eef8;
+  color:#0a1628;
+}
+
+body.theme-light .search-input,
+body.theme-light .filter-select {
+  background:rgba(255,255,255,0.9);
+  color:var(--text);
+}
+
+body.theme-light .filter-select option {
+  background:#e8eef8;
+  color:#0a1628;
+}
+
+body.theme-light .toast {
+  background:#e8eef8;
+}
+
+body.theme-light .action-dropdown {
+  background:#e8eef8;
+}
+
+body.theme-light tr:hover td {
+  background:rgba(91,156,246,0.06);
+}
+
+body.theme-light .notice-text {
+  color:rgba(10,22,40,0.85);
+}
+
+body.theme-light .inbox-drawer {
+  background:linear-gradient(180deg,#e8eef8,#f0f4ff);
+}
+
+body.theme-light .panel {
+  background:linear-gradient(160deg,#e8eef8 0%,#f0f4ff 100%);
+}
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{-webkit-text-size-adjust:100%;}
@@ -699,73 +789,73 @@
 
     <div class="section-label">Overview</div>
     <div class="nav-item active" onclick="navigate('dashboard')" data-page="dashboard">
-      <span class="nav-icon">⊞</span> Dashboard
+      <span class="nav-icon">⊞</span><span class="nav-label">Dashboard</span>
     </div>
     <div class="nav-item" onclick="navigate('noticeboard')" data-page="noticeboard">
-      <span class="nav-icon">📣</span> Noticeboard
+      <span class="nav-icon">📣</span><span class="nav-label">Noticeboard</span>
     </div>
     <div class="nav-item" onclick="navigate('members')" data-page="members">
-      <span class="nav-icon">👤</span> Members
+      <span class="nav-icon">👤</span><span class="nav-label">Members</span>
     </div>
 
     <div class="section-label">Finances</div>
     <div class="nav-item" onclick="navigate('events')" data-page="events">
-      <span class="nav-icon">📅</span> Events
+      <span class="nav-icon">📅</span><span class="nav-label">Events</span>
     </div>
     <div class="nav-item" onclick="navigate('schemes')" data-page="schemes">
-      <span class="nav-icon">🔄</span> Recurring Schemes
+      <span class="nav-icon">🔄</span><span class="nav-label">Recurring Schemes</span>
     </div>
     <div class="nav-item" onclick="navigate('contributions')" data-page="contributions">
-      <span class="nav-icon">💰</span> All Contributions
+      <span class="nav-icon">💰</span><span class="nav-label">All Contributions</span>
     </div>
     <div class="nav-item" onclick="navigate('myReceipts')" data-page="myReceipts">
-        <span class="nav-icon">🧾</span> My Receipts
-      </div>
+      <span class="nav-icon">🧾</span><span class="nav-label">My Receipts</span>
+    </div>
     <div class="nav-item" onclick="navigate('expenses')" data-page="expenses">
-      <span class="nav-icon">🧾</span> Expenses
+      <span class="nav-icon">🧾</span><span class="nav-label">Expenses</span>
     </div>
     <div class="nav-item" onclick="navigate('defaulters')" data-page="defaulters">
-      <span class="nav-icon">⚠️</span> Defaulters
+      <span class="nav-icon">⚠️</span><span class="nav-label">Defaulters</span>
     </div>
     <div class="nav-item" onclick="navigate('myStatement')" data-page="myStatement">
-      <span class="nav-icon">👤</span> My Statement
+      <span class="nav-icon">👤</span><span class="nav-label">My Statement</span>
     </div>
     <div class="nav-item" onclick="navigate('budgets')" data-page="budgets">
-      <span class="nav-icon">📊</span> Budget Planning
+      <span class="nav-icon">📊</span><span class="nav-label">Budget Planning</span>
     </div>
 
     <div class="section-label">Reports & Analytics</div>
     <div class="nav-item" onclick="navigate('reports')" data-page="reports">
-      <span class="nav-icon">📈</span> Reports
+      <span class="nav-icon">📈</span><span class="nav-label">Reports</span>
     </div>
 
     <div class="section-label">Governance</div>
     <div class="nav-item" onclick="navigate('elections')" data-page="elections">
-      <span class="nav-icon">🗳️</span> Elections
+      <span class="nav-icon">🗳️</span><span class="nav-label">Elections</span>
     </div>
     <div class="nav-item" onclick="navigate('minutes')" data-page="minutes">
-      <span class="nav-icon">📝</span> Meeting Minutes
+      <span class="nav-icon">📝</span><span class="nav-label">Meeting Minutes</span>
     </div>
     <div class="nav-item" onclick="navigate('agendas')" data-page="agendas">
-      <span class="nav-icon">📋</span> Agendas
+      <span class="nav-icon">📋</span><span class="nav-label">Agendas</span>
     </div>
     <div class="nav-item" onclick="navigate('documents')" data-page="documents">
-      <span class="nav-icon">🗄️</span> Document Vault
+      <span class="nav-icon">🗄️</span><span class="nav-label">Document Vault</span>
     </div>
     <div class="nav-item admin-only" onclick="navigate('amendments')" data-page="amendments" style="display:none;">
-      <span class="nav-icon">📜</span> Amendment Log
+      <span class="nav-icon">📜</span><span class="nav-label">Amendment Log</span>
     </div>
 
     <div class="section-label admin-only" style="display:none;">Admin</div>
     <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;">
-      <span class="nav-icon">⚙️</span> Manage Users
+      <span class="nav-icon">⚙️</span><span class="nav-label">Manage Users</span>
     </div>
     <div class="nav-item admin-only" onclick="navigate('settings')" data-page="settings" style="display:none;">
-  <span class="nav-icon">⚙️</span> Settings
-</div>
+      <span class="nav-icon">⚙️</span><span class="nav-label">Settings</span>
+    </div>
 
     <div class="nav-item" onclick="window.open('features.html','_blank')">
-      <span class="nav-icon">🚀</span> Feature Roadmap
+      <span class="nav-icon">🚀</span><span class="nav-label">Feature Roadmap</span>
     </div>
 
     <div style="border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;margin-top:8px;">
@@ -775,7 +865,6 @@
 
   </div><!-- end .sidebar-nav -->
 
-  <!-- ✅ Single footer, inside the nav, pinned to bottom -->
   <div class="sidebar-footer">
     <div class="user-card">
       <div class="user-avatar" id="userAvatar">G</div>
@@ -785,11 +874,11 @@
       </div>
     </div>
     <div class="nav-item" onclick="signOut()" style="color:#f25c54;margin-top:8px;">
-      <span class="nav-icon">→</span> Sign Out
+      <span class="nav-icon">→</span><span class="nav-label">Sign Out</span>
     </div>
   </div><!-- end .sidebar-footer -->
 
-</nav><!-- end #sidebar -->
+</nav>
 <!-- Add this just before or at the top of your main content wrapper -->
 <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">☰</button>
 <main class="main">  <!-- DASHBOARD -->
@@ -4384,7 +4473,6 @@ function renderNoticeboard(){
   const isLeader=['admin','chairman','treasurer','secretary'].includes(role);
   const topbar=document.getElementById('noticeboardTopActions');
   if(topbar)topbar.innerHTML=isLeader?`<button class="btn btn-primary btn-sm" onclick="openCreateNoticeModal()">+ Post Announcement</button>`:'';
-
   const container=document.getElementById('noticeboardContent');
   let list=[...allNotices].sort((a,b)=>{
     if(a.is_pinned&&!b.is_pinned)return-1;
@@ -4392,7 +4480,6 @@ function renderNoticeboard(){
     return new Date(b.created_at)-new Date(a.created_at);
   });
   if(noticeFilter!=='all')list=list.filter(n=>(n.notice_type||'general')===noticeFilter);
-
   if(!list.length){
     container.innerHTML=`<div class="empty"><div class="empty-icon">📣</div><p>${isLeader?'No announcements yet. Post the first one!':'No announcements yet.'}</p></div>`;
     return;
@@ -4400,12 +4487,16 @@ function renderNoticeboard(){
   container.innerHTML=list.map(n=>{
     const cfg=NOTICE_TYPES[n.notice_type||'general'];
     const author=allMembers.find(m=>m.id===n.author_id);
-    const reads=typeof n.read_by==='string'?JSON.parse(n.read_by||'[]'):n.read_by||[];
+    let reads=[];
+    try{
+      if(Array.isArray(n.read_by))reads=n.read_by;
+      else if(typeof n.read_by==='string'&&n.read_by)reads=JSON.parse(n.read_by);
+      else if(typeof n.read_by==='object'&&n.read_by!==null&&!Array.isArray(n.read_by))reads=[];
+    }catch(e){reads=[];}
     const isRead=reads.includes(currentProfile.id);
     const readCount=reads.length;
     const readMembers=reads.slice(0,5).map(id=>allMembers.find(m=>m.id===id)).filter(Boolean);
     const authorRole=author?(ROLES[author.group_role||author.role||'member']||ROLES.member):ROLES.member;
-
     return`<div class="notice-card ${n.is_pinned?'pinned':''}">
       <div class="notice-card-header">
         <div class="notice-author-avatar" style="background:linear-gradient(135deg,${authorRole.color||'var(--accent)'},var(--accent2));">${author?author.full_name.charAt(0):'?'}</div>
@@ -4440,7 +4531,6 @@ function renderNoticeboard(){
     </div>`;
   }).join('');
 }
-
 function filterNotices(type,btn){
   noticeFilter=type;
   document.querySelectorAll('.notice-filter-btn').forEach(b=>b.classList.remove('active'));
@@ -4517,7 +4607,12 @@ function switchInboxTab(tab){
 
 function updateNotifBadge(){
   const unreadNotices=allNotices.filter(n=>{
-    const reads=typeof n.read_by==='string'?JSON.parse(n.read_by||'[]'):n.read_by||[];
+    let reads=[];
+    try{
+      if(Array.isArray(n.read_by))reads=n.read_by;
+      else if(typeof n.read_by==='string'&&n.read_by)reads=JSON.parse(n.read_by);
+      else if(typeof n.read_by==='object'&&n.read_by!==null&&!Array.isArray(n.read_by))reads=[];
+    }catch(e){reads=[];}
     return!reads.includes(currentProfile.id);
   }).length;
   const unreadDMs=allMessages.filter(m=>m.recipient_id===currentProfile.id&&!m.is_read).length;
