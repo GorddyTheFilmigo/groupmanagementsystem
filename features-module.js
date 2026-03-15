@@ -812,7 +812,7 @@ function openDocumentUpload(){
     <div class="modal-overlay open" id="docUploadOverlay">
       <div class="modal">
         <div class="modal-title">📄 Add Document</div>
-        <div class="modal-sub">Save a link to an important group document</div>
+        <div class="modal-sub">Upload a file or save a link to an important group document</div>
         <div class="field"><label>Document Name</label><input id="doc-name" type="text" placeholder="e.g. Group Constitution 2024"/></div>
         <div class="field"><label>Category</label>
           <select id="doc-category" class="filter-select" style="width:100%">
@@ -823,32 +823,111 @@ function openDocumentUpload(){
             <option value="general">📄 General</option>
           </select>
         </div>
-        <div class="field"><label>Document URL / Link</label><input id="doc-url" type="url" placeholder="https://drive.google.com/... or any shareable link"/></div>
-        <div class="field"><label>File Type</label><input id="doc-type" type="text" placeholder="e.g. PDF, Word, Excel"/></div>
-        <div class="info-box">💡 Upload your file to Google Drive or Dropbox, copy the shareable link and paste it above.</div>
+        <div class="field">
+          <label>Upload Method</label>
+          <div style="display:flex;gap:10px;margin-top:6px;">
+            <button class="btn btn-secondary btn-sm" id="methodFileBtn" onclick="switchDocMethod('file')" style="flex:1;border:2px solid var(--accent);">📁 Upload File</button>
+            <button class="btn btn-secondary btn-sm" id="methodUrlBtn" onclick="switchDocMethod('url')" style="flex:1;">🔗 Paste URL</button>
+          </div>
+        </div>
+        <div id="doc-file-section" class="field">
+          <label>Select File (PDF, Word, Excel, etc.)</label>
+          <input id="doc-file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.png,.jpg,.jpeg" style="width:100%;padding:8px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);"/>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Max 10MB</div>
+        </div>
+        <div id="doc-url-section" class="field" style="display:none;">
+          <label>Document URL / Link</label>
+          <input id="doc-url" type="url" placeholder="https://drive.google.com/... or any shareable link"/>
+        </div>
+        <div class="field"><label>File Type <span style="color:var(--text-muted);font-size:11px;">(optional label)</span></label><input id="doc-type" type="text" placeholder="e.g. PDF, Word, Excel"/></div>
+        <div id="doc-upload-progress" style="display:none;margin-top:8px;">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Uploading...</div>
+          <div style="background:var(--border);border-radius:999px;height:6px;"><div id="doc-upload-bar" style="background:var(--accent);height:6px;border-radius:999px;width:0%;transition:width 0.3s;"></div></div>
+        </div>
         <div class="modal-actions">
           <button class="btn btn-secondary" onclick="document.getElementById('docUploadOverlay').remove()">Cancel</button>
-          <button class="btn btn-primary" onclick="saveDocument()">Save Document</button>
+          <button class="btn btn-primary" id="saveDocBtn" onclick="saveDocument()">Save Document</button>
         </div>
       </div>
     </div>`;
   document.body.insertAdjacentHTML('beforeend',html);
 }
 
+function switchDocMethod(method){
+  const isFile=method==='file';
+  document.getElementById('doc-file-section').style.display=isFile?'block':'none';
+  document.getElementById('doc-url-section').style.display=isFile?'none':'block';
+  document.getElementById('methodFileBtn').style.border=isFile?'2px solid var(--accent)':'';
+  document.getElementById('methodUrlBtn').style.border=isFile?'':'2px solid var(--accent)';
+}
+
 async function saveDocument(){
   const name=document.getElementById('doc-name').value.trim();
   const category=document.getElementById('doc-category').value;
-  const file_url=document.getElementById('doc-url').value.trim();
   const file_type=document.getElementById('doc-type').value.trim();
+  const fileInput=document.getElementById('doc-file');
+  const urlInput=document.getElementById('doc-url');
+  const isFileMethod=document.getElementById('doc-file-section').style.display!=='none';
+
   if(!name)return showToast('Document name is required','error');
+
+  const btn=document.getElementById('saveDocBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+
   try{
-    await sb.from('group_documents').insert([{group_id:currentProfile.group_id,name,category,file_url,file_type,uploaded_by:currentProfile.id}]);
+    let file_url='';
+
+    if(isFileMethod){
+      const file=fileInput?.files?.[0];
+      if(!file)return showToast('Please select a file','error');
+      if(file.size>10*1024*1024)return showToast('File too large. Max 10MB','error');
+
+      // Show progress
+      document.getElementById('doc-upload-progress').style.display='block';
+      document.getElementById('doc-upload-bar').style.width='40%';
+
+      const ext=file.name.split('.').pop();
+      const filePath=`${currentProfile.group_id}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+
+      const{data:uploadData,error:uploadErr}=await sb.storage
+        .from('group-documents')
+        .upload(filePath,file,{cacheControl:'3600',upsert:false});
+
+      if(uploadErr)throw uploadErr;
+
+      document.getElementById('doc-upload-bar').style.width='80%';
+
+      const{data:urlData}=sb.storage.from('group-documents').getPublicUrl(filePath);
+      file_url=urlData.publicUrl;
+
+      document.getElementById('doc-upload-bar').style.width='100%';
+
+    }else{
+      file_url=urlInput?.value.trim()||'';
+      if(!file_url)return showToast('Please enter a document URL','error');
+    }
+
+    await sb.from('group_documents').insert([{
+      group_id:currentProfile.group_id,
+      name,
+      category,
+      file_url,
+      file_type:file_type||(isFileMethod?fileInput.files[0]?.name.split('.').pop().toUpperCase():'Link'),
+      uploaded_by:currentProfile.id
+    }]);
+
     document.getElementById('docUploadOverlay')?.remove();
     const{data}=await sb.from('group_documents').select('*').eq('group_id',currentProfile.group_id).order('created_at',{ascending:false});
     allDocuments=data||[];
     renderDocumentVault();
     showToast('Document saved!','success');
-  }catch(e){showToast('Failed: '+e.message,'error');}
+
+  }catch(e){
+    showToast('Failed: '+e.message,'error');
+  }finally{
+    btn.disabled=false;btn.innerHTML='Save Document';
+    document.getElementById('doc-upload-progress')?.style && (document.getElementById('doc-upload-progress').style.display='none');
+  }
 }
 
 async function deleteDocument(id){
