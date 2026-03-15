@@ -32,8 +32,36 @@ function applyTheme(theme){
 //  2. SWAHILI / ENGLISH TOGGLE
 // ═══════════════════════════════════════════════════════════════
 const TRANSLATIONS={
-  en:{dashboard:'Dashboard',noticeboard:'Noticeboard',members:'Members',events:'Events',schemes:'Recurring Schemes',contributions:'All Contributions',expenses:'Expenses & Balance',defaulters:'Defaulters',myStatement:'My Statement',reports:'Reports',elections:'Elections',voting:'Voting',manageUsers:'Manage Users',settings:'M-Pesa Settings',minutes:'Meeting Minutes',agendas:'Agendas',budgets:'Budget Planning',documents:'Document Vault',amendments:'Amendment Log',signOut:'Sign Out',overview:'Overview',finances:'Finances',governance:'Governance',adminOnly:'Admin Only',addEvent:'+ Add Event',addContrib:'+ Manual Entry',addScheme:'+ New Scheme',addExpense:'+ Log Expense',welcome:'Welcome back',loading:'Loading...',save:'Save',cancel:'Cancel',close:'Close',delete:'Delete',edit:'Edit',submit:'Submit',confirm:'Confirm',search:'Search...',filter:'Filter',export:'Export CSV',print:'Print',noData:'No data found.',success:'Success!',error:'Error'},
-  sw:{dashboard:'Dashibodi',noticeboard:'Bodi ya Matangazo',members:'Wanachama',events:'Matukio',schemes:'Mipango ya Mara kwa Mara',contributions:'Michango Yote',expenses:'Matumizi & Salio',defaulters:'Wadaiwa',myStatement:'Taarifa Yangu',reports:'Ripoti',elections:'Uchaguzi',voting:'Kupiga Kura',manageUsers:'Simamia Watumiaji',settings:'Mipangilio ya M-Pesa',minutes:'Kumbukumbu za Mkutano',agendas:'Ajenda',budgets:'Mipango ya Bajeti',documents:'Hazina ya Nyaraka',amendments:'Kumbukumbu za Marekebisho',signOut:'Toka',overview:'Muhtasari',finances:'Fedha',governance:'Utawala',adminOnly:'Msimamizi Pekee',addEvent:'+ Ongeza Tukio',addContrib:'+ Ingiza Mkono',addScheme:'+ Mpango Mpya',addExpense:'+ Rekodi Matumizi',welcome:'Karibu tena',loading:'Inapakia...',save:'Hifadhi',cancel:'Ghairi',close:'Funga',delete:'Futa',edit:'Hariri',submit:'Wasilisha',confirm:'Thibitisha',search:'Tafuta...',filter:'Chuja',export:'Hamisha CSV',print:'Chapisha',noData:'Hakuna data.',success:'Imefanikiwa!',error:'Hitilafu'}
+  en:{
+  // ...existing keys...
+  totalMembers:'Total Members',
+  totalEvents:'Total Events',
+  totalCollected:'Total Collected',
+  activeSchemes:'Active Schemes',
+  mpesaAlert:'M-Pesa payments not set up.',
+  mpesaAlertLink:'Configure your paybill or till number',
+  mpesaAlertSuffix:'so members can pay online.',
+  recentContributions:'Recent Contributions',
+  allTab:'All',
+  eventsTab:'Events',
+  schemesTab:'Schemes',
+  generalTab:'General',
+},
+sw:{
+  // ...existing keys...
+  totalMembers:'Jumla ya Wanachama',
+  totalEvents:'Jumla ya Matukio',
+  totalCollected:'Jumla Iliyokusanywa',
+  activeSchemes:'Mipango Inayofanya Kazi',
+  mpesaAlert:'M-Pesa haijasanidiwa.',
+  mpesaAlertLink:'Sanidi nambari yako ya paybill au till',
+  mpesaAlertSuffix:'ili wanachama waweze kulipa mtandaoni.',
+  recentContributions:'Michango ya Hivi Karibuni',
+  allTab:'Yote',
+  eventsTab:'Matukio',
+  schemesTab:'Mipango',
+  generalTab:'Jumla',
+}
 };
 let currentLang=localStorage.getItem('gf_lang')||'en';
 function t(key){return TRANSLATIONS[currentLang][key]||TRANSLATIONS['en'][key]||key;}

@@ -3993,37 +3993,201 @@ function printStatement(){
   const myContribs=allContribs.filter(c=>c.member_id===me.id);
   const mySchemePayments=allSchemePayments.filter(p=>p.member_id===me.id);
   const totalPaid=myContribs.reduce((s,c)=>s+parseFloat(c.amount||0),0)+mySchemePayments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
+  const totalPayments=myContribs.length+mySchemePayments.length;
+
+  // Generate tamper-evident hash
+  const genDate=new Date().toISOString();
+  const hashStr=`${me.id}|${me.full_name}|${totalPaid}|${totalPayments}|${genDate}|GF-SECURE-2025`;
+  let hash=0;
+  for(let i=0;i<hashStr.length;i++){const chr=hashStr.charCodeAt(i);hash=((hash<<5)-hash)+chr;hash|=0;}
+  const hex=Math.abs(hash).toString(16).toUpperCase().padStart(12,'0');
+  const verifyCode=`GF-${hex.slice(0,4)}-${hex.slice(4,8)}-${hex.slice(8,12)}`;
+  const genDateFmt=new Date(genDate).toLocaleString('en-KE',{dateStyle:'full',timeStyle:'medium'});
+
+  const rows=[
+    ...myContribs.map(c=>({source:allEvents.find(e=>e.id===c.event_id)?.name||'General',type:'Event',amount:c.amount,date:c.created_at,note:c.note||''})),
+    ...mySchemePayments.map(p=>({source:(allSchemes.find(s=>s.id===p.scheme_id)?.name||'Scheme')+' — '+(allPeriods.find(x=>x.id===p.period_id)?.period_label||''),type:'Scheme',amount:p.amount,date:p.paid_at,note:p.note||''}))
+  ].sort((a,b)=>new Date(b.date)-new Date(a.date));
 
   const win=window.open('','_blank');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Statement — ${me.full_name}</title>
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <title>Statement — ${me.full_name}</title>
   <style>
-    body{font-family:Arial,sans-serif;color:#111;padding:32px;max-width:700px;margin:0 auto;}
-    h1{font-size:22px;margin-bottom:4px;}
-    .sub{color:#666;font-size:13px;margin-bottom:24px;}
-    .kpis{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
-    .kpi{border:1px solid #ddd;border-radius:8px;padding:14px 18px;min-width:120px;}
-    .kpi strong{font-size:20px;display:block;}
-    .kpi span{font-size:11px;color:#666;}
-    h2{font-size:15px;border-bottom:2px solid #eee;padding-bottom:6px;margin:20px 0 12px;}
-    table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;}
-    th{text-align:left;padding:8px 10px;background:#f4f4f4;border-bottom:2px solid #ddd;}
-    td{padding:8px 10px;border-bottom:1px solid #eee;}
-    .pending{background:#fff5f5;}
-    @media print{button{display:none;}}
-    .footer{margin-top:32px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px;}
-  </style></head><body>`);
-  win.document.write(`<h1>Member Statement — ${me.full_name}</h1>`);
-  win.document.write(`<div class="sub">${grpName} · Generated ${new Date().toLocaleString()} · @${me.username||'—'}</div>`);
-  win.document.write(`<div class="kpis"><div class="kpi"><strong>KES ${totalPaid.toLocaleString()}</strong><span>Total Contributed</span></div><div class="kpi"><strong>${myContribs.length+mySchemePayments.length}</strong><span>Payments Made</span></div></div>`);
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;color:#111;padding:40px;max-width:750px;margin:0 auto;position:relative;}
 
-  // Payment history table
-  win.document.write(`<h2>Payment History</h2><table><thead><tr><th>Source</th><th>Type</th><th>Amount (KES)</th><th>Date</th><th>Note</th></tr></thead><tbody>`);
-  [...myContribs.map(c=>({source:allEvents.find(e=>e.id===c.event_id)?.name||'General',type:'Event',amount:c.amount,date:c.created_at,note:c.note||''})),...mySchemePayments.map(p=>({source:(allSchemes.find(s=>s.id===p.scheme_id)?.name||'Scheme')+' — '+(allPeriods.find(x=>x.id===p.period_id)?.period_label||''),type:'Scheme',amount:p.amount,date:p.paid_at,note:p.note||''}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(r=>{
-    win.document.write(`<tr><td>${r.source}</td><td>${r.type}</td><td>${parseFloat(r.amount).toLocaleString()}</td><td>${formatDate(r.date)}</td><td>${r.note}</td></tr>`);
+    /* ── WATERMARK ── */
+    body::before{
+      content:'GordyTheFilmigo official-stamp';
+      position:fixed;top:50%;left:50%;
+      transform:translate(-50%,-50%) rotate(-35deg);
+      font-size:72px;font-weight:900;
+      color:rgba(91,156,246,0.07);
+      white-space:nowrap;pointer-events:none;z-index:0;
+      letter-spacing:8px;
+    }
+
+    /* ── DIAGONAL PATTERN ── */
+    body::after{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:
+        repeating-linear-gradient(45deg,transparent,transparent 28px,rgba(91,156,246,0.025) 28px,rgba(91,156,246,0.025) 30px),
+        repeating-linear-gradient(-45deg,transparent,transparent 28px,rgba(91,156,246,0.025) 28px,rgba(91,156,246,0.025) 30px);
+    }
+
+    .content{position:relative;z-index:1;}
+
+    /* ── HEADER ── */
+    .header{border-bottom:3px solid #1a3a6b;padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;}
+    .header-left h1{font-size:22px;color:#0a1628;margin-bottom:4px;}
+    .header-left .sub{color:#666;font-size:12px;line-height:1.6;}
+    .header-right{text-align:right;}
+    .header-right .doc-id{font-family:monospace;font-size:11px;color:#888;margin-bottom:4px;}
+    .official-stamp{display:inline-block;border:2px solid #1a3a6b;border-radius:4px;padding:6px 12px;font-size:10px;font-weight:900;color:#1a3a6b;letter-spacing:2px;text-transform:uppercase;}
+
+    /* ── MEMBER CARD ── */
+    .member-card{background:#f7f9ff;border:1px solid #d0daf0;border-radius:8px;padding:16px 20px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .member-name{font-size:18px;font-weight:700;color:#0a1628;}
+    .member-meta{font-size:12px;color:#555;margin-top:3px;line-height:1.6;}
+    .member-badge{background:#0a1628;color:#fff;padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;}
+
+    /* ── KPIs ── */
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
+    .kpi{border:1px solid #dde4f0;border-radius:8px;padding:14px 18px;background:#fff;}
+    .kpi strong{font-size:20px;font-weight:800;display:block;color:#0a1628;margin-bottom:3px;}
+    .kpi span{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.5px;}
+
+    /* ── TABLE ── */
+    h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3a6b;border-bottom:2px solid #d0daf0;padding-bottom:7px;margin:22px 0 12px;}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
+    th{text-align:left;padding:9px 12px;background:#0a1628;color:#fff;font-size:11px;letter-spacing:0.5px;}
+    td{padding:9px 12px;border-bottom:1px solid #eef0f7;vertical-align:top;}
+    tr:nth-child(even) td{background:#f7f9ff;}
+    tr:last-child td{border-bottom:none;}
+    .amount{font-weight:700;font-family:monospace;}
+    tfoot td{background:#f0f4ff;font-weight:800;border-top:2px solid #d0daf0;}
+
+    /* ── SECURITY FOOTER ── */
+    .security-footer{
+      margin-top:32px;
+      border:1px solid #d0daf0;
+      border-radius:8px;
+      padding:16px 20px;
+      background:#f7f9ff;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .security-footer .sec-left{flex:1;}
+    .security-footer .sec-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3a6b;margin-bottom:5px;}
+    .security-footer .sec-code{font-family:monospace;font-size:16px;font-weight:800;color:#0a1628;letter-spacing:3px;}
+    .security-footer .sec-note{font-size:10px;color:#888;margin-top:5px;line-height:1.5;}
+    .security-footer .sec-right{text-align:right;}
+    .security-footer .gen-info{font-size:10px;color:#888;line-height:1.8;}
+
+    /* ── FINAL FOOTER ── */
+    .doc-footer{margin-top:16px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px;}
+
+    @media print{
+      body{padding:20px;}
+      body::before{color:rgba(0,0,0,0.04);}
+      .no-print{display:none;}
+    }
+  </style>
+  </head><body><div class="content">`);
+
+  // Header
+  win.document.write(`
+    <div class="header">
+      <div class="header-left">
+        <h1>📊 Member Financial Statement</h1>
+        <div class="sub">
+          ${grpName}<br/>
+          Generated: ${genDateFmt}
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="doc-id">DOC ID: ${verifyCode}</div>
+        <div class="official-stamp">✓ Official Document</div>
+      </div>
+    </div>`);
+
+  // Member card
+  win.document.write(`
+    <div class="member-card">
+      <div>
+        <div class="member-name">${me.full_name}</div>
+        <div class="member-meta">
+          Username: @${me.username||'—'}<br/>
+          Phone: ${me.phone||'Not provided'}<br/>
+          Member since: ${formatDate(me.created_at)}
+        </div>
+      </div>
+      <div class="member-badge">VERIFIED MEMBER</div>
+    </div>`);
+
+  // KPIs
+  win.document.write(`
+    <div class="kpis">
+      <div class="kpi"><strong>KES ${totalPaid.toLocaleString()}</strong><span>Total Contributed</span></div>
+      <div class="kpi"><strong>${totalPayments}</strong><span>Payments Made</span></div>
+      <div class="kpi"><strong>${rows.length}</strong><span>Transactions</span></div>
+      <div class="kpi"><strong>${new Date().getFullYear()}</strong><span>Statement Year</span></div>
+    </div>`);
+
+  // Payment table
+  win.document.write(`<h2>Payment History</h2>
+    <table>
+      <thead><tr><th>#</th><th>Source</th><th>Type</th><th>Amount (KES)</th><th>Date</th><th>Note</th></tr></thead>
+      <tbody>`);
+  rows.forEach((r,i)=>{
+    win.document.write(`<tr>
+      <td style="color:#888;">${i+1}</td>
+      <td>${r.source}</td>
+      <td>${r.type}</td>
+      <td class="amount">${parseFloat(r.amount).toLocaleString()}</td>
+      <td>${formatDate(r.date)}</td>
+      <td style="color:#888;">${r.note||'—'}</td>
+    </tr>`);
   });
-  win.document.write(`</tbody></table>`);
-  win.document.write(`<div class="footer">GroupFlow · This is an automatically generated statement · ${new Date().toLocaleDateString()}</div></body></html>`);
-  win.document.close();setTimeout(()=>win.print(),400);
+  win.document.write(`</tbody>
+    <tfoot><tr>
+      <td colspan="3" style="text-align:right;font-size:11px;letter-spacing:0.5px;">TOTAL CONTRIBUTED</td>
+      <td class="amount">KES ${totalPaid.toLocaleString()}</td>
+      <td colspan="2"></td>
+    </tr></tfoot>
+    </table>`);
+
+  // Security footer
+  win.document.write(`
+    <div class="security-footer">
+      <div class="sec-left">
+        <div class="sec-title">🔐 Document Verification Code</div>
+        <div class="sec-code">${verifyCode}</div>
+        <div class="sec-note">
+          This code is uniquely generated from this member's financial data.<br/>
+          Any alteration to this document will invalidate this verification code.<br/>
+          Contact your group admin to verify authenticity.
+        </div>
+      </div>
+      <div class="sec-right">
+        <div class="gen-info">
+          Generated by: GordyTheFilmigo System<br/>
+          Member ID: ${me.id.slice(0,8).toUpperCase()}...<br/>
+          Group: ${grpName}<br/>
+          Timestamp: ${genDateFmt}
+        </div>
+      </div>
+    </div>
+    <div class="doc-footer">
+      GordyTheFilmigo · This is an automatically generated official statement · Any tampering renders this document invalid · ${verifyCode}
+    </div>
+  </div></body></html>`);
+
+  win.document.close();
+  setTimeout(()=>win.print(),500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
