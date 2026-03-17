@@ -8,7 +8,7 @@
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="GroupFlow"/>
+  <meta name="apple-mobile-web-app-title" content="GordyTheFilmigo"/>
   <link rel="apple-touch-icon" href="image1.png"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     /* ═══════════════════════════════════════════════════════════════
-       GROUPFLOW — PROFESSIONAL DESIGN SYSTEM
+       GordyTheFilmigo — PROFESSIONAL DESIGN SYSTEM
        Mobile-first, fully responsive
     ═══════════════════════════════════════════════════════════════ */
     :root {
@@ -767,7 +767,7 @@ body.theme-light .panel {
 <div id="installBanner" style="display:none;position:fixed;top:12px;right:16px;z-index:9999;background:linear-gradient(135deg,rgba(17,31,58,0.97),rgba(10,22,40,0.99));border:1px solid rgba(91,156,246,0.35);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.45),0 0 0 1px rgba(91,156,246,0.1);backdrop-filter:blur(12px);max-width:300px;">
   <div style="width:32px;height:32px;background:linear-gradient(135deg,#5b9cf6,#34d9a5);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👥</div>
   <div style="flex:1;min-width:0;">
-    <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#eef1fa;white-space:nowrap;">Install GroupFlow</div>
+    <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#eef1fa;white-space:nowrap;">Install GordyTheFilmigo</div>
     <div style="font-size:10px;color:#7a8fb0;margin-top:1px;">Add to home screen</div>
   </div>
   <button onclick="installApp()" style="background:linear-gradient(135deg,#5b9cf6,#3a72d8);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(91,156,246,0.4);">⬇ Install</button>
@@ -778,7 +778,7 @@ body.theme-light .panel {
 
   <div class="sidebar-brand">
     <div class="name">
-      <img src="image1.png" alt="GroupFlow Logo" class="logo">
+      <img src="image1.png" alt="GordyTheFilmigo Logo" class="logo">
     </div>
     <div class="group-name" id="sidebarGroupName">Loading...</div>
   </div>
@@ -1213,7 +1213,7 @@ body.theme-light .panel {
             </select>
           </div>
           <div class="info-box">
-            <strong>Don't have API credentials yet?</strong> You can still use GroupFlow in <em>manual mode</em> — admins mark payments manually after members pay to the paybill/till number. The M-Pesa button will show members payment instructions instead of auto-initiating STK Push.
+            <strong>Don't have API credentials yet?</strong> You can still use GordyTheFilmigo in <em>manual mode</em> — admins mark payments manually after members pay to the paybill/till number. The M-Pesa button will show members payment instructions instead of auto-initiating STK Push.
           </div>
         </div>
       </div>
@@ -2254,7 +2254,7 @@ function buildPaybillWidget(dest,memberName){
       <div class="paybill-widget-row"><span class="paybill-widget-label">Go to M-Pesa</span><span style="font-size:12px;color:var(--text-muted);">Lipa na M-Pesa</span></div>
       <div class="paybill-widget-row"><span class="paybill-widget-label">Select</span><span style="color:var(--text);">Pay Bill</span></div>
       <div class="paybill-widget-row"><span class="paybill-widget-label">Business No.</span><span class="paybill-widget-val">${dest.number}</span></div>
-      <div class="paybill-widget-row"><span class="paybill-widget-label">Account No.</span><span class="paybill-widget-val">${dest.account||memberName||'GroupFlow'}</span></div>
+      <div class="paybill-widget-row"><span class="paybill-widget-label">Account No.</span><span class="paybill-widget-val">${dest.account||memberName||'GordyTheFilmigo'}</span></div>
     </div>`;
   }
   if(dest.type==='Till'){
@@ -2585,7 +2585,7 @@ async function initiateStkPush(type,eventId,eventName,amount,periodId,schemeId){
       // Call Supabase Edge Function: sb.functions.invoke('mpesa-stk-push', {...})
       // We leave this as a placeholder and fall through to direct DB recording:
       // const { data, error } = await sb.functions.invoke('mpesa-stk-push', {
-      //   body: { phone, amount: payAmount, accountRef: eventName||'GroupFlow', groupId: currentProfile.group_id }
+      //   body: { phone, amount: payAmount, accountRef: eventName||'GordyTheFilmigo', groupId: currentProfile.group_id }
       // });
       stkSuccess=true; // Assume success after integration
     }else{
@@ -2730,7 +2730,7 @@ function renderSchemesPage(){
 }
 // Generates a tamper-evident hash from receipt data
 function generateReceiptHash(data) {
-  const str = `${data.receiptNo}|${data.member}|${data.amount}|${data.date}|${data.event}|GROUPFLOW-SECRET`;
+  const str = `${data.receiptNo}|${data.member}|${data.amount}|${data.date}|${data.event}|GordyTheFilmigo-SECRET`;
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const chr = str.charCodeAt(i);
@@ -3212,18 +3212,126 @@ function renderUsers(members){
         ${isSelf?'<span style="color:var(--text-muted);font-size:12px;">—</span>':
         `<div class="action-menu-wrap" id="wrap_${m.id}">
           <button class="action-menu-btn" onclick="toggleActionMenu('${menuId}')">Actions ▾</button>
-          <div class="action-dropdown" id="${menuId}">
-            ${canAssignRoles()&&role!=='chairman'?`<div class="action-dropdown-item" onclick="closeAllMenus();openAssignRoleModal('${m.id}')">🎭 Assign Role</div>`:''}
-            ${isChairman()&&role!=='chairman'?`<div class="action-dropdown-item" style="color:var(--accent3);" onclick="closeAllMenus();openManualPromoteModal('${m.id}','${m.full_name.replace(/'/g,"\\'")}')">👑 Manually Promote to Chairman</div>`:''}
-            ${canResetPass()?`<div class="action-dropdown-item" onclick="closeAllMenus();openResetPassModal('${m.id}','${m.full_name.replace(/'/g,"\\'")}')">🔑 Reset Password</div>`:''}
-            ${canSuspend()&&!m.is_suspended?`<div class="action-dropdown-divider"></div><div class="action-dropdown-item danger" onclick="closeAllMenus();openSuspendModal('${m.id}','${m.full_name.replace(/'/g,"\\'")}',false)">🔒 Suspend Member</div>`:''}
-            ${canSuspend()&&m.is_suspended?`<div class="action-dropdown-divider"></div><div class="action-dropdown-item success" onclick="closeAllMenus();openSuspendModal('${m.id}','${m.full_name.replace(/'/g,"\\'")}',true)">✅ Reinstate Member</div>`:''}
-            ${canManage()?`<div class="action-dropdown-divider"></div><div class="action-dropdown-item danger" onclick="closeAllMenus();askDelete('user','${m.id}')">🗑 Remove Member</div>`:''}
-          </div>
+action-dropdown
         </div>`}
       </td>
     </tr>`;
   }).join('');
+}
+
+function viewMemberStatement(memberId){
+  const member=allMembers.find(m=>m.id===memberId);
+  if(!member)return toast('Member not found','error');
+
+  const memberContribs=allContribs.filter(c=>c.member_id===memberId);
+  const memberSchemePayments=allSchemePayments.filter(p=>p.member_id===memberId);
+  const totalPaid=memberContribs.reduce((s,c)=>s+parseFloat(c.amount||0),0)+memberSchemePayments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
+  const totalPayments=memberContribs.length+memberSchemePayments.length;
+
+  // Pending items
+  const pendingItems=[];
+  allEvents.filter(ev=>ev.requires_contribution&&ev.contribution_amount).forEach(ev=>{
+    const paid=memberContribs.find(c=>c.event_id===ev.id);
+    if(!paid)pendingItems.push({name:ev.name,type:'Event',amount:parseFloat(ev.contribution_amount),deadline:ev.contribution_deadline,isOverdue:ev.contribution_deadline&&new Date(ev.contribution_deadline)<new Date()});
+  });
+  allSchemes.forEach(sc=>{
+    allPeriods.filter(p=>p.scheme_id===sc.id).forEach(pd=>{
+      const paid=memberSchemePayments.find(p=>p.period_id===pd.id);
+      if(!paid)pendingItems.push({name:`${sc.name} — ${pd.period_label}`,type:'Scheme',amount:sc.amount_per_member,deadline:pd.due_date,isOverdue:pd.due_date&&new Date(pd.due_date)<new Date()});
+    });
+  });
+  const totalOwed=pendingItems.reduce((s,i)=>s+i.amount,0);
+  const totalObligs=totalPayments+pendingItems.length;
+  const score=totalObligs>0?Math.round((totalPayments/totalObligs)*100):100;
+  const scoreColor=score>=80?'var(--accent2)':score>=50?'var(--accent3)':'var(--danger)';
+
+  // Timeline
+  const timeline=[
+    ...memberContribs.map(c=>{
+      const ev=allEvents.find(e=>e.id===c.event_id);
+      return{label:ev?ev.name:'General Contribution',sub:`Event · KES ${parseFloat(c.amount).toLocaleString()}`,date:c.created_at};
+    }),
+    ...memberSchemePayments.map(p=>{
+      const sc=allSchemes.find(s=>s.id===p.scheme_id);
+      const pd=allPeriods.find(x=>x.id===p.period_id);
+      return{label:sc?.name||'Scheme',sub:`${pd?.period_label||''} · KES ${parseFloat(p.amount).toLocaleString()}`,date:p.paid_at};
+    })
+  ].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  const timelineHtml=timeline.length
+    ?timeline.map(item=>`
+      <div class="stmt-event">
+        <div class="stmt-event-dot paid"></div>
+        <div class="stmt-event-card">
+          <div class="stmt-event-name">✓ ${item.label}</div>
+          <div class="stmt-event-meta"><span>${item.sub}</span><span>📅 ${formatDate(item.date)}</span></div>
+        </div>
+      </div>`).join('')
+    :`<div style="color:var(--text-muted);font-size:13px;padding:12px 0;">No payments recorded yet.</div>`;
+
+  const pendingHtml=pendingItems.length
+    ?pendingItems.map(item=>`
+      <div class="stmt-pending-item">
+        <div>
+          <div class="stmt-pending-name">${item.isOverdue?'⚠':'⏳'} ${item.name}</div>
+          <div class="stmt-pending-meta">${item.type}${item.deadline?' · Due: '+formatDate(item.deadline):''} ${item.isOverdue?'<span style="color:var(--danger);font-weight:600;">— OVERDUE</span>':''}</div>
+        </div>
+        <div class="stmt-pending-amount">KES ${item.amount.toLocaleString()}</div>
+      </div>`).join('')
+    :`<div style="text-align:center;padding:20px;"><span style="font-size:32px;">🎉</span><div style="margin-top:8px;color:var(--accent2);font-weight:600;">All clear! Nothing pending.</div></div>`;
+
+  // Show in modal
+  document.getElementById('memberStmtOverlay')?.remove();
+  const html=`
+    <div class="modal-overlay open" id="memberStmtOverlay">
+      <div class="modal modal-wide" style="max-width:700px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+          <div class="modal-title" style="margin-bottom:0;">📊 ${member.full_name}'s Statement</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="printMemberStatement('${memberId}')">🖨 Print</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('memberStmtOverlay').remove()">✕ Close</button>
+          </div>
+        </div>
+
+        <div class="stmt-hero" style="margin-bottom:16px;">
+          <div class="stmt-avatar-lg">${member.full_name.charAt(0).toUpperCase()}</div>
+          <div class="stmt-hero-info">
+            <div class="stmt-hero-name">${member.full_name}</div>
+            <div class="stmt-hero-meta">@${member.username||'—'} · Member since ${formatDate(member.created_at)} · ${member.phone||'No phone'}</div>
+            <div style="margin-top:10px;">
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">COMPLIANCE SCORE</div>
+              <div class="stmt-score-bar" style="width:200px;"><div class="stmt-score-fill" style="width:${score}%;background:${scoreColor};"></div></div>
+              <div style="font-size:13px;font-weight:700;color:${scoreColor};">${score}% <span style="font-size:11px;color:var(--text-muted);font-weight:400;">${score>=80?'Excellent standing':score>=50?'Good standing':'Needs attention'}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stmt-kpis" style="margin-bottom:16px;">
+          <div class="stmt-kpi"><div class="stmt-kpi-val" style="color:var(--accent2);">KES ${totalPaid.toLocaleString()}</div><div class="stmt-kpi-label">Total Contributed</div></div>
+          <div class="stmt-kpi"><div class="stmt-kpi-val">${totalPayments}</div><div class="stmt-kpi-label">Payments Made</div></div>
+          <div class="stmt-kpi"><div class="stmt-kpi-val" style="color:${totalOwed>0?'var(--danger)':'var(--accent2)'};">KES ${totalOwed.toLocaleString()}</div><div class="stmt-kpi-label">Outstanding Balance</div></div>
+          <div class="stmt-kpi"><div class="stmt-kpi-val" style="color:${pendingItems.filter(i=>i.isOverdue).length>0?'var(--danger)':'var(--accent3)'};">${pendingItems.filter(i=>i.isOverdue).length}</div><div class="stmt-kpi-label">Overdue Items</div></div>
+        </div>
+
+        ${pendingItems.length?`
+        <div class="stmt-section-title"><span style="color:var(--danger);">⚠</span> Pending Payments (${pendingItems.length})</div>
+        <div class="stmt-pending-list" style="margin-bottom:16px;">${pendingHtml}</div>`:''}
+
+        <div class="stmt-section-title"><span class="live-dot"></span> Payment History (${timeline.length})</div>
+        <div class="stmt-timeline">${timelineHtml}</div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+function printMemberStatement(memberId){
+  const member=allMembers.find(m=>m.id===memberId);
+  if(!member)return;
+  // Temporarily swap currentProfile so printStatement uses this member's data
+  const original=currentProfile;
+  currentProfile={...member};
+  printStatement();
+  currentProfile=original;
 }
 
 function toggleActionMenu(id){
@@ -3524,7 +3632,7 @@ async function createMember(){
       full_name:name,
       username,
       phone:phone||null,
-      email:username+'@groupflow.app',
+      email:username+'@GordyTheFilmigo.app',
       password_hash:passwordHash,
       role:'member',
       group_id:currentProfile.group_id
@@ -3995,7 +4103,6 @@ function printStatement(){
   const totalPaid=myContribs.reduce((s,c)=>s+parseFloat(c.amount||0),0)+mySchemePayments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
   const totalPayments=myContribs.length+mySchemePayments.length;
 
-  // Generate tamper-evident hash
   const genDate=new Date().toISOString();
   const hashStr=`${me.id}|${me.full_name}|${totalPaid}|${totalPayments}|${genDate}|GF-SECURE-2025`;
   let hash=0;
@@ -4010,184 +4117,348 @@ function printStatement(){
   ].sort((a,b)=>new Date(b.date)-new Date(a.date));
 
   const win=window.open('','_blank');
+
+  win._stmtData={
+    me:{full_name:me.full_name,username:me.username,phone:me.phone,created_at:me.created_at,id:me.id},
+    grpName,rows,totalPaid,totalPayments,verifyCode,genDateFmt
+  };
+
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
   <title>Statement — ${me.full_name}</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:Arial,sans-serif;color:#111;padding:40px;max-width:750px;margin:0 auto;position:relative;}
-
-    /* ── WATERMARK ── */
-    body::before{
-      content:'GordyTheFilmigo official-stamp';
-      position:fixed;top:50%;left:50%;
-      transform:translate(-50%,-50%) rotate(-35deg);
-      font-size:72px;font-weight:900;
-      color:rgba(91,156,246,0.07);
-      white-space:nowrap;pointer-events:none;z-index:0;
-      letter-spacing:8px;
-    }
-
-    /* ── DIAGONAL PATTERN ── */
-    body::after{
-      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-      background-image:
-        repeating-linear-gradient(45deg,transparent,transparent 28px,rgba(91,156,246,0.025) 28px,rgba(91,156,246,0.025) 30px),
-        repeating-linear-gradient(-45deg,transparent,transparent 28px,rgba(91,156,246,0.025) 28px,rgba(91,156,246,0.025) 30px);
-    }
-
-    .content{position:relative;z-index:1;}
-
-    /* ── HEADER ── */
-    .header{border-bottom:3px solid #1a3a6b;padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;}
-    .header-left h1{font-size:22px;color:#0a1628;margin-bottom:4px;}
-    .header-left .sub{color:#666;font-size:12px;line-height:1.6;}
-    .header-right{text-align:right;}
-    .header-right .doc-id{font-family:monospace;font-size:11px;color:#888;margin-bottom:4px;}
-    .official-stamp{display:inline-block;border:2px solid #1a3a6b;border-radius:4px;padding:6px 12px;font-size:10px;font-weight:900;color:#1a3a6b;letter-spacing:2px;text-transform:uppercase;}
-
-    /* ── MEMBER CARD ── */
-    .member-card{background:#f7f9ff;border:1px solid #d0daf0;border-radius:8px;padding:16px 20px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-    .member-name{font-size:18px;font-weight:700;color:#0a1628;}
-    .member-meta{font-size:12px;color:#555;margin-top:3px;line-height:1.6;}
-    .member-badge{background:#0a1628;color:#fff;padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;}
-
-    /* ── KPIs ── */
-    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
-    .kpi{border:1px solid #dde4f0;border-radius:8px;padding:14px 18px;background:#fff;}
-    .kpi strong{font-size:20px;font-weight:800;display:block;color:#0a1628;margin-bottom:3px;}
-    .kpi span{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.5px;}
-
-    /* ── TABLE ── */
-    h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3a6b;border-bottom:2px solid #d0daf0;padding-bottom:7px;margin:22px 0 12px;}
-    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
-    th{text-align:left;padding:9px 12px;background:#0a1628;color:#fff;font-size:11px;letter-spacing:0.5px;}
-    td{padding:9px 12px;border-bottom:1px solid #eef0f7;vertical-align:top;}
-    tr:nth-child(even) td{background:#f7f9ff;}
-    tr:last-child td{border-bottom:none;}
-    .amount{font-weight:700;font-family:monospace;}
-    tfoot td{background:#f0f4ff;font-weight:800;border-top:2px solid #d0daf0;}
-
-    /* ── SECURITY FOOTER ── */
-    .security-footer{
-      margin-top:32px;
-      border:1px solid #d0daf0;
-      border-radius:8px;
-      padding:16px 20px;
-      background:#f7f9ff;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    .security-footer .sec-left{flex:1;}
-    .security-footer .sec-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3a6b;margin-bottom:5px;}
-    .security-footer .sec-code{font-family:monospace;font-size:16px;font-weight:800;color:#0a1628;letter-spacing:3px;}
-    .security-footer .sec-note{font-size:10px;color:#888;margin-top:5px;line-height:1.5;}
-    .security-footer .sec-right{text-align:right;}
-    .security-footer .gen-info{font-size:10px;color:#888;line-height:1.8;}
-
-    /* ── FINAL FOOTER ── */
-    .doc-footer{margin-top:16px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px;}
-
-    @media print{
-      body{padding:20px;}
-      body::before{color:rgba(0,0,0,0.04);}
-      .no-print{display:none;}
-    }
+    body{font-family:Arial,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;padding:20px;}
+    canvas{max-width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.15);margin-bottom:16px;}
+    .btn-bar{display:flex;gap:12px;margin-bottom:20px;}
+    .btn{padding:10px 24px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;}
+    .btn-print{background:#0a1628;color:#fff;}
+    .btn-close{background:#eee;color:#333;}
+    @media print{.btn-bar{display:none;}body{padding:0;}canvas{box-shadow:none;width:100%;}}
   </style>
-  </head><body><div class="content">`);
+  </head><body>
+  <div class="btn-bar">
+    <button class="btn btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
+    <button class="btn btn-close" onclick="window.close()">✕ Close</button>
+  </div>
+  <canvas id="statCanvas"></canvas>
+  <script>
+  window.onload=function(){
+    const {me,grpName,rows,totalPaid,totalPayments,verifyCode,genDateFmt}=window._stmtData;
+    const canvas=document.getElementById('statCanvas');
+    const dpr=window.devicePixelRatio||1;
+    const W=794;
+    const rowH=28;
+    const headerH=330;
+    const tableH=Math.max(rows.length,1)*rowH+80;
+    const footerH=180;
+    const H=headerH+tableH+footerH;
 
-  // Header
-  win.document.write(`
-    <div class="header">
-      <div class="header-left">
-        <h1>📊 Member Financial Statement</h1>
-        <div class="sub">
-          ${grpName}<br/>
-          Generated: ${genDateFmt}
-        </div>
-      </div>
-      <div class="header-right">
-        <div class="doc-id">DOC ID: ${verifyCode}</div>
-        <div class="official-stamp">✓ Official Document</div>
-      </div>
-    </div>`);
+    canvas.width=W*dpr;
+    canvas.height=H*dpr;
+    canvas.style.width=W+'px';
+    canvas.style.height=H+'px';
 
-  // Member card
-  win.document.write(`
-    <div class="member-card">
-      <div>
-        <div class="member-name">${me.full_name}</div>
-        <div class="member-meta">
-          Username: @${me.username||'—'}<br/>
-          Phone: ${me.phone||'Not provided'}<br/>
-          Member since: ${formatDate(me.created_at)}
-        </div>
-      </div>
-      <div class="member-badge">VERIFIED MEMBER</div>
-    </div>`);
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
 
-  // KPIs
-  win.document.write(`
-    <div class="kpis">
-      <div class="kpi"><strong>KES ${totalPaid.toLocaleString()}</strong><span>Total Contributed</span></div>
-      <div class="kpi"><strong>${totalPayments}</strong><span>Payments Made</span></div>
-      <div class="kpi"><strong>${rows.length}</strong><span>Transactions</span></div>
-      <div class="kpi"><strong>${new Date().getFullYear()}</strong><span>Statement Year</span></div>
-    </div>`);
+    function roundRect(ctx,x,y,w,h,r){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+      ctx.lineTo(x+w,y+h-r);
+      ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+      ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+      ctx.lineTo(x,y+r);
+      ctx.quadraticCurveTo(x,y,x+r,y);
+      ctx.closePath();
+    }
+    function truncate(str,max){if(!str)return'—';return str.length>max?str.slice(0,max)+'…':str;}
+    function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});}
 
-  // Payment table
-  win.document.write(`<h2>Payment History</h2>
-    <table>
-      <thead><tr><th>#</th><th>Source</th><th>Type</th><th>Amount (KES)</th><th>Date</th><th>Note</th></tr></thead>
-      <tbody>`);
-  rows.forEach((r,i)=>{
-    win.document.write(`<tr>
-      <td style="color:#888;">${i+1}</td>
-      <td>${r.source}</td>
-      <td>${r.type}</td>
-      <td class="amount">${parseFloat(r.amount).toLocaleString()}</td>
-      <td>${formatDate(r.date)}</td>
-      <td style="color:#888;">${r.note||'—'}</td>
-    </tr>`);
-  });
-  win.document.write(`</tbody>
-    <tfoot><tr>
-      <td colspan="3" style="text-align:right;font-size:11px;letter-spacing:0.5px;">TOTAL CONTRIBUTED</td>
-      <td class="amount">KES ${totalPaid.toLocaleString()}</td>
-      <td colspan="2"></td>
-    </tr></tfoot>
-    </table>`);
+    // ── BACKGROUND ──
+    const bgGrad=ctx.createLinearGradient(0,0,W,H);
+    bgGrad.addColorStop(0,'#f0f4ff');
+    bgGrad.addColorStop(0.5,'#ffffff');
+    bgGrad.addColorStop(1,'#f0fff8');
+    ctx.fillStyle=bgGrad;
+    ctx.fillRect(0,0,W,H);
 
-  // Security footer
-  win.document.write(`
-    <div class="security-footer">
-      <div class="sec-left">
-        <div class="sec-title">🔐 Document Verification Code</div>
-        <div class="sec-code">${verifyCode}</div>
-        <div class="sec-note">
-          This code is uniquely generated from this member's financial data.<br/>
-          Any alteration to this document will invalidate this verification code.<br/>
-          Contact your group admin to verify authenticity.
-        </div>
-      </div>
-      <div class="sec-right">
-        <div class="gen-info">
-          Generated by: GordyTheFilmigo System<br/>
-          Member ID: ${me.id.slice(0,8).toUpperCase()}...<br/>
-          Group: ${grpName}<br/>
-          Timestamp: ${genDateFmt}
-        </div>
-      </div>
-    </div>
-    <div class="doc-footer">
-      GordyTheFilmigo · This is an automatically generated official statement · Any tampering renders this document invalid · ${verifyCode}
-    </div>
-  </div></body></html>`);
+    // ── SECURITY PATTERN ──
+    ctx.save();
+    for(let ly=0;ly<H;ly+=6){
+      ctx.beginPath();ctx.moveTo(0,ly);ctx.lineTo(W,ly);
+      ctx.strokeStyle='rgba(91,156,246,0.055)';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    for(let x=-H;x<W+H;x+=12){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+H,H);
+      ctx.strokeStyle='rgba(52,217,165,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    for(let x=-H;x<W+H;x+=12){
+      ctx.beginPath();ctx.moveTo(x+H,0);ctx.lineTo(x,H);
+      ctx.strokeStyle='rgba(91,156,246,0.035)';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    for(let wy=80;wy<H-80;wy+=10){
+      ctx.beginPath();ctx.moveTo(0,wy);
+      for(let wx=0;wx<W;wx+=4){ctx.lineTo(wx,wy+Math.sin(wx/18)*2.5);}
+      ctx.strokeStyle='rgba(26,58,107,0.045)';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    ctx.restore();
 
+    // ── WATERMARK TEXT ──
+    ctx.save();
+    ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/6);
+    ctx.font='bold 68px Arial';ctx.fillStyle='rgba(91,156,246,0.07)';
+    ctx.textAlign='center';ctx.fillText('GordyTheFilmigo Official',0,0);
+    ctx.font='bold 28px Arial';ctx.fillStyle='rgba(52,217,165,0.06)';
+    ctx.fillText(verifyCode,0,60);
+    ctx.restore();
+
+    // ── TOP GRADIENT BAR ──
+    const barGrad=ctx.createLinearGradient(0,0,W,0);
+    barGrad.addColorStop(0,'#0a1628');barGrad.addColorStop(0.5,'#1a3a6b');barGrad.addColorStop(1,'#34d9a5');
+    ctx.fillStyle=barGrad;ctx.fillRect(0,0,W,8);
+
+    // ── LEFT STRIPE ──
+    const stripeGrad=ctx.createLinearGradient(0,0,0,H);
+    stripeGrad.addColorStop(0,'#5b9cf6');stripeGrad.addColorStop(1,'#34d9a5');
+    ctx.fillStyle=stripeGrad;ctx.fillRect(0,0,4,H);
+
+    // ── HEADER ──
+    let y=28;
+    ctx.fillStyle='#0a1628';ctx.font='bold 20px Arial';
+    ctx.fillText('MEMBER FINANCIAL STATEMENT',20,y);
+    y+=20;
+    ctx.fillStyle='#5b9cf6';ctx.font='bold 11px Arial';
+    ctx.fillText(grpName.toUpperCase(),20,y);
+    y+=16;
+    ctx.fillStyle='#888';ctx.font='10px Arial';
+    ctx.fillText('Generated: '+genDateFmt,20,y);
+
+    // Official stamp box
+    ctx.save();
+    ctx.strokeStyle='#1a3a6b';ctx.lineWidth=2;
+    ctx.strokeRect(W-162,14,152,44);
+    ctx.fillStyle='#1a3a6b';ctx.font='bold 9px Arial';ctx.textAlign='center';
+    ctx.fillText('OFFICIAL DOCUMENT',W-86,32);
+    ctx.fillText('GordyTheFilmigo VERIFIED',W-86,46);
+    ctx.textAlign='left';ctx.restore();
+
+    y+=16;
+    ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);
+    y+=14;
+
+    // ── MEMBER CARD ──
+    ctx.fillStyle='rgba(91,156,246,0.08)';
+    roundRect(ctx,20,y,W-40,72,8);ctx.fill();
+    ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;
+    roundRect(ctx,20,y,W-40,72,8);ctx.stroke();
+    ctx.fillStyle='#0a1628';ctx.font='bold 15px Arial';
+    ctx.fillText(me.full_name,36,y+22);
+    ctx.fillStyle='#555';ctx.font='11px Arial';
+    ctx.fillText('@'+(me.username||'—')+' · '+(me.phone||'No phone'),36,y+38);
+    ctx.fillText('Member since: '+fmtDate(me.created_at),36,y+54);
+    ctx.fillStyle='#0a1628';
+    roundRect(ctx,W-122,y+20,102,28,4);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 9px Arial';ctx.textAlign='center';
+    ctx.fillText('VERIFIED MEMBER',W-71,y+38);
+    ctx.textAlign='left';
+    y+=86;
+
+    // ── KPI BOXES ──
+    const kpis=[
+      {label:'TOTAL CONTRIBUTED',value:'KES '+totalPaid.toLocaleString()},
+      {label:'PAYMENTS MADE',value:String(totalPayments)},
+      {label:'TRANSACTIONS',value:String(rows.length)},
+      {label:'VERIFY CODE',value:verifyCode}
+    ];
+    const kpiW=(W-60)/4;
+    kpis.forEach((k,i)=>{
+      const kx=20+i*(kpiW+13);
+      ctx.fillStyle='#ffffff';roundRect(ctx,kx,y,kpiW,52,6);ctx.fill();
+      ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;roundRect(ctx,kx,y,kpiW,52,6);ctx.stroke();
+      ctx.fillStyle='#0a1628';ctx.font='bold 12px Arial';ctx.textAlign='center';
+      ctx.fillText(k.value,kx+kpiW/2,y+22);
+      ctx.fillStyle='#888';ctx.font='9px Arial';
+      ctx.fillText(k.label,kx+kpiW/2,y+38);
+      ctx.textAlign='left';
+    });
+    y+=66;
+
+    // ── TABLE LABEL ──
+    ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';
+    ctx.fillText('PAYMENT HISTORY',20,y);
+    y+=12;ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);y+=10;
+
+    // Table head
+    const cols=[
+      {label:'#',x:24,w:24},
+      {label:'SOURCE',x:52,w:210},
+      {label:'TYPE',x:266,w:70},
+      {label:'AMOUNT (KES)',x:340,w:130},
+      {label:'DATE',x:474,w:110},
+      {label:'NOTE',x:588,w:180}
+    ];
+    ctx.fillStyle='#0a1628';ctx.fillRect(20,y,W-40,26);
+    ctx.fillStyle='#ffffff';ctx.font='bold 10px Arial';
+    cols.forEach(col=>ctx.fillText(col.label,col.x,y+17));
+    y+=26;
+
+    // Table rows
+    rows.forEach((r,i)=>{
+      ctx.fillStyle=i%2===0?'#f7f9ff':'#ffffff';
+      ctx.fillRect(20,y,W-40,rowH);
+      if(i%2===0){ctx.fillStyle='rgba(91,156,246,0.12)';ctx.fillRect(20,y,3,rowH);}
+      ctx.fillStyle='#999';ctx.font='10px Arial';ctx.fillText(String(i+1),cols[0].x,y+18);
+      ctx.fillStyle='#222';ctx.font='11px Arial';ctx.fillText(truncate(r.source,26),cols[1].x,y+18);
+      ctx.fillStyle=r.type==='Event'?'#1a3a6b':'#0a6b3a';ctx.font='bold 10px Arial';
+      ctx.fillText(r.type,cols[2].x,y+18);
+      ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';
+      ctx.fillText('KES '+parseFloat(r.amount).toLocaleString(),cols[3].x,y+18);
+      ctx.fillStyle='#555';ctx.font='10px Arial';ctx.fillText(fmtDate(r.date),cols[4].x,y+18);
+      ctx.fillStyle='#888';ctx.fillText(truncate(r.note||'—',22),cols[5].x,y+18);
+      ctx.fillStyle='#eef0f7';ctx.fillRect(20,y+rowH-1,W-40,1);
+      y+=rowH;
+    });
+
+    if(rows.length===0){
+      ctx.fillStyle='#f7f9ff';ctx.fillRect(20,y,W-40,36);
+      ctx.fillStyle='#aaa';ctx.font='12px Arial';ctx.textAlign='center';
+      ctx.fillText('No payment records found.',W/2,y+22);
+      ctx.textAlign='left';y+=36;
+    }
+
+    // Total row
+    ctx.fillStyle='#e8f0ff';ctx.fillRect(20,y,W-40,30);
+    ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;ctx.strokeRect(20,y,W-40,30);
+    ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';ctx.textAlign='right';
+    ctx.fillText('TOTAL CONTRIBUTED:',cols[3].x-4,y+20);
+    ctx.fillStyle='#1a3a6b';ctx.font='bold 14px Arial';
+    ctx.fillText('KES '+totalPaid.toLocaleString(),W-30,y+20);
+    ctx.textAlign='left';y+=44;
+
+    // ── SECURITY FOOTER ──
+    const sfGrad=ctx.createLinearGradient(0,y,0,y+110);
+    sfGrad.addColorStop(0,'#e8f0ff');sfGrad.addColorStop(1,'#f0fff8');
+    ctx.fillStyle=sfGrad;roundRect(ctx,20,y,W-40,110,8);ctx.fill();
+    ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;
+    roundRect(ctx,20,y,W-40,110,8);ctx.stroke();
+    ctx.fillStyle='#0a1628';roundRect(ctx,30,y+10,80,88,6);ctx.fill();
+    ctx.font='32px Arial';ctx.textAlign='center';ctx.fillStyle='#fff';
+    ctx.fillText('🔐',70,y+62);ctx.textAlign='left';
+    ctx.fillStyle='#1a3a6b';ctx.font='bold 10px Arial';
+    ctx.fillText('DOCUMENT VERIFICATION CODE',122,y+24);
+    ctx.fillStyle='#0a1628';ctx.font='bold 20px Arial';
+    ctx.fillText(verifyCode,122,y+48);
+    ctx.fillStyle='#888';ctx.font='9px Arial';
+    ctx.fillText('This code is generated from this member data. Any alteration invalidates this document.',122,y+66);
+    ctx.fillText('Contact your group admin to verify. Member ID: '+me.id.slice(0,8).toUpperCase()+'...',122,y+80);
+    ctx.fillText('Timestamp: '+genDateFmt,122,y+94);
+    y+=124;
+
+    // ── RUBBER STAMP (drawn last, fully visible red) ──
+    ctx.save();
+    ctx.translate(W/2,H/2);
+    ctx.rotate(-Math.PI/12);
+
+    // Outer thick circle
+    ctx.beginPath();ctx.arc(0,0,92,0,Math.PI*2);
+    ctx.strokeStyle='rgba(200,0,0,0.75)';ctx.lineWidth=5;ctx.stroke();
+
+    // Inner circle
+    ctx.beginPath();ctx.arc(0,0,78,0,Math.PI*2);
+    ctx.strokeStyle='rgba(200,0,0,0.60)';ctx.lineWidth=2;ctx.stroke();
+
+    // Decorative dot ring between circles
+    for(let a=0;a<Math.PI*2;a+=Math.PI/18){
+      ctx.beginPath();
+      ctx.arc(Math.cos(a)*85,Math.sin(a)*85,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(200,0,0,0.55)';ctx.fill();
+    }
+
+    // Group name curved along top arc
+    const groupNameUpper=grpName.toUpperCase();
+    const radius=84;
+    const charCount=groupNameUpper.length;
+    const totalAngle=Math.min(Math.PI*1.1,charCount*0.18);
+    const startAngle=-Math.PI/2-totalAngle/2;
+    ctx.font='bold 12px Arial';
+    ctx.fillStyle='rgba(180,0,0,0.85)';
+    for(let i=0;i<charCount;i++){
+      const angle=startAngle+(i/charCount)*totalAngle+(0.18/2);
+      ctx.save();
+      ctx.rotate(angle);ctx.translate(0,-radius);ctx.rotate(Math.PI/2);
+      ctx.fillText(groupNameUpper[i],0,0);
+      ctx.restore();
+    }
+
+    // "VERIFIED & OFFICIAL" curved along bottom arc
+    const bottomText='★  VERIFIED  &  OFFICIAL  ★';
+    const bCharCount=bottomText.length;
+    const bTotalAngle=Math.min(Math.PI*1.1,bCharCount*0.148);
+    const bStartAngle=Math.PI/2-bTotalAngle/2;
+    ctx.font='bold 9px Arial';
+    ctx.fillStyle='rgba(180,0,0,0.80)';
+    for(let i=0;i<bCharCount;i++){
+      const angle=bStartAngle+(i/bCharCount)*bTotalAngle+(0.148/2);
+      ctx.save();
+      ctx.rotate(angle);ctx.translate(0,radius);ctx.rotate(-Math.PI/2);
+      ctx.fillText(bottomText[i],0,0);
+      ctx.restore();
+    }
+
+    // Horizontal lines inside stamp
+    ctx.beginPath();ctx.moveTo(-62,-14);ctx.lineTo(62,-14);
+    ctx.strokeStyle='rgba(200,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-62,14);ctx.lineTo(62,14);
+    ctx.strokeStyle='rgba(200,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
+
+    // Center text
+    ctx.textAlign='center';
+    // If group name is long, split into two lines
+    const stampName=grpName.toUpperCase();
+    const words=stampName.split(' ');
+    let line1=stampName,line2='';
+    if(stampName.length>14&&words.length>1){
+      const mid=Math.ceil(words.length/2);
+      line1=words.slice(0,mid).join(' ');
+      line2=words.slice(mid).join(' ');
+    }
+    ctx.font='bold 11px Arial';ctx.fillStyle='rgba(180,0,0,0.85)';
+    if(line2){
+      ctx.fillText(line1,0,-28);
+      ctx.fillText(line2,0,-14);
+      ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+      ctx.fillText('OFFICIAL RECORD',0,4);
+      ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+      ctx.fillText('★',0,18);
+      ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+      ctx.fillText(String(new Date().getFullYear()),0,30);
+    }else{
+      ctx.fillText(line1,0,-20);
+      ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+      ctx.fillText('OFFICIAL RECORD',0,-4);
+      ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+      ctx.fillText('★',0,12);
+      ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+      ctx.fillText(String(new Date().getFullYear()),0,26);
+    }
+
+    ctx.textAlign='left';
+    ctx.restore();
+
+    // ── BOTTOM BAR ──
+    const botGrad=ctx.createLinearGradient(0,0,W,0);
+    botGrad.addColorStop(0,'#0a1628');botGrad.addColorStop(0.5,'#1a3a6b');botGrad.addColorStop(1,'#34d9a5');
+    ctx.fillStyle=botGrad;ctx.fillRect(0,y,W,8);
+    y+=14;
+    ctx.fillStyle='#aaa';ctx.font='9px Arial';ctx.textAlign='center';
+    ctx.fillText('GordyTheFilmigo · Official Member Statement · '+verifyCode+' · Any tampering renders this document invalid',W/2,y);
+    ctx.textAlign='left';
+  };
+  <\/script>
+  </body></html>`);
   win.document.close();
-  setTimeout(()=>win.print(),500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
