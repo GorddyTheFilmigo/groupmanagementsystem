@@ -2970,54 +2970,412 @@ function getDateRange(){
   if(p==='custom'){const f=document.getElementById('rpt-from').value;const t=document.getElementById('rpt-to').value;return{from:f?new Date(f):null,to:t?new Date(t):null};}
   return{from:null,to:null};
 }
-function renderReports(){
-  const type=document.getElementById('rpt-type')?.value||'';
-  const source=document.getElementById('rpt-source')?.value||'';
-  const memberId=document.getElementById('rpt-member')?.value||'';
-  const{from,to}=getDateRange();
-  let rows=[];
-  if(type===''||type==='event'){
-    allContribs.forEach(c=>{
-      if(source&&source!==`ev_${c.event_id}`)return;if(memberId&&c.member_id!==memberId)return;
-      const d=new Date(c.created_at);if(from&&d<from)return;if(to&&d>to)return;
-      rows.push({member:c.profiles?.full_name||'—',source:c.events?.name||'General',sourceType:'Event',amount:parseFloat(c.amount||0),note:c.note||'—',date:c.created_at});
+function printFullReport(){
+  const grpName=document.getElementById('sidebarGroupName').textContent;
+  const genDate=new Date().toISOString();
+  const genDateFmt=new Date(genDate).toLocaleString('en-KE',{dateStyle:'full',timeStyle:'medium'});
+
+  // Build per-member data
+  const memberReports=allMembers.map(member=>{
+    const memberContribs=allContribs.filter(c=>c.member_id===member.id);
+    const memberSchemePayments=allSchemePayments.filter(p=>p.member_id===member.id);
+    const totalPaid=memberContribs.reduce((s,c)=>s+parseFloat(c.amount||0),0)+memberSchemePayments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
+    const totalPayments=memberContribs.length+memberSchemePayments.length;
+
+    const pendingItems=[];
+    allEvents.filter(ev=>ev.requires_contribution&&ev.contribution_amount).forEach(ev=>{
+      const paid=memberContribs.find(c=>c.event_id===ev.id);
+      if(!paid)pendingItems.push({name:ev.name,type:'Event',amount:parseFloat(ev.contribution_amount),isOverdue:ev.contribution_deadline&&new Date(ev.contribution_deadline)<new Date()});
     });
-  }
-  if(type===''||type==='scheme'){
-    allSchemePayments.forEach(p=>{
-      const sc=allSchemes.find(s=>s.id===p.scheme_id);const pd=allPeriods.find(x=>x.id===p.period_id);
-      if(source&&source!==`sc_${p.scheme_id}`)return;if(memberId&&p.member_id!==memberId)return;
-      const d=new Date(p.paid_at);if(from&&d<from)return;if(to&&d>to)return;
-      rows.push({member:p.profiles?.full_name||'—',source:`${sc?.name||'Scheme'}${pd?` · ${pd.period_label}`:''}`,sourceType:'Scheme',amount:parseFloat(p.amount||0),note:p.note||'—',date:p.paid_at});
+    allSchemes.forEach(sc=>{
+      allPeriods.filter(p=>p.scheme_id===sc.id).forEach(pd=>{
+        const paid=memberSchemePayments.find(p=>p.period_id===pd.id);
+        if(!paid)pendingItems.push({name:`${sc.name} — ${pd.period_label}`,type:'Scheme',amount:sc.amount_per_member,isOverdue:pd.due_date&&new Date(pd.due_date)<new Date()});
+      });
     });
-  }
-  rows.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  _lastRptRows=rows;
-  const totalAmount=rows.reduce((s,r)=>s+r.amount,0);
-  const uniqueMembers=new Set(rows.map(r=>r.member)).size;
-  const evCount=rows.filter(r=>r.sourceType==='Event').length;
-  const scCount=rows.filter(r=>r.sourceType==='Scheme').length;
-  document.getElementById('rptSummaryCards').innerHTML=`
-    <div class="summary-card"><div class="summary-value" style="color:var(--accent2);">KES ${totalAmount.toLocaleString()}</div><div class="summary-label">Total Amount</div></div>
-    <div class="summary-card"><div class="summary-value">${rows.length}</div><div class="summary-label">Total Records</div></div>
-    <div class="summary-card"><div class="summary-value">${uniqueMembers}</div><div class="summary-label">Unique Contributors</div></div>
-    <div class="summary-card"><div class="summary-value">${evCount}</div><div class="summary-label">Event Payments</div></div>
-    <div class="summary-card"><div class="summary-value">${scCount}</div><div class="summary-label">Scheme Payments</div></div>`;
-  const container=document.getElementById('rptAccordion');
-  if(!rows.length){container.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><p>No records match the selected filters.</p></div>`;return;}
-  const groups={};
-  rows.forEach(r=>{const key=r.sourceType+'__'+r.source;if(!groups[key])groups[key]={label:r.source,type:r.sourceType,items:[],total:0};groups[key].items.push(r);groups[key].total+=r.amount;});
-  container.innerHTML='';
-  Object.values(groups).forEach((grp,gi)=>{
-    const cid='rc'+gi;if(!rpages[cid])rpages[cid]=1;
-    const page=rpages[cid],tp=Math.ceil(grp.items.length/PG);
-    const items=grp.items.slice((page-1)*PG,page*PG);
-    const isEvent=grp.type==='Event';
-    const rows_html=items.map(r=>`<tr><td><strong>${r.member}</strong></td><td><span class="amount">KES ${r.amount.toLocaleString()}</span></td><td style="color:var(--text-muted);font-size:12px;">${r.note}</td><td style="color:var(--text-muted);font-size:12px;">${formatDate(r.date)}</td></tr>`).join('');
-    const div=document.createElement('div');div.className='cat-section';div.id=cid;
-    div.innerHTML=`<div class="cat-header" onclick="toggleCat('${cid}')"><div style="display:flex;align-items:center;flex:1;min-width:0;"><span class="cat-chevron">▶</span><div style="min-width:0;"><div class="cat-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${grp.label}</div><div class="cat-meta">${grp.type} · ${grp.items.length} record${grp.items.length!==1?'s':''} · KES ${grp.total.toLocaleString()}</div></div></div><div class="cat-pills" style="flex-shrink:0;"><span class="cat-pill" style="background:${isEvent?'rgba(247,201,72,0.12)':'rgba(56,217,169,0.12)'};color:${isEvent?'var(--accent3)':'var(--accent2)'};">${grp.type}</span><span class="cat-pill" style="background:rgba(79,142,247,0.12);color:var(--accent);">KES ${grp.total.toLocaleString()}</span></div></div><div class="cat-body"><div style="overflow-x:auto;"><table><thead><tr><th>Member</th><th>Amount</th><th>Note</th><th>Date</th></tr></thead><tbody>${rows_html}</tbody></table></div><div class="cat-footer"><span style="font-size:12px;color:var(--text-muted);">Showing ${(page-1)*PG+1}–${Math.min(page*PG,grp.items.length)} of ${grp.items.length}</span><div style="display:flex;align-items:center;gap:8px;">${buildPg(cid,page,tp,'rpg')}<span class="dl-btn" onclick='dlCSV(${JSON.stringify(grp.items.map(r=>[r.member,r.source,r.amount,r.note,r.date]))},${JSON.stringify(grp.label)})'>⬇ CSV</span></div></div></div>`;
-    container.appendChild(div);
+    const totalOwed=pendingItems.reduce((s,i)=>s+i.amount,0);
+    const totalObligs=totalPayments+pendingItems.length;
+    const score=totalObligs>0?Math.round((totalPayments/totalObligs)*100):100;
+
+    const rows=[
+      ...memberContribs.map(c=>({source:allEvents.find(e=>e.id===c.event_id)?.name||'General',type:'Event',amount:c.amount,date:c.created_at,note:c.note||''})),
+      ...memberSchemePayments.map(p=>({source:(allSchemes.find(s=>s.id===p.scheme_id)?.name||'Scheme')+' — '+(allPeriods.find(x=>x.id===p.period_id)?.period_label||''),type:'Scheme',amount:p.amount,date:p.paid_at,note:p.note||''}))
+    ].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+    // Verify code per member
+    const hashStr=`${member.id}|${member.full_name}|${totalPaid}|${totalPayments}|${genDate}|GF-SECURE-2025`;
+    let hash=0;
+    for(let i=0;i<hashStr.length;i++){const chr=hashStr.charCodeAt(i);hash=((hash<<5)-hash)+chr;hash|=0;}
+    const hex=Math.abs(hash).toString(16).toUpperCase().padStart(12,'0');
+    const verifyCode=`GF-${hex.slice(0,4)}-${hex.slice(4,8)}-${hex.slice(8,12)}`;
+
+    return{member,rows,totalPaid,totalPayments,totalOwed,score,pendingItems,verifyCode};
   });
+
+  // Group totals
+  const grandTotal=memberReports.reduce((s,r)=>s+r.totalPaid,0);
+  const grandOwed=memberReports.reduce((s,r)=>s+r.totalOwed,0);
+
+  const win=window.open('','_blank');
+  win._reportData={memberReports,grpName,genDateFmt,grandTotal,grandOwed};
+
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <title>Full Group Report — ${grpName}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;padding:20px;gap:20px;}
+    canvas{max-width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.15);}
+    .btn-bar{display:flex;gap:12px;margin-bottom:8px;}
+    .btn{padding:10px 24px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;}
+    .btn-print{background:#0a1628;color:#fff;}
+    .btn-close{background:#eee;color:#333;}
+    @media print{.btn-bar{display:none;}body{padding:0;gap:0;}canvas{box-shadow:none;width:100%;page-break-after:always;}}
+  </style>
+  </head><body>
+  <div class="btn-bar">
+    <button class="btn btn-print" onclick="window.print()">🖨 Print All / Save PDF</button>
+    <button class="btn btn-close" onclick="window.close()">✕ Close</button>
+  </div>
+  <canvas id="coverCanvas"></canvas>
+  <div id="memberCanvases"></div>
+  <script>
+  window.onload=function(){
+    const {memberReports,grpName,genDateFmt,grandTotal,grandOwed}=window._reportData;
+
+    function roundRect(ctx,x,y,w,h,r){
+      ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+      ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+      ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+    }
+    function truncate(str,max){if(!str)return'—';return str.length>max?str.slice(0,max)+'…':str;}
+    function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});}
+
+    function drawSecurityPattern(ctx,W,H){
+      ctx.save();
+      for(let ly=0;ly<H;ly+=6){
+        ctx.beginPath();ctx.moveTo(0,ly);ctx.lineTo(W,ly);
+        ctx.strokeStyle='rgba(91,156,246,0.055)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let x=-H;x<W+H;x+=12){
+        ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+H,H);
+        ctx.strokeStyle='rgba(52,217,165,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let x=-H;x<W+H;x+=12){
+        ctx.beginPath();ctx.moveTo(x+H,0);ctx.lineTo(x,H);
+        ctx.strokeStyle='rgba(91,156,246,0.035)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let wy=80;wy<H-80;wy+=10){
+        ctx.beginPath();ctx.moveTo(0,wy);
+        for(let wx=0;wx<W;wx+=4){ctx.lineTo(wx,wy+Math.sin(wx/18)*2.5);}
+        ctx.strokeStyle='rgba(26,58,107,0.045)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawStamp(ctx,W,H,grpName){
+      ctx.save();
+      ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/12);
+      ctx.beginPath();ctx.arc(0,0,92,0,Math.PI*2);
+      ctx.strokeStyle='rgba(200,0,0,0.75)';ctx.lineWidth=5;ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,78,0,Math.PI*2);
+      ctx.strokeStyle='rgba(200,0,0,0.60)';ctx.lineWidth=2;ctx.stroke();
+      for(let a=0;a<Math.PI*2;a+=Math.PI/18){
+        ctx.beginPath();ctx.arc(Math.cos(a)*85,Math.sin(a)*85,2,0,Math.PI*2);
+        ctx.fillStyle='rgba(200,0,0,0.55)';ctx.fill();
+      }
+      const groupNameUpper=grpName.toUpperCase();
+      const radius=84;const charCount=groupNameUpper.length;
+      const totalAngle=Math.min(Math.PI*1.1,charCount*0.18);
+      const startAngle=-Math.PI/2-totalAngle/2;
+      ctx.font='bold 12px Arial';ctx.fillStyle='rgba(180,0,0,0.85)';
+      for(let i=0;i<charCount;i++){
+        const angle=startAngle+(i/charCount)*totalAngle+(0.18/2);
+        ctx.save();ctx.rotate(angle);ctx.translate(0,-radius);ctx.rotate(Math.PI/2);
+        ctx.fillText(groupNameUpper[i],0,0);ctx.restore();
+      }
+      const bottomText='★  VERIFIED  &  OFFICIAL  ★';
+      const bCharCount=bottomText.length;
+      const bTotalAngle=Math.min(Math.PI*1.1,bCharCount*0.148);
+      const bStartAngle=Math.PI/2-bTotalAngle/2;
+      ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.80)';
+      for(let i=0;i<bCharCount;i++){
+        const angle=bStartAngle+(i/bCharCount)*bTotalAngle+(0.148/2);
+        ctx.save();ctx.rotate(angle);ctx.translate(0,radius);ctx.rotate(-Math.PI/2);
+        ctx.fillText(bottomText[i],0,0);ctx.restore();
+      }
+      ctx.beginPath();ctx.moveTo(-62,-14);ctx.lineTo(62,-14);
+      ctx.strokeStyle='rgba(200,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-62,14);ctx.lineTo(62,14);ctx.stroke();
+      ctx.textAlign='center';
+      const stampName=grpName.toUpperCase();
+      const words=stampName.split(' ');
+      let line1=stampName,line2='';
+      if(stampName.length>14&&words.length>1){
+        const mid=Math.ceil(words.length/2);
+        line1=words.slice(0,mid).join(' ');line2=words.slice(mid).join(' ');
+      }
+      ctx.font='bold 11px Arial';ctx.fillStyle='rgba(180,0,0,0.85)';
+      if(line2){
+        ctx.fillText(line1,0,-28);ctx.fillText(line2,0,-14);
+        ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+        ctx.fillText('OFFICIAL RECORD',0,4);
+        ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+        ctx.fillText('★',0,18);
+        ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+        ctx.fillText(String(new Date().getFullYear()),0,30);
+      }else{
+        ctx.fillText(line1,0,-20);
+        ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+        ctx.fillText('OFFICIAL RECORD',0,-4);
+        ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+        ctx.fillText('★',0,12);
+        ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+        ctx.fillText(String(new Date().getFullYear()),0,26);
+      }
+      ctx.textAlign='left';ctx.restore();
+    }
+
+    function drawTopBar(ctx,W){
+      const barGrad=ctx.createLinearGradient(0,0,W,0);
+      barGrad.addColorStop(0,'#0a1628');barGrad.addColorStop(0.5,'#1a3a6b');barGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=barGrad;ctx.fillRect(0,0,W,8);
+      const stripeGrad=ctx.createLinearGradient(0,0,0,999);
+      stripeGrad.addColorStop(0,'#5b9cf6');stripeGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=stripeGrad;ctx.fillRect(0,0,4,9999);
+    }
+
+    // ── COVER PAGE ──
+    const coverCanvas=document.getElementById('coverCanvas');
+    const dpr=window.devicePixelRatio||1;
+    const W=794;const coverH=500;
+    coverCanvas.width=W*dpr;coverCanvas.height=coverH*dpr;
+    coverCanvas.style.width=W+'px';coverCanvas.style.height=coverH+'px';
+    const cctx=coverCanvas.getContext('2d');cctx.scale(dpr,dpr);
+
+    const bgGrad=cctx.createLinearGradient(0,0,W,coverH);
+    bgGrad.addColorStop(0,'#f0f4ff');bgGrad.addColorStop(0.5,'#ffffff');bgGrad.addColorStop(1,'#f0fff8');
+    cctx.fillStyle=bgGrad;cctx.fillRect(0,0,W,coverH);
+    drawSecurityPattern(cctx,W,coverH);
+    drawStamp(cctx,W,coverH,grpName);
+    drawTopBar(cctx,W);
+
+    // Cover title
+    cctx.fillStyle='#0a1628';cctx.font='bold 28px Arial';cctx.textAlign='center';
+    cctx.fillText('GROUP FINANCIAL REPORT',W/2,60);
+    cctx.fillStyle='#5b9cf6';cctx.font='bold 14px Arial';
+    cctx.fillText(grpName.toUpperCase(),W/2,84);
+    cctx.fillStyle='#888';cctx.font='11px Arial';
+    cctx.fillText('Generated: '+genDateFmt,W/2,104);
+    cctx.textAlign='left';
+
+    // Divider
+    cctx.fillStyle='#d0daf0';cctx.fillRect(40,118,W-80,1);
+
+    // Group summary KPIs
+    const ckpis=[
+      {label:'TOTAL MEMBERS',value:String(memberReports.length)},
+      {label:'TOTAL COLLECTED',value:'KES '+grandTotal.toLocaleString()},
+      {label:'TOTAL OUTSTANDING',value:'KES '+grandOwed.toLocaleString()},
+      {label:'AVG PER MEMBER',value:'KES '+(memberReports.length?Math.round(grandTotal/memberReports.length).toLocaleString():'0')}
+    ];
+    const ckpiW=(W-80)/4;
+    ckpis.forEach((k,i)=>{
+      const kx=40+i*(ckpiW+13);const ky=134;
+      cctx.fillStyle='#ffffff';roundRect(cctx,kx,ky,ckpiW,56,6);cctx.fill();
+      cctx.strokeStyle='#d0daf0';cctx.lineWidth=1;roundRect(cctx,kx,ky,ckpiW,56,6);cctx.stroke();
+      cctx.fillStyle='#0a1628';cctx.font='bold 13px Arial';cctx.textAlign='center';
+      cctx.fillText(k.value,kx+ckpiW/2,ky+24);
+      cctx.fillStyle='#888';cctx.font='9px Arial';
+      cctx.fillText(k.label,kx+ckpiW/2,ky+40);
+      cctx.textAlign='left';
+    });
+
+    // Member summary table on cover
+    let cy=218;
+    cctx.fillStyle='#0a1628';cctx.font='bold 11px Arial';
+    cctx.fillText('MEMBER SUMMARY',40,cy);cy+=12;
+    cctx.fillStyle='#d0daf0';cctx.fillRect(40,cy,W-80,1);cy+=10;
+    cctx.fillStyle='#0a1628';cctx.fillRect(40,cy,W-80,24);
+    cctx.fillStyle='#fff';cctx.font='bold 10px Arial';
+    cctx.fillText('MEMBER',50,cy+16);
+    cctx.fillText('PAID',280,cy+16);
+    cctx.fillText('OUTSTANDING',380,cy+16);
+    cctx.fillText('SCORE',510,cy+16);
+    cctx.fillText('TRANSACTIONS',600,cy+16);
+    cy+=24;
+    memberReports.forEach((r,i)=>{
+      cctx.fillStyle=i%2===0?'#f7f9ff':'#ffffff';
+      cctx.fillRect(40,cy,W-80,22);
+      cctx.fillStyle='#222';cctx.font='11px Arial';
+      cctx.fillText(truncate(r.member.full_name,24),50,cy+15);
+      cctx.fillStyle='#0a6b3a';cctx.font='bold 11px Arial';
+      cctx.fillText('KES '+r.totalPaid.toLocaleString(),280,cy+15);
+      cctx.fillStyle=r.totalOwed>0?'#cc0000':'#0a6b3a';
+      cctx.fillText('KES '+r.totalOwed.toLocaleString(),380,cy+15);
+      const scoreColor=r.score>=80?'#0a6b3a':r.score>=50?'#b8860b':'#cc0000';
+      cctx.fillStyle=scoreColor;cctx.font='bold 11px Arial';
+      cctx.fillText(r.score+'%',510,cy+15);
+      cctx.fillStyle='#555';cctx.font='11px Arial';
+      cctx.fillText(String(r.rows.length),620,cy+15);
+      cy+=22;
+    });
+
+    // Bottom bar
+    const botGrad=cctx.createLinearGradient(0,0,W,0);
+    botGrad.addColorStop(0,'#0a1628');botGrad.addColorStop(0.5,'#1a3a6b');botGrad.addColorStop(1,'#34d9a5');
+    cctx.fillStyle=botGrad;cctx.fillRect(0,coverH-8,W,8);
+    cctx.fillStyle='#aaa';cctx.font='9px Arial';cctx.textAlign='center';
+    cctx.fillText('GroupFlow · '+grpName+' · Official Group Financial Report · '+genDateFmt,W/2,coverH-14);
+    cctx.textAlign='left';
+
+    // ── INDIVIDUAL MEMBER PAGES ──
+    const container=document.getElementById('memberCanvases');
+    memberReports.forEach(report=>{
+      const {member,rows,totalPaid,totalPayments,totalOwed,score,pendingItems,verifyCode}=report;
+      const rowH=28;
+      const memberH=320+Math.max(rows.length,1)*rowH+80+160;
+      const canvas=document.createElement('canvas');
+      canvas.width=W*dpr;canvas.height=memberH*dpr;
+      canvas.style.width=W+'px';canvas.style.height=memberH+'px';
+      container.appendChild(canvas);
+      const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+
+      // Background
+      const bg=ctx.createLinearGradient(0,0,W,memberH);
+      bg.addColorStop(0,'#f0f4ff');bg.addColorStop(0.5,'#ffffff');bg.addColorStop(1,'#f0fff8');
+      ctx.fillStyle=bg;ctx.fillRect(0,0,W,memberH);
+      drawSecurityPattern(ctx,W,memberH);
+
+      // Watermark
+      ctx.save();ctx.translate(W/2,memberH/2);ctx.rotate(-Math.PI/6);
+      ctx.font='bold 68px Arial';ctx.fillStyle='rgba(91,156,246,0.07)';
+      ctx.textAlign='center';ctx.fillText('GROUPFLOW OFFICIAL',0,0);
+      ctx.font='bold 28px Arial';ctx.fillStyle='rgba(52,217,165,0.06)';
+      ctx.fillText(verifyCode,0,60);ctx.restore();
+
+      drawTopBar(ctx,W);
+
+      // Header
+      let y=28;
+      ctx.fillStyle='#0a1628';ctx.font='bold 18px Arial';
+      ctx.fillText('MEMBER FINANCIAL STATEMENT',20,y);y+=18;
+      ctx.fillStyle='#5b9cf6';ctx.font='bold 11px Arial';
+      ctx.fillText(grpName.toUpperCase(),20,y);y+=14;
+      ctx.fillStyle='#888';ctx.font='10px Arial';
+      ctx.fillText('Generated: '+genDateFmt,20,y);
+      ctx.save();ctx.strokeStyle='#1a3a6b';ctx.lineWidth=2;
+      ctx.strokeRect(W-162,14,152,44);
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 9px Arial';ctx.textAlign='center';
+      ctx.fillText('OFFICIAL DOCUMENT',W-86,32);ctx.fillText('GROUPFLOW VERIFIED',W-86,46);
+      ctx.textAlign='left';ctx.restore();
+      y+=16;ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);y+=14;
+
+      // Member card
+      ctx.fillStyle='rgba(91,156,246,0.08)';roundRect(ctx,20,y,W-40,72,8);ctx.fill();
+      ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;roundRect(ctx,20,y,W-40,72,8);ctx.stroke();
+      ctx.fillStyle='#0a1628';ctx.font='bold 15px Arial';ctx.fillText(member.full_name,36,y+22);
+      ctx.fillStyle='#555';ctx.font='11px Arial';
+      ctx.fillText('@'+(member.username||'—')+' · '+(member.phone||'No phone'),36,y+38);
+      ctx.fillText('Member since: '+fmtDate(member.created_at),36,y+54);
+      const scoreColor=score>=80?'#0a6b3a':score>=50?'#b8860b':'#cc0000';
+      ctx.fillStyle=scoreColor;roundRect(ctx,W-130,y+16,110,32,4);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 10px Arial';ctx.textAlign='center';
+      ctx.fillText('SCORE: '+score+'%',W-75,y+36);ctx.textAlign='left';
+      y+=86;
+
+      // KPIs
+      const kpis=[
+        {label:'TOTAL CONTRIBUTED',value:'KES '+totalPaid.toLocaleString()},
+        {label:'PAYMENTS MADE',value:String(totalPayments)},
+        {label:'OUTSTANDING',value:'KES '+totalOwed.toLocaleString()},
+        {label:'VERIFY CODE',value:verifyCode}
+      ];
+      const kpiW=(W-60)/4;
+      kpis.forEach((k,i)=>{
+        const kx=20+i*(kpiW+13);
+        ctx.fillStyle='#ffffff';roundRect(ctx,kx,y,kpiW,52,6);ctx.fill();
+        ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;roundRect(ctx,kx,y,kpiW,52,6);ctx.stroke();
+        ctx.fillStyle='#0a1628';ctx.font='bold 12px Arial';ctx.textAlign='center';
+        ctx.fillText(k.value,kx+kpiW/2,y+22);
+        ctx.fillStyle='#888';ctx.font='9px Arial';ctx.fillText(k.label,kx+kpiW/2,y+38);
+        ctx.textAlign='left';
+      });
+      y+=66;
+
+      // Table
+      ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';ctx.fillText('PAYMENT HISTORY',20,y);
+      y+=12;ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);y+=10;
+      const cols=[
+        {label:'#',x:24},{label:'SOURCE',x:52},{label:'TYPE',x:266},
+        {label:'AMOUNT (KES)',x:340},{label:'DATE',x:474},{label:'NOTE',x:588}
+      ];
+      ctx.fillStyle='#0a1628';ctx.fillRect(20,y,W-40,26);
+      ctx.fillStyle='#ffffff';ctx.font='bold 10px Arial';
+      cols.forEach(col=>ctx.fillText(col.label,col.x,y+17));y+=26;
+
+      rows.forEach((r,i)=>{
+        ctx.fillStyle=i%2===0?'#f7f9ff':'#ffffff';ctx.fillRect(20,y,W-40,rowH);
+        if(i%2===0){ctx.fillStyle='rgba(91,156,246,0.12)';ctx.fillRect(20,y,3,rowH);}
+        ctx.fillStyle='#999';ctx.font='10px Arial';ctx.fillText(String(i+1),cols[0].x,y+18);
+        ctx.fillStyle='#222';ctx.font='11px Arial';ctx.fillText(truncate(r.source,26),cols[1].x,y+18);
+        ctx.fillStyle=r.type==='Event'?'#1a3a6b':'#0a6b3a';ctx.font='bold 10px Arial';
+        ctx.fillText(r.type,cols[2].x,y+18);
+        ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';
+        ctx.fillText('KES '+parseFloat(r.amount).toLocaleString(),cols[3].x,y+18);
+        ctx.fillStyle='#555';ctx.font='10px Arial';ctx.fillText(fmtDate(r.date),cols[4].x,y+18);
+        ctx.fillStyle='#888';ctx.fillText(truncate(r.note||'—',22),cols[5].x,y+18);
+        ctx.fillStyle='#eef0f7';ctx.fillRect(20,y+rowH-1,W-40,1);y+=rowH;
+      });
+
+      if(rows.length===0){
+        ctx.fillStyle='#f7f9ff';ctx.fillRect(20,y,W-40,36);
+        ctx.fillStyle='#aaa';ctx.font='12px Arial';ctx.textAlign='center';
+        ctx.fillText('No payment records found.',W/2,y+22);ctx.textAlign='left';y+=36;
+      }
+
+      // Total row
+      ctx.fillStyle='#e8f0ff';ctx.fillRect(20,y,W-40,30);
+      ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;ctx.strokeRect(20,y,W-40,30);
+      ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';ctx.textAlign='right';
+      ctx.fillText('TOTAL CONTRIBUTED:',cols[3].x-4,y+20);
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 14px Arial';
+      ctx.fillText('KES '+totalPaid.toLocaleString(),W-30,y+20);
+      ctx.textAlign='left';y+=44;
+
+      // Stamp drawn last
+      drawStamp(ctx,W,memberH,grpName);
+
+      // Security footer
+      const sfGrad=ctx.createLinearGradient(0,y,0,y+110);
+      sfGrad.addColorStop(0,'#e8f0ff');sfGrad.addColorStop(1,'#f0fff8');
+      ctx.fillStyle=sfGrad;roundRect(ctx,20,y,W-40,110,8);ctx.fill();
+      ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;roundRect(ctx,20,y,W-40,110,8);ctx.stroke();
+      ctx.fillStyle='#0a1628';roundRect(ctx,30,y+10,80,88,6);ctx.fill();
+      ctx.font='32px Arial';ctx.textAlign='center';ctx.fillStyle='#fff';
+      ctx.fillText('🔐',70,y+62);ctx.textAlign='left';
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 10px Arial';
+      ctx.fillText('DOCUMENT VERIFICATION CODE',122,y+24);
+      ctx.fillStyle='#0a1628';ctx.font='bold 20px Arial';ctx.fillText(verifyCode,122,y+48);
+      ctx.fillStyle='#888';ctx.font='9px Arial';
+      ctx.fillText('This code is generated from this member data. Any alteration invalidates this document.',122,y+66);
+      ctx.fillText('Contact your group admin to verify. Member ID: '+member.id.slice(0,8).toUpperCase()+'...',122,y+80);
+      ctx.fillText('Timestamp: '+genDateFmt,122,y+94);
+      y+=124;
+
+      // Bottom bar
+      const bGrad=ctx.createLinearGradient(0,0,W,0);
+      bGrad.addColorStop(0,'#0a1628');bGrad.addColorStop(0.5,'#1a3a6b');bGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=bGrad;ctx.fillRect(0,y,W,8);y+=14;
+      ctx.fillStyle='#aaa';ctx.font='9px Arial';ctx.textAlign='center';
+      ctx.fillText('GroupFlow · Official Member Statement · '+verifyCode+' · Any tampering renders this document invalid',W/2,y);
+      ctx.textAlign='left';
+    });
+  };
+  <\/script>
+  </body></html>`);
+  win.document.close();
 }
 function rpg(cid,p){rpages[cid]=p;renderReports();document.getElementById(cid)?.scrollIntoView({behavior:'smooth',block:'nearest'});}
 
@@ -3052,18 +3410,394 @@ function downloadReportCSV(){
 }
 function printReport(){
   const grpName=document.getElementById('sidebarGroupName').textContent;
-  const win=window.open('','_blank');
-  const summary=document.getElementById('rptSummaryCards');
-  const cats=[...document.querySelectorAll('#rptAccordion .cat-section')];
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Report - ${grpName}</title><style>body{font-family:Arial,sans-serif;color:#111;padding:24px;}h1{font-size:20px;margin-bottom:4px;}.sub{color:#666;font-size:13px;margin-bottom:20px;}.cards{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;}.card{border:1px solid #ddd;border-radius:8px;padding:14px 18px;min-width:120px;}.card strong{font-size:22px;display:block;}.card span{font-size:12px;color:#666;}h2{font-size:15px;border-bottom:2px solid #eee;padding-bottom:6px;margin:20px 0 10px;}table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}th{text-align:left;padding:8px 10px;background:#f4f4f4;border-bottom:2px solid #ddd;}td{padding:7px 10px;border-bottom:1px solid #eee;}@media print{button{display:none;}}</style></head><body>`);
-  win.document.write(`<h1>Contribution Report — ${grpName}</h1><div class="sub">Generated: ${new Date().toLocaleString()}</div><div class="cards">`);
-  summary.querySelectorAll('.summary-card').forEach(c=>win.document.write(`<div class="card"><strong>${c.querySelector('.summary-value')?.textContent||''}</strong><span>${c.querySelector('.summary-label')?.textContent||''}</span></div>`));
-  win.document.write('</div>');
-  cats.forEach(sec=>{
-    win.document.write(`<h2>${sec.querySelector('.cat-title')?.textContent||''} <span style="font-size:12px;color:#888;">${sec.querySelector('.cat-meta')?.textContent||''}</span></h2>`);
-    const tbl=sec.querySelector('table');if(tbl)win.document.write(tbl.outerHTML);
+  const genDate=new Date().toISOString();
+  const genDateFmt=new Date(genDate).toLocaleString('en-KE',{dateStyle:'full',timeStyle:'medium'});
+
+  const memberReports=allMembers.map(member=>{
+    const memberContribs=allContribs.filter(c=>c.member_id===member.id);
+    const memberSchemePayments=allSchemePayments.filter(p=>p.member_id===member.id);
+    const totalPaid=memberContribs.reduce((s,c)=>s+parseFloat(c.amount||0),0)+memberSchemePayments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
+    const totalPayments=memberContribs.length+memberSchemePayments.length;
+    const pendingItems=[];
+    allEvents.filter(ev=>ev.requires_contribution&&ev.contribution_amount).forEach(ev=>{
+      const paid=memberContribs.find(c=>c.event_id===ev.id);
+      if(!paid)pendingItems.push({name:ev.name,type:'Event',amount:parseFloat(ev.contribution_amount),isOverdue:ev.contribution_deadline&&new Date(ev.contribution_deadline)<new Date()});
+    });
+    allSchemes.forEach(sc=>{
+      allPeriods.filter(p=>p.scheme_id===sc.id).forEach(pd=>{
+        const paid=memberSchemePayments.find(p=>p.period_id===pd.id);
+        if(!paid)pendingItems.push({name:`${sc.name} — ${pd.period_label}`,type:'Scheme',amount:sc.amount_per_member,isOverdue:pd.due_date&&new Date(pd.due_date)<new Date()});
+      });
+    });
+    const totalOwed=pendingItems.reduce((s,i)=>s+i.amount,0);
+    const totalObligs=totalPayments+pendingItems.length;
+    const score=totalObligs>0?Math.round((totalPayments/totalObligs)*100):100;
+    const rows=[
+      ...memberContribs.map(c=>({source:allEvents.find(e=>e.id===c.event_id)?.name||'General',type:'Event',amount:c.amount,date:c.created_at,note:c.note||''})),
+      ...memberSchemePayments.map(p=>({source:(allSchemes.find(s=>s.id===p.scheme_id)?.name||'Scheme')+' — '+(allPeriods.find(x=>x.id===p.period_id)?.period_label||''),type:'Scheme',amount:p.amount,date:p.paid_at,note:p.note||''}))
+    ].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const hashStr=`${member.id}|${member.full_name}|${totalPaid}|${totalPayments}|${genDate}|GF-SECURE-2025`;
+    let hash=0;
+    for(let i=0;i<hashStr.length;i++){const chr=hashStr.charCodeAt(i);hash=((hash<<5)-hash)+chr;hash|=0;}
+    const hex=Math.abs(hash).toString(16).toUpperCase().padStart(12,'0');
+    const verifyCode=`GF-${hex.slice(0,4)}-${hex.slice(4,8)}-${hex.slice(8,12)}`;
+    return{member,rows,totalPaid,totalPayments,totalOwed,score,pendingItems,verifyCode};
   });
-  win.document.write('</body></html>');win.document.close();setTimeout(()=>win.print(),400);
+
+  const grandTotal=memberReports.reduce((s,r)=>s+r.totalPaid,0);
+  const grandOwed=memberReports.reduce((s,r)=>s+r.totalOwed,0);
+
+  const win=window.open('','_blank');
+  win._reportData={memberReports,grpName,genDateFmt,grandTotal,grandOwed};
+
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <title>Full Group Report — ${grpName}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;padding:20px;gap:20px;}
+    canvas{max-width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.15);}
+    .btn-bar{display:flex;gap:12px;margin-bottom:8px;}
+    .btn{padding:10px 24px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;}
+    .btn-print{background:#0a1628;color:#fff;}
+    .btn-close{background:#eee;color:#333;}
+    @media print{.btn-bar{display:none;}body{padding:0;gap:0;}canvas{box-shadow:none;width:100%;page-break-after:always;}}
+  </style>
+  </head><body>
+  <div class="btn-bar">
+    <button class="btn btn-print" onclick="window.print()">🖨 Print All / Save PDF</button>
+    <button class="btn btn-close" onclick="window.close()">✕ Close</button>
+  </div>
+  <canvas id="coverCanvas"></canvas>
+  <div id="memberCanvases"></div>
+  <script>
+  window.onload=function(){
+    const {memberReports,grpName,genDateFmt,grandTotal,grandOwed}=window._reportData;
+
+    function roundRect(ctx,x,y,w,h,r){
+      ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+      ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+      ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+    }
+    function truncate(str,max){if(!str)return'—';return str.length>max?str.slice(0,max)+'…':str;}
+    function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});}
+
+    function drawSecurityPattern(ctx,W,H){
+      ctx.save();
+      for(let ly=0;ly<H;ly+=6){
+        ctx.beginPath();ctx.moveTo(0,ly);ctx.lineTo(W,ly);
+        ctx.strokeStyle='rgba(91,156,246,0.055)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let x=-H;x<W+H;x+=12){
+        ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+H,H);
+        ctx.strokeStyle='rgba(52,217,165,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let x=-H;x<W+H;x+=12){
+        ctx.beginPath();ctx.moveTo(x+H,0);ctx.lineTo(x,H);
+        ctx.strokeStyle='rgba(91,156,246,0.035)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      for(let wy=80;wy<H-80;wy+=10){
+        ctx.beginPath();ctx.moveTo(0,wy);
+        for(let wx=0;wx<W;wx+=4){ctx.lineTo(wx,wy+Math.sin(wx/18)*2.5);}
+        ctx.strokeStyle='rgba(26,58,107,0.045)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawStamp(ctx,W,H,grpName){
+      ctx.save();
+      ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/12);
+      ctx.beginPath();ctx.arc(0,0,92,0,Math.PI*2);
+      ctx.strokeStyle='rgba(200,0,0,0.75)';ctx.lineWidth=5;ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,78,0,Math.PI*2);
+      ctx.strokeStyle='rgba(200,0,0,0.60)';ctx.lineWidth=2;ctx.stroke();
+      for(let a=0;a<Math.PI*2;a+=Math.PI/18){
+        ctx.beginPath();ctx.arc(Math.cos(a)*85,Math.sin(a)*85,2,0,Math.PI*2);
+        ctx.fillStyle='rgba(200,0,0,0.55)';ctx.fill();
+      }
+      const groupNameUpper=grpName.toUpperCase();
+      const radius=84;const charCount=groupNameUpper.length;
+      const totalAngle=Math.min(Math.PI*1.1,charCount*0.18);
+      const startAngle=-Math.PI/2-totalAngle/2;
+      ctx.font='bold 12px Arial';ctx.fillStyle='rgba(180,0,0,0.85)';
+      for(let i=0;i<charCount;i++){
+        const angle=startAngle+(i/charCount)*totalAngle+(0.18/2);
+        ctx.save();ctx.rotate(angle);ctx.translate(0,-radius);ctx.rotate(Math.PI/2);
+        ctx.fillText(groupNameUpper[i],0,0);ctx.restore();
+      }
+      const bottomText='★  VERIFIED  &  OFFICIAL  ★';
+      const bCharCount=bottomText.length;
+      const bTotalAngle=Math.min(Math.PI*1.1,bCharCount*0.148);
+      const bStartAngle=Math.PI/2-bTotalAngle/2;
+      ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.80)';
+      for(let i=0;i<bCharCount;i++){
+        const angle=bStartAngle+(i/bCharCount)*bTotalAngle+(0.148/2);
+        ctx.save();ctx.rotate(angle);ctx.translate(0,radius);ctx.rotate(-Math.PI/2);
+        ctx.fillText(bottomText[i],0,0);ctx.restore();
+      }
+      ctx.beginPath();ctx.moveTo(-62,-14);ctx.lineTo(62,-14);
+      ctx.strokeStyle='rgba(200,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-62,14);ctx.lineTo(62,14);ctx.stroke();
+      ctx.textAlign='center';
+      const stampName=grpName.toUpperCase();
+      const words=stampName.split(' ');
+      let line1=stampName,line2='';
+      if(stampName.length>14&&words.length>1){
+        const mid=Math.ceil(words.length/2);
+        line1=words.slice(0,mid).join(' ');line2=words.slice(mid).join(' ');
+      }
+      ctx.font='bold 11px Arial';ctx.fillStyle='rgba(180,0,0,0.85)';
+      if(line2){
+        ctx.fillText(line1,0,-28);ctx.fillText(line2,0,-14);
+        ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+        ctx.fillText('OFFICIAL RECORD',0,4);
+        ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+        ctx.fillText('★',0,18);
+        ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+        ctx.fillText(String(new Date().getFullYear()),0,30);
+      }else{
+        ctx.fillText(line1,0,-20);
+        ctx.font='bold 10px Arial';ctx.fillStyle='rgba(180,0,0,0.75)';
+        ctx.fillText('OFFICIAL RECORD',0,-4);
+        ctx.font='bold 14px Arial';ctx.fillStyle='rgba(180,0,0,0.70)';
+        ctx.fillText('★',0,12);
+        ctx.font='bold 9px Arial';ctx.fillStyle='rgba(180,0,0,0.65)';
+        ctx.fillText(String(new Date().getFullYear()),0,26);
+      }
+      ctx.textAlign='left';ctx.restore();
+    }
+
+    function drawTopBar(ctx,W,H){
+      const barGrad=ctx.createLinearGradient(0,0,W,0);
+      barGrad.addColorStop(0,'#0a1628');barGrad.addColorStop(0.5,'#1a3a6b');barGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=barGrad;ctx.fillRect(0,0,W,8);
+      const stripeGrad=ctx.createLinearGradient(0,0,0,H);
+      stripeGrad.addColorStop(0,'#5b9cf6');stripeGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=stripeGrad;ctx.fillRect(0,0,4,H);
+    }
+
+    function drawBottomBar(ctx,W,y,text){
+      const botGrad=ctx.createLinearGradient(0,0,W,0);
+      botGrad.addColorStop(0,'#0a1628');botGrad.addColorStop(0.5,'#1a3a6b');botGrad.addColorStop(1,'#34d9a5');
+      ctx.fillStyle=botGrad;ctx.fillRect(0,y,W,8);
+      ctx.fillStyle='#aaa';ctx.font='9px Arial';ctx.textAlign='center';
+      ctx.fillText(text,W/2,y+20);ctx.textAlign='left';
+    }
+
+    const dpr=window.devicePixelRatio||1;
+    const W=794;
+
+    // ── COVER PAGE ──
+    const coverRowH=22;
+    const coverH=Math.max(500, 280+memberReports.length*coverRowH+60);
+    const coverCanvas=document.getElementById('coverCanvas');
+    coverCanvas.width=W*dpr;coverCanvas.height=coverH*dpr;
+    coverCanvas.style.width=W+'px';coverCanvas.style.height=coverH+'px';
+    const cctx=coverCanvas.getContext('2d');cctx.scale(dpr,dpr);
+
+    const bgGrad=cctx.createLinearGradient(0,0,W,coverH);
+    bgGrad.addColorStop(0,'#f0f4ff');bgGrad.addColorStop(0.5,'#ffffff');bgGrad.addColorStop(1,'#f0fff8');
+    cctx.fillStyle=bgGrad;cctx.fillRect(0,0,W,coverH);
+    drawSecurityPattern(cctx,W,coverH);
+    drawStamp(cctx,W,coverH,grpName);
+    drawTopBar(cctx,W,coverH);
+
+    cctx.fillStyle='#0a1628';cctx.font='bold 26px Arial';cctx.textAlign='center';
+    cctx.fillText('GROUP FINANCIAL REPORT',W/2,52);
+    cctx.fillStyle='#5b9cf6';cctx.font='bold 13px Arial';
+    cctx.fillText(grpName.toUpperCase(),W/2,74);
+    cctx.fillStyle='#888';cctx.font='10px Arial';
+    cctx.fillText('Generated: '+genDateFmt,W/2,92);
+    cctx.textAlign='left';
+    cctx.fillStyle='#d0daf0';cctx.fillRect(40,104,W-80,1);
+
+    const ckpis=[
+      {label:'TOTAL MEMBERS',value:String(memberReports.length)},
+      {label:'TOTAL COLLECTED',value:'KES '+grandTotal.toLocaleString()},
+      {label:'TOTAL OUTSTANDING',value:'KES '+grandOwed.toLocaleString()},
+      {label:'AVG PER MEMBER',value:'KES '+(memberReports.length?Math.round(grandTotal/memberReports.length).toLocaleString():'0')}
+    ];
+    const ckpiW=(W-80)/4;
+    ckpis.forEach((k,i)=>{
+      const kx=40+i*(ckpiW+13);const ky=116;
+      cctx.fillStyle='#ffffff';roundRect(cctx,kx,ky,ckpiW,54,6);cctx.fill();
+      cctx.strokeStyle='#d0daf0';cctx.lineWidth=1;roundRect(cctx,kx,ky,ckpiW,54,6);cctx.stroke();
+      cctx.fillStyle='#0a1628';cctx.font='bold 13px Arial';cctx.textAlign='center';
+      cctx.fillText(k.value,kx+ckpiW/2,ky+24);
+      cctx.fillStyle='#888';cctx.font='9px Arial';
+      cctx.fillText(k.label,kx+ckpiW/2,ky+40);
+      cctx.textAlign='left';
+    });
+
+    let cy=194;
+    cctx.fillStyle='#0a1628';cctx.font='bold 11px Arial';
+    cctx.fillText('MEMBER SUMMARY',40,cy);cy+=12;
+    cctx.fillStyle='#d0daf0';cctx.fillRect(40,cy,W-80,1);cy+=8;
+    cctx.fillStyle='#0a1628';cctx.fillRect(40,cy,W-80,24);
+    cctx.fillStyle='#fff';cctx.font='bold 9px Arial';
+    cctx.fillText('MEMBER',50,cy+16);
+    cctx.fillText('TOTAL PAID',260,cy+16);
+    cctx.fillText('OUTSTANDING',370,cy+16);
+    cctx.fillText('SCORE',490,cy+16);
+    cctx.fillText('TRANSACTIONS',580,cy+16);
+    cctx.fillText('OVERDUE',690,cy+16);
+    cy+=24;
+    memberReports.forEach((r,i)=>{
+      cctx.fillStyle=i%2===0?'#f7f9ff':'#ffffff';
+      cctx.fillRect(40,cy,W-80,coverRowH);
+      if(i%2===0){cctx.fillStyle='rgba(91,156,246,0.12)';cctx.fillRect(40,cy,3,coverRowH);}
+      cctx.fillStyle='#222';cctx.font='11px Arial';
+      cctx.fillText(truncate(r.member.full_name,24),50,cy+15);
+      cctx.fillStyle='#0a6b3a';cctx.font='bold 11px Arial';
+      cctx.fillText('KES '+r.totalPaid.toLocaleString(),260,cy+15);
+      cctx.fillStyle=r.totalOwed>0?'#cc0000':'#0a6b3a';
+      cctx.fillText('KES '+r.totalOwed.toLocaleString(),370,cy+15);
+      const sc=r.score>=80?'#0a6b3a':r.score>=50?'#b8860b':'#cc0000';
+      cctx.fillStyle=sc;cctx.font='bold 11px Arial';
+      cctx.fillText(r.score+'%',490,cy+15);
+      cctx.fillStyle='#555';cctx.font='11px Arial';
+      cctx.fillText(String(r.rows.length),590,cy+15);
+      const od=r.pendingItems.filter(x=>x.isOverdue).length;
+      cctx.fillStyle=od>0?'#cc0000':'#0a6b3a';
+      cctx.fillText(od>0?od+' overdue':'None',700,cy+15);
+      cctx.fillStyle='#eef0f7';cctx.fillRect(40,cy+coverRowH-1,W-80,1);
+      cy+=coverRowH;
+    });
+
+    drawBottomBar(cctx,W,coverH-28,'GroupFlow · '+grpName+' · Official Group Financial Report · '+genDateFmt);
+
+    // ── INDIVIDUAL MEMBER PAGES ──
+    const container=document.getElementById('memberCanvases');
+    memberReports.forEach(report=>{
+      const{member,rows,totalPaid,totalPayments,totalOwed,score,verifyCode}=report;
+      const rowH=28;
+      const memberH=320+Math.max(rows.length,1)*rowH+160;
+      const canvas=document.createElement('canvas');
+      canvas.width=W*dpr;canvas.height=memberH*dpr;
+      canvas.style.width=W+'px';canvas.style.height=memberH+'px';
+      container.appendChild(canvas);
+      const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+
+      const bg=ctx.createLinearGradient(0,0,W,memberH);
+      bg.addColorStop(0,'#f0f4ff');bg.addColorStop(0.5,'#ffffff');bg.addColorStop(1,'#f0fff8');
+      ctx.fillStyle=bg;ctx.fillRect(0,0,W,memberH);
+      drawSecurityPattern(ctx,W,memberH);
+
+      ctx.save();ctx.translate(W/2,memberH/2);ctx.rotate(-Math.PI/6);
+      ctx.font='bold 68px Arial';ctx.fillStyle='rgba(91,156,246,0.07)';
+      ctx.textAlign='center';ctx.fillText('GROUPFLOW OFFICIAL',0,0);
+      ctx.font='bold 28px Arial';ctx.fillStyle='rgba(52,217,165,0.06)';
+      ctx.fillText(verifyCode,0,60);ctx.restore();
+
+      drawTopBar(ctx,W,memberH);
+
+      let y=28;
+      ctx.fillStyle='#0a1628';ctx.font='bold 18px Arial';
+      ctx.fillText('MEMBER FINANCIAL STATEMENT',20,y);y+=18;
+      ctx.fillStyle='#5b9cf6';ctx.font='bold 11px Arial';
+      ctx.fillText(grpName.toUpperCase(),20,y);y+=14;
+      ctx.fillStyle='#888';ctx.font='10px Arial';
+      ctx.fillText('Generated: '+genDateFmt,20,y);
+      ctx.save();ctx.strokeStyle='#1a3a6b';ctx.lineWidth=2;
+      ctx.strokeRect(W-162,14,152,44);
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 9px Arial';ctx.textAlign='center';
+      ctx.fillText('OFFICIAL DOCUMENT',W-86,32);ctx.fillText('GROUPFLOW VERIFIED',W-86,46);
+      ctx.textAlign='left';ctx.restore();
+      y+=16;ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);y+=14;
+
+      ctx.fillStyle='rgba(91,156,246,0.08)';roundRect(ctx,20,y,W-40,72,8);ctx.fill();
+      ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;roundRect(ctx,20,y,W-40,72,8);ctx.stroke();
+      ctx.fillStyle='#0a1628';ctx.font='bold 15px Arial';ctx.fillText(member.full_name,36,y+22);
+      ctx.fillStyle='#555';ctx.font='11px Arial';
+      ctx.fillText('@'+(member.username||'—')+' · '+(member.phone||'No phone'),36,y+38);
+      ctx.fillText('Member since: '+fmtDate(member.created_at),36,y+54);
+      const scoreColor=score>=80?'#0a6b3a':score>=50?'#b8860b':'#cc0000';
+      ctx.fillStyle=scoreColor;roundRect(ctx,W-130,y+16,110,32,4);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 10px Arial';ctx.textAlign='center';
+      ctx.fillText('SCORE: '+score+'%',W-75,y+36);ctx.textAlign='left';
+      y+=86;
+
+      const kpis=[
+        {label:'TOTAL CONTRIBUTED',value:'KES '+totalPaid.toLocaleString()},
+        {label:'PAYMENTS MADE',value:String(totalPayments)},
+        {label:'OUTSTANDING',value:'KES '+totalOwed.toLocaleString()},
+        {label:'VERIFY CODE',value:verifyCode}
+      ];
+      const kpiW=(W-60)/4;
+      kpis.forEach((k,i)=>{
+        const kx=20+i*(kpiW+13);
+        ctx.fillStyle='#ffffff';roundRect(ctx,kx,y,kpiW,52,6);ctx.fill();
+        ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;roundRect(ctx,kx,y,kpiW,52,6);ctx.stroke();
+        ctx.fillStyle='#0a1628';ctx.font='bold 12px Arial';ctx.textAlign='center';
+        ctx.fillText(k.value,kx+kpiW/2,y+22);
+        ctx.fillStyle='#888';ctx.font='9px Arial';ctx.fillText(k.label,kx+kpiW/2,y+38);
+        ctx.textAlign='left';
+      });
+      y+=66;
+
+      ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';ctx.fillText('PAYMENT HISTORY',20,y);
+      y+=12;ctx.fillStyle='#d0daf0';ctx.fillRect(20,y,W-40,1);y+=10;
+      const cols=[
+        {label:'#',x:24},{label:'SOURCE',x:52},{label:'TYPE',x:266},
+        {label:'AMOUNT (KES)',x:340},{label:'DATE',x:474},{label:'NOTE',x:588}
+      ];
+      ctx.fillStyle='#0a1628';ctx.fillRect(20,y,W-40,26);
+      ctx.fillStyle='#ffffff';ctx.font='bold 10px Arial';
+      cols.forEach(col=>ctx.fillText(col.label,col.x,y+17));y+=26;
+
+      rows.forEach((r,i)=>{
+        ctx.fillStyle=i%2===0?'#f7f9ff':'#ffffff';ctx.fillRect(20,y,W-40,rowH);
+        if(i%2===0){ctx.fillStyle='rgba(91,156,246,0.12)';ctx.fillRect(20,y,3,rowH);}
+        ctx.fillStyle='#999';ctx.font='10px Arial';ctx.fillText(String(i+1),cols[0].x,y+18);
+        ctx.fillStyle='#222';ctx.font='11px Arial';ctx.fillText(truncate(r.source,26),cols[1].x,y+18);
+        ctx.fillStyle=r.type==='Event'?'#1a3a6b':'#0a6b3a';ctx.font='bold 10px Arial';
+        ctx.fillText(r.type,cols[2].x,y+18);
+        ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';
+        ctx.fillText('KES '+parseFloat(r.amount).toLocaleString(),cols[3].x,y+18);
+        ctx.fillStyle='#555';ctx.font='10px Arial';ctx.fillText(fmtDate(r.date),cols[4].x,y+18);
+        ctx.fillStyle='#888';ctx.fillText(truncate(r.note||'—',22),cols[5].x,y+18);
+        ctx.fillStyle='#eef0f7';ctx.fillRect(20,y+rowH-1,W-40,1);y+=rowH;
+      });
+
+      if(rows.length===0){
+        ctx.fillStyle='#f7f9ff';ctx.fillRect(20,y,W-40,36);
+        ctx.fillStyle='#aaa';ctx.font='12px Arial';ctx.textAlign='center';
+        ctx.fillText('No payment records found.',W/2,y+22);ctx.textAlign='left';y+=36;
+      }
+
+      ctx.fillStyle='#e8f0ff';ctx.fillRect(20,y,W-40,30);
+      ctx.strokeStyle='#d0daf0';ctx.lineWidth=1;ctx.strokeRect(20,y,W-40,30);
+      ctx.fillStyle='#0a1628';ctx.font='bold 11px Arial';ctx.textAlign='right';
+      ctx.fillText('TOTAL CONTRIBUTED:',cols[3].x-4,y+20);
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 14px Arial';
+      ctx.fillText('KES '+totalPaid.toLocaleString(),W-30,y+20);
+      ctx.textAlign='left';y+=44;
+
+      drawStamp(ctx,W,memberH,grpName);
+
+      const sfGrad=ctx.createLinearGradient(0,y,0,y+110);
+      sfGrad.addColorStop(0,'#e8f0ff');sfGrad.addColorStop(1,'#f0fff8');
+      ctx.fillStyle=sfGrad;roundRect(ctx,20,y,W-40,110,8);ctx.fill();
+      ctx.strokeStyle='rgba(91,156,246,0.3)';ctx.lineWidth=1;roundRect(ctx,20,y,W-40,110,8);ctx.stroke();
+      ctx.fillStyle='#0a1628';roundRect(ctx,30,y+10,80,88,6);ctx.fill();
+      ctx.font='32px Arial';ctx.textAlign='center';ctx.fillStyle='#fff';
+      ctx.fillText('🔐',70,y+62);ctx.textAlign='left';
+      ctx.fillStyle='#1a3a6b';ctx.font='bold 10px Arial';
+      ctx.fillText('DOCUMENT VERIFICATION CODE',122,y+24);
+      ctx.fillStyle='#0a1628';ctx.font='bold 20px Arial';ctx.fillText(verifyCode,122,y+48);
+      ctx.fillStyle='#888';ctx.font='9px Arial';
+      ctx.fillText('This code is generated from this member data. Any alteration invalidates this document.',122,y+66);
+      ctx.fillText('Contact your group admin to verify. Member ID: '+member.id.slice(0,8).toUpperCase()+'...',122,y+80);
+      ctx.fillText('Timestamp: '+genDateFmt,122,y+94);
+      y+=124;
+
+      drawBottomBar(ctx,W,y,'GroupFlow · Official Member Statement · '+verifyCode+' · Any tampering renders this document invalid');
+    });
+  };
+  <\/script>
+  </body></html>`);
+  win.document.close();
 }
 
 // ─ MEMBERS ────────────────────────────────────────────────────────

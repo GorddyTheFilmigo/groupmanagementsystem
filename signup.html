@@ -83,7 +83,6 @@
     .brand-title span.gold { color: #f5c518; }
     .brand p { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
 
-    /* Demo video banner */
     .demo-banner {
       display: flex;
       align-items: center;
@@ -136,6 +135,17 @@
       box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
     }
     .field input::placeholder { color: var(--text-muted); }
+    .pass-wrap { position: relative; }
+    .pass-wrap input { padding-right: 44px; }
+    .pass-toggle {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 16px; padding: 4px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .pass-toggle:hover { color: var(--accent); }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       font-family: 'DM Sans', sans-serif;
@@ -228,10 +238,25 @@
 
   <div class="msg" id="msg"></div>
 
-  <div class="field"><label>Full Name</label><input id="su-name" type="text" placeholder="Gordon Onyango" autofocus/></div>
-  <div class="field"><label>Group Name</label><input id="su-group" type="text" placeholder="My Organization"/></div>
-  <div class="field"><label>Username</label><input id="su-username" type="text" placeholder="gordon_onyango" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"/></div>
-  <div class="field"><label>Password</label><input id="su-pass" type="password" placeholder="Enter strong password"/></div>
+  <div class="field">
+    <label>Full Name</label>
+    <input id="su-name" type="text" placeholder="Gordon Onyango" autofocus/>
+  </div>
+  <div class="field">
+    <label>Group Name</label>
+    <input id="su-group" type="text" placeholder="My Organization"/>
+  </div>
+  <div class="field">
+    <label>Username</label>
+    <input id="su-username" type="text" placeholder="gordon_onyango" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"/>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <div class="pass-wrap">
+      <input id="su-pass" type="password" placeholder="Enter strong password"/>
+      <button type="button" class="pass-toggle" id="passToggleBtn" onclick="togglePassVisibility()">👁</button>
+    </div>
+  </div>
 
   <button class="btn btn-primary" onclick="signup()" id="signupBtn">Create Group & Sign Up</button>
   <div class="auth-link"><a href="index.html">Already have an account? Sign in</a></div>
@@ -263,6 +288,18 @@ function showMsg(text,type){
   el.textContent=text;
   el.className='msg '+type;
   el.style.display='block';
+}
+
+function togglePassVisibility(){
+  const input=document.getElementById('su-pass');
+  const btn=document.getElementById('passToggleBtn');
+  if(input.type==='password'){
+    input.type='text';
+    btn.textContent='🙈';
+  }else{
+    input.type='password';
+    btn.textContent='👁';
+  }
 }
 
 async function signup(){
