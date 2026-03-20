@@ -845,6 +845,9 @@ body.theme-light .panel {
     <div class="nav-item admin-only" onclick="navigate('amendments')" data-page="amendments" style="display:none;">
       <span class="nav-icon">📜</span><span class="nav-label">Amendment Log</span>
     </div>
+    <div class="nav-item" onclick="navigate('loans')" data-page="loans">
+  <span class="nav-icon">💳</span><span class="nav-label">Loans</span>
+</div>
 
     <div class="section-label admin-only" style="display:none;">Admin</div>
     <div class="nav-item admin-only" onclick="navigate('manageUsers')" data-page="manageUsers" style="display:none;">
@@ -919,6 +922,14 @@ body.theme-light .panel {
       </div>
     </div>
   </div>
+
+  <div class="page" id="loansPage">
+  <div class="topbar">
+    <h2>💳 Loans</h2>
+    <div class="topbar-actions" id="loansTopbarActions"></div>
+  </div>
+  <div class="content" id="loansContent"></div>
+</div>
 
   <!-- Toast container -->
   <div class="toast-container" id="toastContainer"></div>
@@ -1233,6 +1244,13 @@ body.theme-light .panel {
       </div>
     </div>
   </div>
+  <div class="page" id="loansPage">
+  <div class="topbar">
+    <h2>💳 Loans</h2>
+    <div class="topbar-actions" id="loansTopbarActions"></div>
+  </div>
+  <div class="content" id="loansContent"></div>
+</div>
 
   <!-- ═══ EXPENSES PAGE ═══ -->
   <div class="page" id="expensesPage">
@@ -2031,6 +2049,7 @@ const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 let currentProfile=null;
+let allLoans=[], allLoanRepayments=[], allInterestDistributions=[];
 let allMembers=[],allEvents=[],allContribs=[],allSchemes=[],allPeriods=[],allSchemePayments=[],allExpenses=[],allElections=[],allNotices=[],allMessages=[],allSuggestions=[],allAnonMessages=[],allAssets=[],allPolls=[],allVotes=[];
 let allMinutes=[],allAgendas=[],allBudgets=[],allBudgetItems=[],allDocuments=[],allAmendments=[];
 let groupMpesaConfig=null;
@@ -2125,7 +2144,7 @@ async function ensureGroupHasChairman(gid){
 
 async function loadAllData(){
   const gid=currentProfile.group_id;
-  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets,polls,votes,minutes,agendas,budgets,budgetItems,documents,amendments]=await Promise.all([
+  const[members,events,contribs,schemes,periods,schPayments,mpesaCfg,expenses,grpSettings,elections,notices,messages,suggestions,anonMsgs,assets,polls,votes,minutes,agendas,budgets,budgetItems,documents,amendments,loans,loanRepayments,interestDistributions]=await Promise.all([
     sq(()=>sb.from('profiles').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('events').select('*').eq('group_id',gid).order('event_date',{ascending:false})),
     sq(()=>sb.from('contributions').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
@@ -2148,8 +2167,12 @@ async function loadAllData(){
     sq(()=>sb.from('group_budgets').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
     sq(()=>sb.from('group_budget_items').select('*').eq('group_id',gid)),
     sq(()=>sb.from('group_documents').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
-    sq(()=>sb.from('group_amendments').select('*').eq('group_id',gid).order('created_at',{ascending:false}))
+    sq(()=>sb.from('group_amendments').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('group_loans').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('group_loan_repayments').select('*').eq('group_id',gid).order('created_at',{ascending:false})),
+    sq(()=>sb.from('group_interest_distributions').select('*').eq('group_id',gid).order('distributed_at',{ascending:false})),
   ]);
+
   allMembers=members;allEvents=events;allSchemes=schemes;allPeriods=periods;allExpenses=expenses;
   groupMpesaConfig=mpesaCfg&&mpesaCfg.length>0?mpesaCfg[0]:null;
   allElections=elections;allNotices=notices;allMessages=messages;
@@ -2157,24 +2180,31 @@ async function loadAllData(){
   allPolls=polls;allVotes=votes;
   allMinutes=minutes||[];allAgendas=agendas||[];allBudgets=budgets||[];
   allBudgetItems=budgetItems||[];allDocuments=documents||[];allAmendments=amendments||[];
+  allLoans=loans||[];allLoanRepayments=loanRepayments||[];allInterestDistributions=interestDistributions||[];
+
   await ensureGroupHasChairman(gid);
+
   if(grpSettings&&grpSettings.length){
     grpSettings.forEach(s=>{
       if(s.setting_key==='default_suspension_fee')groupSettings.default_suspension_fee=parseFloat(s.setting_value||0);
       if(s.setting_key==='registration_fee')groupSettings.registration_fee=parseFloat(s.setting_value||0);
+      if(s.setting_key==='loan_interest_rate')groupSettings.loan_interest_rate=parseFloat(s.setting_value||10);
       if(s.setting_key==='role_overrides'){try{groupSettings.role_overrides=JSON.parse(s.setting_value||'{}');}catch(e){}}
     });
   }
+
   const mm=Object.fromEntries(allMembers.map(m=>[m.id,m]));
   const em=Object.fromEntries(allEvents.map(e=>[e.id,e]));
   allContribs=contribs.map(c=>({...c,profiles:{full_name:mm[c.member_id]?.full_name||'Unknown'},events:c.event_id?{name:em[c.event_id]?.name||'—'}:null}));
   allSchemePayments=schPayments.map(p=>({...p,profiles:{full_name:mm[p.member_id]?.full_name||'Unknown'}}));
+
   renderDashboard();renderEventsPage();renderSchemesPage();populateCfSource();renderContributions();
-renderMembers(allMembers);renderUsers(allMembers);populateReportFilters();renderReports();
+renderMembers(allMembers);renderUsers(allMembers);populateReportFilters();if(typeof renderReports==='function')renderReports();
 renderSettingsPage();renderExpenses();renderDefaulters();renderMyStatement();
-renderElections();
-updateNotifBadge();renderDashNotices();updateFabBadges();
-renderMinutes();renderAgendas();renderBudgets();renderDocumentVault();renderAmendments();
+  renderElections();
+  updateNotifBadge();renderDashNotices();updateFabBadges();
+  renderMinutes();renderAgendas();renderBudgets();renderDocumentVault();renderAmendments();
+  renderLoansPage();
 }
 
 function signOut(){
@@ -2208,6 +2238,7 @@ function navigate(page){
   if(page==='documents')renderDocumentVault();
   if(page==='amendments')renderAmendments();
   if(page==='myReceipts')loadMyReceiptsPage();
+  if(page==='loans') renderLoansPage();
 }
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -7164,6 +7195,468 @@ function exportMembersCSV() {
   const blob = new Blob([csv], { type:'text/csv' });
   const a    = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'members.csv' });
   a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOANS MODULE
+// ═══════════════════════════════════════════════════════════════
+
+function renderLoansPage(){
+  const container=document.getElementById('loansContent');
+  const topbar=document.getElementById('loansTopbarActions');
+  const role=currentProfile.group_role||currentProfile.role||'member';
+  const isLeader=['admin','chairman'].includes(role);
+
+  if(topbar)topbar.innerHTML=`
+    <button class="btn btn-primary btn-sm" onclick="openRequestLoanModal()">+ Request Loan</button>
+    ${isLeader?`<button class="btn btn-secondary btn-sm" onclick="openLoanSettingsModal()">⚙️ Loan Settings</button>`:''}`;
+
+  // Summary stats
+  const myLoans=allLoans.filter(l=>l.member_id===currentProfile.id);
+  const activeLoans=allLoans.filter(l=>l.status==='active');
+  const pendingLoans=allLoans.filter(l=>l.status==='pending');
+  const totalLoanedOut=activeLoans.reduce((s,l)=>s+parseFloat(l.amount||0),0);
+  const totalRepaid=allLoanRepayments.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const totalInterestCollected=allLoanRepayments.reduce((s,r)=>{
+    const loan=allLoans.find(l=>l.id===r.loan_id);
+    if(!loan)return s;
+    const interestPortion=(parseFloat(loan.interest_amount||0)/parseFloat(loan.total_repayable||1))*parseFloat(r.amount||0);
+    return s+interestPortion;
+  },0);
+  const interestPerMember=allMembers.length>0?totalInterestCollected/allMembers.length:0;
+
+  const mm=Object.fromEntries(allMembers.map(m=>[m.id,m]));
+
+  container.innerHTML=`
+    <div class="stats-grid" style="margin-bottom:24px;">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(91,156,246,0.15);">💳</div>
+        <div class="stat-value">${allLoans.filter(l=>l.status==='active').length}</div>
+        <div class="stat-label">Active Loans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,200,66,0.15);">⏳</div>
+        <div class="stat-value">${pendingLoans.length}</div>
+        <div class="stat-label">Pending Approval</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(240,84,79,0.15);">💰</div>
+        <div class="stat-value">KES ${totalLoanedOut.toLocaleString()}</div>
+        <div class="stat-label">Total Loaned Out</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(52,217,165,0.15);">📈</div>
+        <div class="stat-value">KES ${totalInterestCollected.toLocaleString()}</div>
+        <div class="stat-label">Interest Collected</div>
+      </div>
+    </div>
+
+    ${interestPerMember>0?`
+    <div style="background:linear-gradient(135deg,rgba(52,217,165,0.12),rgba(52,217,165,0.05));border:1px solid rgba(52,217,165,0.3);border-radius:var(--radius-lg);padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--accent2);">📊 Your Interest Earnings</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Your share of interest collected from all loans</div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:900;color:var(--accent2);">KES ${interestPerMember.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+    </div>`:''}
+
+    ${pendingLoans.length&&isLeader?`
+    <div style="margin-bottom:24px;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        <span style="background:rgba(245,200,66,0.2);color:var(--accent3);padding:3px 10px;border-radius:20px;font-size:11px;">⏳ ${pendingLoans.length} Pending</span>
+        Loan Requests
+      </div>
+      ${pendingLoans.map(loan=>{
+        const member=mm[loan.member_id];
+        return`<div class="event-card" style="margin-bottom:12px;">
+          <div class="event-card-header">
+            <div>
+              <div class="event-card-name">${member?.full_name||'Unknown'} — KES ${parseFloat(loan.amount).toLocaleString()}</div>
+              <div class="event-card-meta">
+                <span>📅 Applied: ${formatDate(loan.created_at)}</span>
+                <span>📈 Interest: ${loan.interest_rate}%</span>
+                <span>💰 Total Repayable: KES ${parseFloat(loan.total_repayable).toLocaleString()}</span>
+                <span>⏱ ${loan.repayment_period} ${loan.repayment_scheme}(s)</span>
+              </div>
+              ${loan.purpose?`<div style="font-size:13px;color:var(--text-muted);margin-top:6px;">📌 Purpose: ${loan.purpose}</div>`:''}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" onclick="approveLoan('${loan.id}')">✓ Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectLoan('${loan.id}')">✕ Reject</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:12px;">
+      ${isLeader?'All Loans':'My Loans'}
+    </div>
+
+    ${(isLeader?allLoans:myLoans).filter(l=>l.status!=='pending').length===0
+      ?`<div class="empty"><div class="empty-icon">💳</div><p>No loans yet.</p></div>`
+      :(isLeader?allLoans:myLoans).filter(l=>l.status!=='pending').map(loan=>{
+        const member=mm[loan.member_id];
+        const repayments=allLoanRepayments.filter(r=>r.loan_id===loan.id);
+        const paidSoFar=repayments.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+        const remaining=parseFloat(loan.total_repayable||0)-paidSoFar;
+        const pct=parseFloat(loan.total_repayable)>0?Math.min(100,Math.round((paidSoFar/parseFloat(loan.total_repayable))*100)):0;
+        const statusColors={active:'badge-active',completed:'badge-paid',rejected:'badge-inactive',pending:'badge-unpaid'};
+        return`<div class="event-card" style="margin-bottom:16px;">
+          <div class="event-card-header">
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+                <div class="event-card-name">${member?.full_name||'Unknown'}</div>
+                <span class="badge ${statusColors[loan.status]||'badge-member'}">${loan.status}</span>
+              </div>
+              <div class="event-card-meta">
+                <span>💰 Loan: KES ${parseFloat(loan.amount).toLocaleString()}</span>
+                <span>📈 Interest: ${loan.interest_rate}% = KES ${parseFloat(loan.interest_amount).toLocaleString()}</span>
+                <span>💳 Total: KES ${parseFloat(loan.total_repayable).toLocaleString()}</span>
+                ${loan.due_date?`<span>📅 Due: ${formatDate(loan.due_date)}</span>`:''}
+              </div>
+              ${loan.purpose?`<div style="font-size:12px;color:var(--text-muted);margin-top:4px;">📌 ${loan.purpose}</div>`:''}
+              <div style="margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">Repayment progress</span>
+                  <span style="color:${remaining>0?'var(--danger)':'var(--accent2)'};">${pct}% · ${remaining>0?'KES '+remaining.toLocaleString()+' remaining':'Fully paid'}</span>
+                </div>
+                <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%;"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+              ${isLeader&&loan.status==='active'?`<button class="btn btn-primary btn-sm" onclick="openRepaymentModal('${loan.id}')">💳 Record Payment</button>`:''}
+              ${loan.member_id===currentProfile.id&&loan.status==='active'?`<button class="btn btn-secondary btn-sm" onclick="openRepaymentModal('${loan.id}')">💳 Pay</button>`:''}
+              <button class="btn btn-secondary btn-sm" onclick="openLoanDetailModal('${loan.id}')">📋 Details</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+
+    ${isLeader&&allInterestDistributions.length?`
+    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin:24px 0 12px;">📊 Interest Distribution History</div>
+    <div class="table-card">
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Date</th><th>Total Interest</th><th>Members</th><th>Per Member</th><th>Note</th></tr></thead>
+          <tbody>
+            ${allInterestDistributions.map(d=>`
+              <tr>
+                <td style="font-size:12px;color:var(--text-muted);">${formatDate(d.distributed_at)}</td>
+                <td><strong>KES ${parseFloat(d.total_interest).toLocaleString()}</strong></td>
+                <td>${d.member_count}</td>
+                <td style="color:var(--accent2);font-weight:700;">KES ${parseFloat(d.per_member_amount).toLocaleString()}</td>
+                <td style="font-size:12px;color:var(--text-muted);">${d.note||'—'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`:''}
+  `;
+}
+
+function openRequestLoanModal(){
+  const loanRate=parseFloat(groupSettings.loan_interest_rate||10);
+  document.getElementById('loanRequestOverlay')?.remove();
+  const html=`
+    <div class="modal-overlay open" id="loanRequestOverlay">
+      <div class="modal">
+        <div class="modal-title">💳 Request a Loan</div>
+        <div class="modal-sub">Submit a loan request for admin approval</div>
+        <div class="field"><label>Loan Amount (KES)</label><input id="loan-amount" type="number" placeholder="e.g. 5000" min="1" oninput="updateLoanPreview()"/></div>
+        <div class="field"><label>Purpose</label><input id="loan-purpose" type="text" placeholder="e.g. Business capital, Medical emergency"/></div>
+        <div class="fields-row">
+          <div class="field"><label>Repayment Period</label><input id="loan-period" type="number" placeholder="e.g. 3" min="1" value="1" oninput="updateLoanPreview()"/></div>
+          <div class="field"><label>Repayment Scheme</label>
+            <select id="loan-scheme" class="filter-select" style="width:100%">
+              <option value="weekly">Weekly</option>
+              <option value="monthly" selected>Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+        </div>
+        <div style="background:rgba(91,156,246,0.08);border:1px solid rgba(91,156,246,0.2);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;">
+          <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Loan Summary</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+            <span style="color:var(--text-muted);">Interest Rate</span>
+            <span style="font-weight:700;">${loanRate}%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+            <span style="color:var(--text-muted);">Interest Amount</span>
+            <span id="preview-interest" style="font-weight:700;">KES 0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
+            <span style="font-weight:700;">Total Repayable</span>
+            <span id="preview-total" style="font-weight:900;color:var(--accent);">KES 0</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="document.getElementById('loanRequestOverlay').remove()">Cancel</button>
+          <button class="btn btn-primary" onclick="submitLoanRequest()">Submit Request</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+function updateLoanPreview(){
+  const amount=parseFloat(document.getElementById('loan-amount')?.value)||0;
+  const rate=parseFloat(groupSettings.loan_interest_rate||10);
+  const interest=amount*(rate/100);
+  const total=amount+interest;
+  const interestEl=document.getElementById('preview-interest');
+  const totalEl=document.getElementById('preview-total');
+  if(interestEl)interestEl.textContent='KES '+interest.toLocaleString();
+  if(totalEl)totalEl.textContent='KES '+total.toLocaleString();
+}
+
+async function submitLoanRequest(){
+  const amount=parseFloat(document.getElementById('loan-amount').value)||0;
+  const purpose=document.getElementById('loan-purpose').value.trim();
+  const period=parseInt(document.getElementById('loan-period').value)||1;
+  const scheme=document.getElementById('loan-scheme').value;
+  if(amount<=0)return toast('Enter a valid loan amount','error');
+  const rate=parseFloat(groupSettings.loan_interest_rate||10);
+  const interest=amount*(rate/100);
+  const total=amount+interest;
+  const{error}=await sb.from('group_loans').insert([{
+    group_id:currentProfile.group_id,
+    member_id:currentProfile.id,
+    amount,
+    interest_rate:rate,
+    interest_amount:interest,
+    total_repayable:total,
+    amount_paid:0,
+    status:'pending',
+    purpose,
+    repayment_period:period,
+    repayment_scheme:scheme
+  }]);
+  if(error){toast(error.message,'error');return;}
+  document.getElementById('loanRequestOverlay')?.remove();
+  toast('Loan request submitted! Awaiting approval.','success');
+  await loadAllData();
+}
+
+async function approveLoan(loanId){
+  const loan=allLoans.find(l=>l.id===loanId);
+  if(!loan)return;
+  const dueDate=new Date();
+  if(loan.repayment_scheme==='weekly')dueDate.setDate(dueDate.getDate()+7*loan.repayment_period);
+  else if(loan.repayment_scheme==='monthly')dueDate.setMonth(dueDate.getMonth()+loan.repayment_period);
+  else dueDate.setFullYear(dueDate.getFullYear()+loan.repayment_period);
+  const{error}=await sb.from('group_loans').update({
+    status:'active',
+    approved_by:currentProfile.id,
+    approved_at:new Date().toISOString(),
+    due_date:dueDate.toISOString().split('T')[0]
+  }).eq('id',loanId);
+  if(error){toast(error.message,'error');return;}
+  toast('Loan approved!','success');
+  await loadAllData();
+  renderLoansPage();
+}
+
+async function rejectLoan(loanId){
+  if(!confirm('Reject this loan request?'))return;
+  const{error}=await sb.from('group_loans').update({status:'rejected'}).eq('id',loanId);
+  if(error){toast(error.message,'error');return;}
+  toast('Loan rejected','info');
+  await loadAllData();
+  renderLoansPage();
+}
+
+function openRepaymentModal(loanId){
+  const loan=allLoans.find(l=>l.id===loanId);
+  if(!loan)return;
+  const repayments=allLoanRepayments.filter(r=>r.loan_id===loanId);
+  const paidSoFar=repayments.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const remaining=parseFloat(loan.total_repayable||0)-paidSoFar;
+  const member=allMembers.find(m=>m.id===loan.member_id);
+  document.getElementById('repaymentOverlay')?.remove();
+  const html=`
+    <div class="modal-overlay open" id="repaymentOverlay">
+      <div class="modal">
+        <div class="modal-title">💳 Record Loan Repayment</div>
+        <div class="modal-sub">${member?.full_name||'Member'} · Remaining: KES ${remaining.toLocaleString()}</div>
+        <div class="field"><label>Amount Paid (KES)</label><input id="repay-amount" type="number" placeholder="e.g. 1000" min="1" max="${remaining}" value="${remaining}"/></div>
+        <div class="field"><label>Note (optional)</label><input id="repay-note" type="text" placeholder="e.g. Cash payment"/></div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="document.getElementById('repaymentOverlay').remove()">Cancel</button>
+          <button class="btn btn-primary" onclick="recordRepayment('${loanId}')">Record Payment</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+async function recordRepayment(loanId){
+  const amount=parseFloat(document.getElementById('repay-amount').value)||0;
+  const note=document.getElementById('repay-note').value.trim();
+  const loan=allLoans.find(l=>l.id===loanId);
+  if(!loan||amount<=0)return toast('Enter valid amount','error');
+  const repayments=allLoanRepayments.filter(r=>r.loan_id===loanId);
+  const paidSoFar=repayments.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const remaining=parseFloat(loan.total_repayable||0)-paidSoFar;
+  if(amount>remaining)return toast(`Maximum repayment is KES ${remaining.toLocaleString()}`,'error');
+
+  const{error}=await sb.from('group_loan_repayments').insert([{
+    group_id:currentProfile.group_id,
+    loan_id:loanId,
+    member_id:loan.member_id,
+    amount,
+    note,
+    recorded_by:currentProfile.id
+  }]);
+  if(error){toast(error.message,'error');return;}
+
+  // Check if fully paid
+  const newTotal=paidSoFar+amount;
+  if(newTotal>=parseFloat(loan.total_repayable)){
+    await sb.from('group_loans').update({status:'completed',amount_paid:newTotal}).eq('id',loanId);
+    // Distribute interest to all members
+    await distributeInterest(loanId,loan);
+    toast('Loan fully repaid! Interest distributed to all members.','success');
+  }else{
+    await sb.from('group_loans').update({amount_paid:newTotal}).eq('id',loanId);
+    toast(`Payment of KES ${amount.toLocaleString()} recorded!`,'success');
+  }
+
+  document.getElementById('repaymentOverlay')?.remove();
+  await loadAllData();
+  renderLoansPage();
+}
+
+async function distributeInterest(loanId,loan){
+  const totalInterest=parseFloat(loan.interest_amount||0);
+  const memberCount=allMembers.length;
+  if(totalInterest<=0||memberCount===0)return;
+  const perMember=totalInterest/memberCount;
+  await sb.from('group_interest_distributions').insert([{
+    group_id:currentProfile.group_id,
+    loan_id:loanId,
+    total_interest:totalInterest,
+    per_member_amount:perMember,
+    member_count:memberCount,
+    note:`Interest from loan of KES ${parseFloat(loan.amount).toLocaleString()} by member`
+  }]);
+}
+
+function openLoanDetailModal(loanId){
+  const loan=allLoans.find(l=>l.id===loanId);
+  if(!loan)return;
+  const member=allMembers.find(m=>m.id===loan.member_id);
+  const approver=allMembers.find(m=>m.id===loan.approved_by);
+  const repayments=allLoanRepayments.filter(r=>r.loan_id===loanId);
+  const paidSoFar=repayments.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const remaining=parseFloat(loan.total_repayable||0)-paidSoFar;
+  const pct=parseFloat(loan.total_repayable)>0?Math.min(100,Math.round((paidSoFar/parseFloat(loan.total_repayable))*100)):0;
+  const mm=Object.fromEntries(allMembers.map(m=>[m.id,m]));
+  document.getElementById('loanDetailOverlay')?.remove();
+  const html=`
+    <div class="modal-overlay open" id="loanDetailOverlay">
+      <div class="modal modal-wide">
+        <div class="modal-title">📋 Loan Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">MEMBER</div>
+            <div style="font-weight:700;">${member?.full_name||'Unknown'}</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">STATUS</div>
+            <div style="font-weight:700;text-transform:capitalize;">${loan.status}</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">LOAN AMOUNT</div>
+            <div style="font-weight:700;">KES ${parseFloat(loan.amount).toLocaleString()}</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">INTEREST (${loan.interest_rate}%)</div>
+            <div style="font-weight:700;color:var(--accent3);">KES ${parseFloat(loan.interest_amount).toLocaleString()}</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">TOTAL REPAYABLE</div>
+            <div style="font-weight:700;color:var(--accent);">KES ${parseFloat(loan.total_repayable).toLocaleString()}</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">REMAINING</div>
+            <div style="font-weight:700;color:${remaining>0?'var(--danger)':'var(--accent2)'};">KES ${remaining.toLocaleString()}</div>
+          </div>
+          ${loan.due_date?`<div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">DUE DATE</div>
+            <div style="font-weight:700;">${formatDate(loan.due_date)}</div>
+          </div>`:''}
+          ${approver?`<div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">APPROVED BY</div>
+            <div style="font-weight:700;">${approver.full_name}</div>
+          </div>`:''}
+        </div>
+        ${loan.purpose?`<div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">📌 Purpose: ${loan.purpose}</div>`:''}
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+            <span>Repayment Progress</span><span>${pct}%</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%;"></div></div>
+        </div>
+        ${repayments.length?`
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Payment History</div>
+        <div class="table-card" style="margin-bottom:16px;">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>#</th><th>Amount</th><th>Date</th><th>Recorded By</th><th>Note</th></tr></thead>
+              <tbody>
+                ${repayments.map((r,i)=>`<tr>
+                  <td style="color:var(--text-muted);">${i+1}</td>
+                  <td><strong>KES ${parseFloat(r.amount).toLocaleString()}</strong></td>
+                  <td style="font-size:12px;color:var(--text-muted);">${formatDate(r.created_at)}</td>
+                  <td style="font-size:12px;">${mm[r.recorded_by]?.full_name||'—'}</td>
+                  <td style="font-size:12px;color:var(--text-muted);">${r.note||'—'}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`:'<div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">No payments recorded yet.</div>'}
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="document.getElementById('loanDetailOverlay').remove()">Close</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+function openLoanSettingsModal(){
+  const currentRate=groupSettings.loan_interest_rate||10;
+  document.getElementById('loanSettingsOverlay')?.remove();
+  const html=`
+    <div class="modal-overlay open" id="loanSettingsOverlay">
+      <div class="modal">
+        <div class="modal-title">⚙️ Loan Settings</div>
+        <div class="modal-sub">Configure loan interest rate for your group</div>
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <input id="loan-rate-input" type="number" min="0" max="100" step="0.5" value="${currentRate}" placeholder="e.g. 10"/>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">This rate will be applied to all new loan requests. Interest is divided equally among all members when a loan is fully repaid.</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="document.getElementById('loanSettingsOverlay').remove()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveLoanSettings()">Save Settings</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+async function saveLoanSettings(){
+  const rate=parseFloat(document.getElementById('loan-rate-input').value)||10;
+  const{error}=await sb.from('group_settings').upsert([{
+    group_id:currentProfile.group_id,
+    setting_key:'loan_interest_rate',
+    setting_value:rate.toString()
+  }],{onConflict:'group_id,setting_key'});
+  if(error){toast(error.message,'error');return;}
+  groupSettings.loan_interest_rate=rate;
+  document.getElementById('loanSettingsOverlay')?.remove();
+  toast(`Loan interest rate set to ${rate}%`,'success');
 }
 
   </script>

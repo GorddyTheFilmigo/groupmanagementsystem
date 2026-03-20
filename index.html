@@ -61,23 +61,15 @@
       from { opacity:0; transform: translateY(24px); }
       to { opacity:1; transform: translateY(0); }
     }
-    .brand {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+    .brand { text-align: center; margin-bottom: 32px; }
     .brand-logo-wrap {
-      width: 80px;
-      height: 80px;
+      width: 80px; height: 80px;
       margin: 0 auto 16px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 0 3px rgba(79,142,247,0.3), 0 8px 32px rgba(79,142,247,0.2);
     }
-    .brand-logo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .brand-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .brand-title {
       font-family: 'Syne', sans-serif;
       font-weight: 900;
@@ -90,17 +82,8 @@
     }
     .brand-title span.white { color: #fff; }
     .brand-title span.gold { color: #f5c518; }
-    .brand p {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-top: 6px;
-    }
-    .auth-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
+    .brand p { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+    .auth-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
     .auth-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
     .field { margin-bottom: 18px; }
     .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 7px; }
@@ -121,6 +104,23 @@
       box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
     }
     .field input::placeholder { color: var(--text-muted); }
+    .pass-wrap { position: relative; }
+    .pass-wrap input { padding-right: 44px; }
+    .pass-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 16px;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .pass-toggle:hover { color: var(--accent); }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       font-family: 'DM Sans', sans-serif;
@@ -154,50 +154,23 @@
       display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .site-footer {
+      background: #1f2937;
+      color: #ffffff;
+      padding: 20px 5px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin-top: 24px;
+      border-radius: 0 0 12px 12px;
+    }
+    .footer-content p { margin: 6px 0; font-size: 8px; }
+    .footer-content a { color: #60a5fa; text-decoration: none; font-weight: 500; }
+    .footer-content a:hover { text-decoration: underline; }
+    .creator strong { color: #fbbf24; }
     @media (max-width: 480px) {
       .auth-card { padding: 28px 20px; }
       .brand-title { font-size: clamp(15px, 7vw, 20px); }
     }
-     .site-footer {
-  background: #1f2937;
-  color: #ffffff;
-  padding: 20px 5px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
-
-.footer-content p {
-  margin: 6px 0;
-  font-size: 8px;
-}
-
-.footer-content a {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer-content a:hover {
-  text-decoration: underline;
-}
-
-.creator strong {
-  color: #fbbf24;
-}
-
-copyright {
-  font-size: 13px;
-  opacity: 0.8;
-}
-  .icon .logo {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255,215,0,0.6);
-}
-
   </style>
 </head>
 <body>
@@ -235,36 +208,30 @@ copyright {
     <label>Username</label>
     <input id="li-username" type="text" placeholder="your_username" autofocus oninput="this.value=this.value.toLowerCase().replace(/^@/,'')"/>
   </div>
+
   <div class="field">
     <label>Password</label>
-    <input id="li-pass" type="password" placeholder="••••••••"/>
+    <div class="pass-wrap">
+      <input id="li-pass" type="password" placeholder="••••••••"/>
+      <button type="button" class="pass-toggle" id="passToggleBtn" onclick="togglePassVisibility()">👁</button>
+    </div>
   </div>
 
   <button class="btn btn-primary" onclick="login()" id="loginBtn">Sign In</button>
   <div class="auth-link"><a href="signup.html">Need an account? Create a group</a></div>
+
   <footer class="site-footer">
-  <div class="footer-content">
-    <p class="creator">
-      Created by: <strong>Gordon Onyango</strong>
-    </p>
-
-    <p class="social">
-      Facebook:
-      <a href="https://www.facebook.com/profile.php?id=100064373151861" target="_blank" rel="noopener noreferrer">
-  Gordon KE
-</a>
-    </p>
-
-    <p class="copyright">
-      &copy; <span id="year"></span> GroupFlow. All rights reserved.
-    </p>
-  </div>
-</footer>
+    <div class="footer-content">
+      <p class="creator">Created by: <strong>Gordon Onyango</strong></p>
+      <p class="social">Facebook: <a href="https://www.facebook.com/profile.php?id=100064373151861" target="_blank" rel="noopener noreferrer">Gordon KE</a></p>
+      <p class="copyright">&copy; <span id="year"></span> GroupFlow. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
 
 <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+  document.getElementById('year').textContent=new Date().getFullYear();
 </script>
-</div>
 
 <script>
 const SUPABASE_URL='https://amohpaikszdwlbokcyri.supabase.co';
@@ -284,6 +251,18 @@ function showMsg(text,type){
   el.textContent=text;
   el.className='msg '+type;
   el.style.display='block';
+}
+
+function togglePassVisibility(){
+  const input=document.getElementById('li-pass');
+  const btn=document.getElementById('passToggleBtn');
+  if(input.type==='password'){
+    input.type='text';
+    btn.textContent='🙈';
+  }else{
+    input.type='password';
+    btn.textContent='👁';
+  }
 }
 
 async function login(){
