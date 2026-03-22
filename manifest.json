@@ -18,7 +18,7 @@
       "purpose": "any"
     },
     {
-      "src": "image1.png",
+      "src": "image2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
