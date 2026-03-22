@@ -771,7 +771,6 @@ body.theme-light .panel {
 </head>
 
 <body>
-  <!-- PWA Install Banner -->
 <!-- PWA Install Banner -->
 <div id="installBanner" style="display:none;position:fixed;top:12px;right:16px;z-index:9999;background:linear-gradient(135deg,rgba(17,31,58,0.97),rgba(10,22,40,0.99));border:1px solid rgba(91,156,246,0.35);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.45),0 0 0 1px rgba(91,156,246,0.1);backdrop-filter:blur(12px);max-width:300px;">
   <div style="width:32px;height:32px;background:linear-gradient(135deg,#5b9cf6,#34d9a5);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">👥</div>
@@ -6468,6 +6467,53 @@ async function deleteAsset(id){
   });
 
   // Install button clicked
+  // ── PWA INSTALL ──────────────────────────────────────────────
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show the install banner
+  const banner = document.getElementById('installBanner');
+  if (banner) {
+    banner.style.display = 'flex'; // must be flex not block - your banner uses flexbox
+  }
+});
+
+function installApp(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(result=>{
+    if(result.outcome==='accepted'){
+      document.getElementById('installBanner').style.display='none';
+    }
+    deferredPrompt=null;
+  });
+}
+
+// Hide banner if already installed
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBanner').style.display='none';
+  deferredPrompt=null;
+});
+
+// Hide banner if running as installed PWA
+if(window.matchMedia('(display-mode: standalone)').matches){
+  const banner=document.getElementById('installBanner');
+  if(banner)banner.style.display='none';
+}
+```
+
+---
+
+## Also fix your banner div — change the inline style from:
+```
+display:none;position:fixed;
+```
+to:
+```
+display:none;position:fixed;
   function installApp(){
     if(!deferredPrompt)return;
     deferredPrompt.prompt();

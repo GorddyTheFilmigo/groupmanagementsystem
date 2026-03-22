@@ -21,8 +21,8 @@
     "path": "C:\\Users\\Admin\\keystores\\android.keystore",
     "alias": "gordythefilmigo"
   },
-  "appVersionName": "1",
-  "appVersionCode": 1,
+  "appVersionName": "2",
+  "appVersionCode": 2,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://gorddythefilmigo-git-main-gordons-projects-7e3802c4.vercel.app/manifest.json",
@@ -44,5 +44,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "1"
+  "appVersion": "2"
 }

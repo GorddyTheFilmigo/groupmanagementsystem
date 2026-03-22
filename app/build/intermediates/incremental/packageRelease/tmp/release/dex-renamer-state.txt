@@ -1,0 +1,4 @@
+#Sun Mar 22 09:51:50 EAT 2026
+base.0=C\:\\Users\\Admin\\ElectronicsPOS_Pro\\Group Manager\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
