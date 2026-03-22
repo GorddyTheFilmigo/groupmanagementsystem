@@ -13,8 +13,9 @@
   "backgroundColor": "#0A1628",
   "enableNotifications": true,
   "startUrl": "/index.html",
-  "iconUrl": "https://gorddythefilmigo-git-main-gordons-projects-7e3802c4.vercel.app/image2.png",
-  "maskableIconUrl": "https://gorddythefilmogo-git-main-gordons-projects-7e3802c4.vercel.app/image1.png",
+  "iconUrl": "https://gorddythefilmigo-git-main-gordons-projects-7e3802c4.vercel.app/image1.png",
+  "maskableIconUrl": "https://gorddythefilmigo-git-main-gordons-projects-7e3802c4.vercel.app/image1.png",
+  "monochromeIconUrl": "https://gorddythefilmigo-git-main-gordons-projects-7e3802c4.vercel.app/image1.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "C:\\Users\\Admin\\keystores\\android.keystore",
